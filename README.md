@@ -13,7 +13,7 @@ R based open-source collection of scripts called OUKS (Omics Untargeted Key Scri
 - Instruction and introduction into the OUKS software tool is provided by Basic tutorial file. Session info and installed packages are listed in corresponding files.
 - Scripts (with comments, notes and references) are stored in Scripts folder at a previously defined order along with code for figures construction.
 - MS2 spectra for selected potential biomrkers of bladder cancer are stored in mzXML format at corresponding folder.
-- Datasets in .csv and other files (.RData, .R) are available for reproducibility from corresponding folders. Files descriptions are provived by Files roadmap.
+- Datasets in .csv and other files (.RData, .R) are available for reproducibility from corresponding folders. Files descriptions are provived by Roadmap file.
 
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), RStudio and R (≥ 4.0.0).
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: plyushchenko.ivan@gmail.com.
