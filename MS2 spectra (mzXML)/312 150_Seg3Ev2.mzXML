@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0 http://sashimi.sourceforge.net/schema_revision/mzXML_2.0/mzXML_idx_2.0.xsd">
+	<msRun scanCount="1" startTime="PT15.59340S" endTime="PT15.74520S">
+		<parentFile fileName="file://C:\LabSolutions\Data\plyush_metabolomics\2021_04_15 DDA BPC\MS2 CID 150 1.lcd" fileType="RAWData"></parentFile>
+		<msInstrument>
+			<msManufacturer category="msManufacturer" value="Shimadzu"></msManufacturer>
+			<msModel category="msModel" value="LCMS-IT-TOF"></msModel>
+			<msIonisation category="msIonisation" value="ESI"></msIonisation>
+			<msMassAnalyzer category="msMassAnalyzer" value="IT-TOF"></msMassAnalyzer>
+			<msDetector category="msDetector" value="MCP"></msDetector>
+			<software type="acquisition" name="LCMSsolution" version="3.00"></software>
+		</msInstrument>
+		<dataProcessing>
+			<software type="conversion" name="TTFLDataExport" version="1"></software>
+		</dataProcessing>
+		<scan num="1549" msLevel="2" peaksCount="4" polarity="+" retentionTime="PT935.60S" lowMz="253" highMz="253" basePeakMz="253.146" basePeakIntensity="5568">
+			<precursorMz precursorIntensity="0">312.22</precursorMz>
+			<peaks precision="32" byteOrder="network" pairOrder="m/z-int">Q30dsgAAAABDfSGWRYuoAEN9JXpFrgAAQ30pWAAAAAA=</peaks>
+		</scan>
+	</msRun>
+</mzXML>
