@@ -1,3 +1,4 @@
+![Logo](https://user-images.githubusercontent.com/40541666/116581984-9098a280-a91d-11eb-8411-735eca130c51.jpeg)
 # OUKS - omics untargeted key scripts
 R based open-source collection of scripts called OUKS (Omics Untargeted Key Script) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing: 
 1) experimental design and sample randomization; 
