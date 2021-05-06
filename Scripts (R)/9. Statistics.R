@@ -777,7 +777,7 @@ fit.cl <- train(Label~., data=dsTrain, method="pls", metric=metric, trControl=tr
 # model and resampling summary
 results <- resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)$values # see "results" for resampling summary
 # to compare 2 or more models (fit.cl and fit.cl1, for example) 
-summary(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)) # summary(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)) or summary(diff(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)))
+summary(resamples(list(m=fit.cl, m1=fit.cl1), trControl = trainControl, metric=metric)) # summary(resamples(list(m=fit.cl, m1=fit.cl1), trControl = trainControl, metric=metric)) or summary(diff(resamples(list(m=fit.cl, m1=fit.cl1), trControl = trainControl, metric=metric)))
 # model info
 print(fit.cl)
 # make predictions on the validation dataset
