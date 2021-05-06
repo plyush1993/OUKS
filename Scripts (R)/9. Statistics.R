@@ -1,0 +1,2306 @@
+##############################################################################################################################################################
+# Table of contents
+##############################################################################################################################################################
+
+# Installation
+# Outlier detection
+# Multiple statistical filtration
+# Classification Machine Learning task
+# Regression Machine Learning task
+# Testing set of biomarkers
+# MWAS/ANCOVA
+# N-Factor Analysis
+# Repeated Measures
+# Time series
+# Unsupervised Data Projection
+# Correlation Analysis
+# Distance Analysis
+# Sample Size and Power Calculation
+# References
+
+##############################################################################################################################################################
+# Installation
+##############################################################################################################################################################
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities, annotation and label column
+ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))
+ds <- ds[-c(1:8),]
+rownames(ds) <- ds[,5]
+ds <- ds[,-c(1,3:5)]
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+# NEW WD FOR STATISTICAL ANALYSIS
+setwd("D:/...")
+
+##############################################################################################################################################################
+# Outlier detection
+##############################################################################################################################################################
+
+library(OutlierDetection)
+library(pcaMethods)
+
+# perform
+pcod <- pca(ds[,-1]) # compute pca
+maha <- maha(pcod@scores,cutoff=0.95) # Mahalanobis distance outlier detection
+maha
+nn <- nn(pcod@scores,k=0.05*nrow(ds)) # Euclidean distance outlier detection
+nn
+nnk <- nnk(pcod@scores,k=0.05*nrow(ds)) # Euclidean distance outlier detection
+nnk
+
+##############################################################################################################################################################
+# Multiple statistical filtration
+##############################################################################################################################################################
+
+# Content:
+# Machine Learning + Variable Importance + Recursive Feature Selection
+# VIP from PLS models
+# RF permutation
+# Penalized/Stepwise Regression
+# AUROC analysis
+# Univariate Filtering
+# t-Test / Kruskal-Wallis test
+# Fold Change Calculation
+# Moderated t-test
+# Linear Modeling 
+# Linear Mixed-Effects Modeling
+# RUV2 Method
+# Correlation Analysis
+# Correlation with smth
+# Combine results
+# Combine with annotation
+
+###############################################
+############################################### MULTIPLE ML WITH SFE AND RFS
+############################################### 
+
+library(parallel)
+library(doParallel)
+library(caret)
+library(tuple)
+
+# stop parallel
+stopCluster(cl)
+stopImplicitCluster()
+registerDoSEQ()
+
+# start parallel processing
+fc <- as.numeric(detectCores(logical = F))
+cl <- makePSOCKcluster(fc+1)
+registerDoParallel(cl)
+
+# repeated cross validation
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10) # or bootstrap: trainControl(method="boot", number=100)
+metric <- "Accuracy"
+
+# PAM
+set.seed(1234)
+# library(pamr)
+fit.pam <- train(Label~ ., data=ds, method="pam", metric=metric, trControl=trainControl, tuneLength = 10)
+
+# SVM
+set.seed(1234)
+# library(kernlab)
+fit.svm <- train(Label~ ., data=ds, method="svmRadial", metric=metric, trControl=trainControl, tuneLength = 10)
+
+# PLS
+set.seed(1234)
+# library(pls)
+fit.pls <- train(Label~ ., data=ds, method="pls", metric=metric, trControl=trainControl, tuneLength = 10)
+
+# RF
+set.seed(1234)
+# library(randomForest)
+fit.rf <- train(Label~ ., data=ds, method="rf", metric=metric, trControl=trainControl, tuneLength = 10)
+
+# only accuracy for all models
+results <- resamples(list(pam=fit.pam, svm=fit.svm, rf=fit.rf, pls=fit.pls), trControl = trainControl, metric=metric)
+results_df <- as.data.frame(results)
+results_df_fin <- apply(results_df[,-5], 2, mean)
+results_df_fin
+
+# by model specific value
+set.seed(1234)
+Imp.rf <- varImp(fit.rf, scale = FALSE)
+Imp.rf <- Imp.rf$importance
+rownames(Imp.rf) <- gsub("`", '', rownames(Imp.rf))
+
+set.seed(1234)
+Imp.pls <- varImp(fit.pls, scale = FALSE)
+Imp.pls <- Imp.pls$importance
+rownames(Imp.pls) <- gsub("`", '', rownames(Imp.pls))
+
+set.seed(1234)
+Imp.svm <- varImp(fit.svm, scale = FALSE)
+Imp.svm <- Imp.svm$importance
+rownames(Imp.svm) <- gsub("`", '', rownames(Imp.svm))
+
+set.seed(1234)
+Imp.pam <- varImp(fit.pam, scale = FALSE)
+Imp.pam <- Imp.pam$importance
+rownames(Imp.pam) <- gsub("`", '', rownames(Imp.pam))
+
+# creating of list with top = n important features by model
+n_model = 100
+set.seed(1234)
+
+Imp.rf[,c("sum")] <- apply(X = Imp.rf, 1, FUN = sum)
+Imp.rf <- Imp.rf[order(Imp.rf$sum, decreasing = T),]
+Imp.rf <- rownames(Imp.rf)[c(1:n_model)]
+
+Imp.pls[,c("sum")] <- apply(X = Imp.pls, 1, FUN = sum)
+Imp.pls <- Imp.pls[order(Imp.pls$sum, decreasing = T),]
+Imp.pls <- rownames(Imp.pls)[c(1:n_model)]
+
+Imp.svm[,c("sum")] <- apply(X = Imp.svm, 1, FUN = sum)
+Imp.svm <- Imp.svm[order(Imp.svm$sum, decreasing = T),]
+Imp.svm <- rownames(Imp.svm)[c(1:n_model)]
+
+Imp.pam[,c("sum")] <- apply(X = Imp.pam, 1, FUN = sum)
+Imp.pam <- Imp.pam[order(Imp.pam$sum, decreasing = T),]
+Imp.pam <- rownames(Imp.pam)[c(1:n_model)]
+
+# minimum n time of duplicated 
+all <- c(Imp.rf, Imp.svm, Imp.pam, Imp.pls)
+#all <- unique(c(Imp.svm, Imp.rf, Imp.pls)) 
+#all <- unique(c(Imp.svm,Imp.rf)) 
+n_tuple <- 4
+all1 <- all[which(tuplicated(all, n_tuple), T)]
+all1 <- unique(all1)
+ds_d <- cbind(ds[,1], ds[,all1])
+#ds_d <- cbind(ds[,1], ds[,all]) 
+
+# Recursive Feature Elimination
+set.seed(1234)
+subsets <- c(1:(ncol(ds_d)-1))
+#ctrl_rfe <- rfeControl(functions = rfFuncs,method = "repeatedcv",number = 10, repeats = 10,verbose = FALSE)
+ctrl_rfe <- rfeControl(functions = nbFuncs,method = "repeatedcv",number = 10, repeats = 10,verbose = FALSE)
+# library(klaR) #(Version 0.6-14)
+rfe <- rfe(ds_d[,-1], ds_d[,1], sizes = subsets, metric = "Accuracy", rfeControl = ctrl_rfe) # for RFE klaR package shuld be exactly 0.6-14 version
+rfe_vi <- rfe[["optVariables"]]
+ds_rfe <- data.frame(cbind(as.character(ds[,1]), ds[, rfe_vi]))
+
+# features
+sfs <- colnames(ds_d)[-1] # all1 or colnames(ds_d)[-1]
+rfe <- rfe_vi # rfe_vi or colnames(ds_rfe)[-1]
+
+# save outputs
+# save(fit.pls, file = "pls.RData")
+# save(fit.pam, file = "pam.RData")
+# save(fit.rf, file = "rf.RData")
+# save(fit.svm, file = "svm.RData")
+
+# fwrite(ds_d, "ds_d tuple 2 top 5.csv", row.names = T)
+# fwrite(ds_rfe, "ds_rfe nb.csv", row.names = T)
+# fwrite(ds_rfe, "ds_rfe rf.csv", row.names = T)
+
+###############################################
+############################################### VIP FROM PLS MODELS
+############################################### 
+
+library(ropls)
+
+pls <- opls(ds[,-1], ds[,1], orthoI = 0, predI = NA, crossvalI = 10, permI = 100) # orthoI -> 0/1 PLS/OPLS, predI -> No of components, crossvalI -> cross-validation, permI -> No of permutations
+# plot(pls)
+vip <- as.data.frame(getVipVn(pls))
+vip <- cbind(name = rownames(vip), VIP = vip) 
+colnames(vip)[2] <- "VIP"
+vip <- vip[order(vip$VIP, decreasing = T),]
+th_vip <- 1.0 # set value for filtration
+vip_th <- subset(vip, vip$VIP > th_vip)
+vip_pls<- rownames(vip_th) # features
+
+###############################################
+############################################### RF PERMUTATION
+############################################### 
+
+library(permimp)
+library(party)
+
+set.seed(1234)
+mtry <- round(sqrt(ncol(ds[,-1])),0) # as.numeric(fit.rf[["bestTune"]]) or round(sqrt(ncol(ds[,-1])),0)
+ntree <- 500 # fit.rf[["finalModel"]][["ntree"]] or 500
+rf_model <- cforest(Label ~ ., data = ds, control = party::cforest_unbiased(mtry = mtry, ntree = ntree)) # fit RF with hyperparameters: mtry and ntree
+rf_perm <-  permimp(rf_model, threshold = 0.95, nperm = 100, scaled = F) # perform permutation importance: nperm -> No of permutations, threshold -> threshold value
+# plot(rf_perm, horizontal = T)
+rf_perm_df <- as.data.frame(rf_perm$values)
+rf_perm_df <- as.data.frame(cbind(rownames(rf_perm_df), RFPERM = rf_perm_df$`rf_perm$values`))
+rownames(rf_perm_df) <- rf_perm_df$V1
+rf_perm_df$RFPERM <- abs(as.numeric(rf_perm_df$RFPERM))
+rf_perm_df <- rf_perm_df[order(rf_perm_df$RFPERM, decreasing = T),]
+th_rf <- 0 # set value for filtration
+rf_th <- subset(rf_perm_df, rf_perm_df$RFPERM > th_rf)
+rf_perm_f<- rownames(rf_th) # features
+
+############################################### 
+############################################### PENALIZED/STEPWISE REGRESSION
+###############################################
+
+################################################### Penalized Regression
+
+library(glmnet)
+
+# predictor variables
+x <- model.matrix(Label~., ds)[,-1]
+# outcome (Label) to a numerical variable
+y <- ifelse(ds$Label == "TG", 1, 0) # set class for target -> "TG"
+
+################################# perform
+
+# alpha: the elasticnet mixing parameter. Allowed values include:
+# "1": for lasso regression
+# "0": for ridge regression
+# a value between 0 and 1 for elastic net regression
+set.seed(1234) 
+alpha <- 0.5 # set type of penalized regression
+cv.penal <- cv.glmnet(x, y, alpha = alpha, family = "binomial", nfolds = 10, type.measure="auc") # adjust type.measure for your data
+# plot(cv.penal)
+
+################################# Final model with optimal lambda
+
+# lambda = cv.penal$lambda.1se or lambda = cv.penal$lambda.min
+# lambda = lambda.1se produces a simpler model compared to lambda.min, but the model might be a little bit less accurate than the one obtained with lambda.min
+penal.model <- glmnet(x, y, alpha = alpha, family = "binomial", lambda = cv.penal$lambda.1se)
+coef_pr <- as.matrix(coef(penal.model))
+rownames(coef_pr) <- gsub("`", '', rownames(coef_pr))
+coef_pr_df <- as.data.frame(cbind(rownames(coef_pr), coef_pr))
+rownames(coef_pr_df)[-c(1:2)] <- rownames(coef_pr)[-c(1:2)]
+penal_f <- subset(coef_pr_df, as.numeric(coef_pr_df$s0) != 0)
+penal_f <- rownames(penal_f[!grepl("Intercept", penal_f$V1),]) # features
+
+################################################### Logistic Stepwise
+
+library(MASS)
+library(dplyr)
+
+log_step_mod <- glm(Label ~ ., data = ds, family = binomial) %>% stepAIC(trace = F, direction = "both") # set direction
+coef_st_log <- as.data.frame(coef(log_step_mod))
+rownames(coef_st_log) <- gsub("`", '', rownames(coef_st_log))
+coef_st_log <- as.data.frame(cbind(rownames(coef_st_log), coef_st_log))
+colnames(coef_st_log) <- c("V1", "V2")
+step_f <- rownames(coef_st_log[!grepl("Intercept", coef_st_log$V1),]) # features
+
+############################################### 
+############################################### AUROC ANALYSIS
+###############################################
+
+library(caret)
+
+set.seed(1234)
+Imp.ROC <- filterVarImp(x = ds[,-1], y = ds[,1])
+Imp.ROC[,c("sum")] <- apply(X = Imp.ROC, 1, FUN = sum)
+Imp.ROC <- Imp.ROC[order(Imp.ROC$sum, decreasing = T),]
+Imp.ROC$sum <- Imp.ROC$sum/length(unique(ds[,1])) # mean AUROC value
+th_roc <- 0.80 # set value for filtration
+Imp.ROC_sel <- subset(Imp.ROC, sum > th_roc)
+
+# features
+roc <- rownames(Imp.ROC_sel)
+
+###############################################
+############################################### UNIVARIATE FILTERING
+############################################### 
+
+# if some error in Shapiro normality test:
+# use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
+# library(cwhmisc)
+# norm.test <- apply(xx, 2, function(t) cwhmisc::shapiro.wilk.test(t)$p)
+
+uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
+  
+  norm_homog_tests <- function(x) {
+    xx <- x[,-1]
+    # normality test
+    norm.test <- as.numeric(apply(xx, 2, function(t) shapiro.test(t)$p.value))
+    # if some error in Shapiro normality test:
+    # use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
+    # library(cwhmisc)
+    # norm.test <- apply(xx, 2, function(t) cwhmisc::shapiro.wilk.test(t)$p)
+    
+    # homogeneity test
+    homog.test <- as.numeric(apply(xx, 2, function(t) bartlett.test(t,g = x[,1])$p.value))
+    return(as.data.frame(cbind(norm.test, homog.test)))}
+  
+  res_tests <- norm_homog_tests(x)
+  
+  
+  wilcox_test <- function(x,y) {
+    xx <- x[,-1]
+    wx.t <- as.vector(which(y[,1] < 0.05))
+    wilcox_test <- list()
+    ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) as.numeric(as.vector(pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)$p.value)))
+    names(wilcox_test) <- (colnames(x)[-1])[wx.t]
+    return(as.list(wilcox_test))}
+  
+  wx.t.res <- wilcox_test(x, res_tests)
+  
+  
+  welch_test <- function(x,y) {
+    xx <- x[,-1]
+    wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
+    welch_test <- list()
+    ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(as.vector(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)$p.value)))
+    names(welch_test) <- (colnames(x)[-1])[wl.t]
+    return(as.list(welch_test))}
+  
+  wl.t.res <- welch_test(x, res_tests)
+  
+  
+  student_test <- function(x,y) {
+    xx <- x[,-1]
+    st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
+    student_test <- list()
+    ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(as.vector(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)$p.value)))
+    names(student_test) <- (colnames(x)[-1])[st.t]
+    return(as.list(student_test))}
+  
+  st.t.res <- student_test(x, res_tests)
+  
+  filt_p_val <- function(x, y, z, w){
+    
+    #x = ds
+    #y = wx.t.res
+    #z = wl.t.res
+    #w = st.t.res
+    
+    wx.t.n <- names(y)
+    wx.t.res2 <-as.data.frame(y)
+    colnames(wx.t.res2) <- wx.t.n
+    wx.t.res2[is.na(wx.t.res2)] <- max(wx.t.res2, na.rm = T)
+    
+    wl.t.n <- names(z)
+    wl.t.res2 <- as.data.frame(z)
+    colnames(wl.t.res2) <- wl.t.n
+    wl.t.res2[is.na(wl.t.res2)] <- max(wl.t.res2, na.rm = T)
+    
+    st.t.n <- names(w)
+    st.t.res2 <- as.data.frame(w)
+    colnames(st.t.res2) <- st.t.n
+    st.t.res2[is.na(st.t.res2)] <- max(st.t.res2, na.rm = T)
+    
+    wxx <- apply(wx.t.res2, 2, min)
+    wll <- apply(wl.t.res2, 2, min)
+    stt <- apply(st.t.res2, 2, min)
+    wxx2 <- as.data.frame(wxx)
+    wll2 <- as.data.frame(wll)
+    stt2 <- as.data.frame(stt)
+    
+    wxx3 <- rownames(wxx2)[which(wxx2 <= p.val.sig)]
+    wll3 <- rownames(wll2)[which(wll2 <= p.val.sig)]
+    stt3 <- rownames(stt2)[which(stt2 <= p.val.sig)]
+    aff <- c(wxx3, wll3, stt3)
+    
+    ds_fil <- cbind(x[,1], x[, aff])
+    return(ds_fil)
+  }
+  return(filt_p_val(x, wx.t.res, wl.t.res, st.t.res))
+}
+
+# 1 st argument -> dataset with 1st "Label" column, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
+ds_uvf <- uvf(ds, p.val.sig = 0.05, p.adjust = "BH") 
+
+# features
+uvf <- colnames(ds_uvf)[-1]
+
+############################################### 
+############################################### # t-TEST / Kruskal-Wallis TEST
+###############################################
+
+################################################### t-test
+
+# prepare data
+data_l <- lapply(1:length(unique(ds$Label)), function(y) subset(ds, Label==unique(ds$Label)[y])[,-1])
+data_l <- lapply(1:length(data_l), function(y) sapply(data_l[[y]], as.numeric))
+# perform
+res.t.test.pval <- as.numeric(sapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)) # t-test
+p_adj <- as.numeric(p.adjust(res.t.test.pval, method = "BH")) # Adjust P-values for Multiple Comparisons
+pval.ttest <- as.data.frame(cbind(name = colnames(ds[,-1]), pval = as.numeric(p_adj))) 
+pval.ttest$pval <- as.numeric(pval.ttest$pval)
+rownames(pval.ttest) <- pval.ttest$name
+th_ttest <- 0.05 # set value for filtration
+pval_ttest <- rownames(subset(pval.ttest, pval.ttest$pval <= th_ttest))
+
+################################################### Kruskal-Wallis test
+
+res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # Kruskal test
+res.kw.test.pval <- sapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])$p.value)
+p_adj <-p.adjust(res.kw.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
+pval.kw <- as.data.frame(cbind(name = colnames(ds[,-1]), pval = as.numeric(p_adj))) 
+pval.kw$pval <- as.numeric(pval.kw$pval)
+rownames(pval.kw) <- pval.kw$name
+th_kw <- 0.05 # set value for filtration
+pval_kw <- rownames(subset(pval.kw, pval.kw$pval <= th_kw))
+
+############################################### 
+############################################### FOLD CHANGE CALCULATION
+###############################################
+
+library(dplyr)
+
+# transform data into log2 base
+ds_log <- as.data.frame(log2(ds[,-1]))
+ds_log <- cbind(Label = ds[,1], ds_log)
+
+#calculate the mean of each feature per group
+FOLD.CHANGE <- function(data) {
+ds_log_subsets <- lapply(1:length(unique(data[,1])), function(y) filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
+mean_r_l <- lapply(1:length(ds_log_subsets), function(y) apply(ds_log_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
+foldchange <- abs(mean_r_l[[1]] - mean_r_l[[2]])
+fc_res <- as.data.frame(foldchange)
+return(fc_res)
+}
+
+fc_t <- 1.0 # set threshold
+fc_res <- FOLD.CHANGE(ds_log)
+fc_res$foldchange <- as.numeric(fc_res$foldchange)
+fc <- rownames(subset(fc_res, foldchange > fc_t))
+
+################################################### Multigroup Fold Change
+
+library(structToolbox)
+
+D1 <- DatasetExperiment(data = data.frame(ds[,-1]),
+                        sample_meta = data.frame(Label = ds$Label),
+                        variable_meta = data.frame(colnames(ds[,-1])))
+M1 = fold_change(factor_name="Label", alpha = 0.05, threshold = 2)
+M2 = model_apply(M1,D1)
+fdr <- M2@fold_change@value
+fdt_tr <- 1.0
+f <- as.data.frame(apply(fdr, 1, function(x) x> fdt_tr | x< -fdt_tr))
+f1 <- as.data.frame(which(f == T, arr.ind = T))
+colnames(f) <- colnames(ds[,-1])
+fc <- colnames(f)[unique(f1$col)]
+detach("package:structToolbox", unload = TRUE)
+
+############################################### 
+############################################### MODERATED T-TEST
+###############################################
+
+library(limma)
+library(dplyr)
+
+mdl_mtrx <- model.matrix(~Label, ds)
+lmf <- lmFit(t(ds[,-1]), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
+efit <- eBayes(lmf)
+tableTop <- topTable(efit, coef = 2, adjust = "BH", number = ncol(ds), sort.by = "none")
+cutoff <- 0.05 # set cutoff
+lim_pval <- rownames(filter(tableTop, as.numeric(adj.P.Val) <= cutoff)) # features
+
+############################################### 
+############################################### LM MODELLING OF BIOLOGICAL FACTORS
+###############################################
+
+library(MetabolomicsBasics)
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+
+# perform
+model <- MetaboliteANOVA(dat=dat, sam=s_d, model="Batch+Class+Age+Sex") # "Batch+Class+Age+Sex" or "Batch+Class+Age+Sex+Order"
+
+# features
+# lm_c <- names(which(model[,"Batch"]>0.05 & model[,"Age"]>0.05 & model[,"Sex"]>0.05 & model[,"Class"]<0.05))
+lm <- rownames(model[which(model[,"Class"]<0.05),]) # or lm_c
+
+############################################### 
+############################################### LMM MODELLING OF BIOLOGICAL FACTORS
+###############################################
+
+library(lme4)
+library(lmerTest)
+
+# data
+dat <- cbind(meta, ds)
+n_meta <- 5 # adjust to your data
+colnames(dat)[-c(1:n_meta)] <- paste0("X", c(1:ncol(dat))) # adjust to your data
+dat$Batch <- as.factor(dat$Batch)
+dat$Age <- as.integer(dat$Age)
+dat$Sex <- as.integer(dat$Sex)
+dat$Label <- as.factor(dat$Label)
+
+# perform
+n_start <- 6 # adjust to your data
+lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data
+lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
+lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
+dat2 <- cbind(meta, ds)
+rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
+colnames(lmm_fit_pval_all_df)[2:4] <- c("Class", "Sex", "Age") # adjust to your data
+
+# features
+class_un <- sum(lmm_fit_pval_all_df[,"Age"]>0.05 & lmm_fit_pval_all_df[,"Sex"]>0.05 & lmm_fit_pval_all_df[,"Class"]<0.05)
+class_un
+class_er <- sum(lmm_fit_pval_all_df[,"Age"]>0.05 & lmm_fit_pval_all_df[,"Sex"]>0.05)
+class_er
+class_er2 <- sum(lmm_fit_pval_all_df[,"Age"]<0.05 & lmm_fit_pval_all_df[,"Sex"]<0.05)
+class_er2
+class <- length(rownames(lmm_fit_pval_all_df[which(lmm_fit_pval_all_df[,"Class"]<0.05),]))
+class
+# lmm_ind_c <- which(lmm_fit_pval_all_df[,"Age"]>0.05 & lmm_fit_pval_all_df[,"Sex"]>0.05 & lmm_fit_pval_all_df[,"Class"]<0.05)+n_meta
+lmm_ind <- which(lmm_fit_pval <= 0.05)+n_meta
+lmm <- colnames(dat2)[lmm_ind] # or lmm_ind_c
+
+############################################### 
+############################################### RUV2 METHOD
+###############################################
+
+library(NormalizeMets)
+library(stringr)
+
+# generate featuredata/sampledata for RUVs
+featuredata <- as.data.frame(ds[,-1])
+colnames(featuredata) <- colnames(ds[,-1])
+sampledata <- cbind(Class = ds$Label, Order = order, meta)
+
+# generate data of IS
+# search m/z of IS
+cn <- colnames(featuredata)
+is_ind <- which(str_detect(string = cn, pattern = "340.15")==T) # write in pattern m/z value of IS. If many ISs -> repeat this and save in 1 vector
+
+smart.corr.test <- function(x, is_idx){
+  b <- vector(mode="numeric")
+  res <- apply(x, 2, shapiro.test)
+  for (i in 1:ncol(x)) b[i] = res[[i]]$p.value
+  names(b) <- colnames(x)
+  for (i in 1:ncol(x))
+    if (b[i] < 0.05) {
+      b[i] <- (cor.test(x = x[, i], y = x[, is_idx], method = "spearman")$estimate)
+    } else{
+      b[i] <- (cor.test(x = x[, i], y = x[, is_idx], method = "pearson")$estimate)
+    }
+  return(b) }
+
+corr <- smart.corr.test(featuredata, is_idx = is_ind) # detect other signals with correlation > corr_tr by IS (QC signals)
+corr_tr <- 0.95 
+corr <- abs(corr)
+iss <- names(corr[corr > corr_tr]) # names(corr[corr > corr_tr]) or cn[is_ind] if multiple ISs
+
+qcmets <- sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y])) # which(colnames(featuredata) == iss) or sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y]))
+
+# Perform
+featuredata <- log10(featuredata)
+factormat <-model.matrix(~ Sex + Age + Class + Order, sampledata) # adjust to your data
+ruv2.analysis <-NormQcmets(featuredata, factormat=factormat,method = "ruv2", # adjust to your data
+                      k=4, qcmets = qcmets)
+# ruv2.analysis
+pval_ruv2 <- as.data.frame(ruv2.analysis$adj.p.value)
+cutoff <- 0.05 # set cutoff
+ruv2_pval <- rownames(subset(pval_ruv2, pval_ruv2$ClassTG <= cutoff)) # adjust to your data
+ 
+############################################### 
+############################################### REMOVE HIGHLY CORRELATED
+###############################################
+
+library(caret)
+
+set.seed(1234)
+cutoff <- 0.95 # set cut-off
+dsc <- ds[,-1]
+correlations <- cor(dsc) # method = c("pearson", "kendall", "spearman")
+highlyCorrelated <- findCorrelation(correlations, cutoff=cutoff, names = F)
+ds_corr <- cbind(Label = ds[,1], dsc[,-highlyCorrelated])
+corr <- colnames(ds_corr)[-1]
+
+############################################### 
+############################################### CORRELATION WITH SMTH
+###############################################
+
+target <- meta$Creatinine # set target feature/component
+corr.an <- apply(ds[,-1], 2, function(y) cor.test(x = y, y = target, method = "pearson")[["estimate"]][["cor"]]) # or "pearson", "kendall", "spearman"
+corr.an <- data.frame(cbind(colnames(ds[,-1]), corr = abs(as.numeric(corr.an))))
+rownames(corr.an) <- colnames(ds[,-1])
+th_cor <- 0.9 # set value for filtration
+corr_th <- subset(corr.an, corr.an$corr > th_cor)
+corr_f <- rownames(corr_th) # features
+
+################################################### Auto detect type of correlation for correlation with specific feature
+smart.corr.test <- function(x, n){
+  b <- vector(mode="numeric")
+  res <- apply(x, 2, shapiro.test)
+  for (i in 1:ncol(x)) b[i] = res[[i]]$p.value 
+  names(b) <- colnames(x)
+  for (i in 1:ncol(x))
+    if (b[i] < 0.05) {
+      b[i] <- (cor.test(x = x[, i], y = n, method = "spearman")$estimate)
+    } else{
+      b[i] <- (cor.test(x = x[, i], y = n, method = "pearson")$estimate)
+    }
+  return(b) }
+
+corr_smart <- as.data.frame(smart.corr.test(ds[,-1], n = target)) # n - vector with target feature
+colnames(corr_smart) <- "corr"
+corr_th <- subset(corr_smart, abs(corr_smart$corr) > th_cor)
+corr_f <- rownames(corr_th) # features
+
+###############################################
+############################################### COMBINE ALL RESULTS BY INTERSECTION OR REMAINING ALL UNIQUE VALUES
+############################################### 
+
+# intersect
+combine <- Reduce(intersect, list(roc, uvf, lim_pval, fc, vip_pls)) # or use tuple package all => (rfe, sfs, roc, fc, uvf, lm, lmm, corr, lim_pval, pval_ttest, pval_kw, ruv2_pval, vip_pls, rf_perm_f, corr_f, penal_f, step_f)
+# all unique
+combine <- unique(c(sfs, combine)) # or use tuple package all => (rfe, sfs, roc, fc, uvf, lm, lmm, corr, lim_pval, pval_ttest, pval_kw, ruv2_pval, vip_pls, rf_perm_f, corr_f, penal_f, step_f)
+# combination
+combine_df <- cbind(Label = ds[,1], ds[,combine])
+fwrite(combine_df, "8 peaks.csv", row.names = T)
+
+###############################################
+############################################### COMBINE WITH ANNOTATION
+############################################### 
+
+setwd("D:/...")
+
+dsa <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))[,-1]
+dsa <- cbind(dsa[,1:4], dsa[,combine])
+fwrite(dsa, "8 peaks.csv", row.names = T)
+
+##############################################################################################################################################################
+# Classification Machine Learning task
+##############################################################################################################################################################
+
+# Content:
+# Load data and installation
+# Data sampling
+# Resampling
+# Fit caret classification and make predictions
+# Fit logistic/penalized classification and make predictions
+# Performance
+# gWQS regression
+# Plot results
+
+###############################################
+############################################### LOAD DATA AND INSTALLATION
+############################################### 
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# PEAK TABLE
+# dataset with intensities, annotation and label column
+ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))
+ds <- ds[-c(1:8),]
+rownames(ds) <- ds[,5]
+ds <- ds[,-c(1,3:5)]
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+# NEW WD FOR STATISTICAL ANALYSIS
+setwd("D:/...")
+
+###############################################
+############################################### DATA SPLITTING
+############################################### 
+
+library(caret)
+
+# split data into train and validation with balanced class 
+set.seed(1234) 
+trainIndex <- createDataPartition(ds$Label, p = 0.8, list = F, times = 1) # or simple unbalanced splitting: sample(2, length(ds$Label), replace = T, prob=c(0.8, 0.2))
+dsTrain <- ds[ trainIndex,]
+dsValid <- ds[-trainIndex,]
+
+###############################################
+############################################### RESAMPLING
+############################################### 
+
+library(caret)
+
+# repeated cross validation, ROC metric (two class study)
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = T, summaryFunction = twoClassSummary) # or bootstrap: trainControl(method="boot", number=100);
+metric <- "ROC" 
+
+# repeated cross validation, Accuracy metric
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = F) # or bootstrap: trainControl(method="boot", number=100);
+metric <- "Accuracy" 
+
+###############################################
+############################################### FIT CARET CLASSIFICATION AND MAKE PREDICTIONS
+############################################### 
+
+library(caret)
+library(parallel)
+library(doParallel)
+
+# stop parallel
+stopCluster(cl)
+stopImplicitCluster()
+registerDoSEQ()
+
+# start parallel processing
+fc <- as.numeric(detectCores(logical = F))
+cl <- makePSOCKcluster(fc+1)
+registerDoParallel(cl)
+
+# PLS (as example) see http://topepo.github.io/caret/train-models-by-tag.html for other regression algorithm
+set.seed(1234)
+fit.cl <- train(Label~., data=dsTrain, method="pls", metric=metric, trControl=trainControl, tuneLength = 10)
+# model and resampling summary
+results <- resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)$values # see "results" for resampling summary
+# to compare 2 or more models (fit.cl and fit.cl1, for example) 
+summary(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)) # summary(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)) or summary(diff(resamples(list(m=fit.cl, m1=fit.cl), trControl = trainControl, metric=metric)))
+# model info
+print(fit.cl)
+# make predictions on the validation dataset
+predicted.classes <- predict(fit.cl, newdata=dsValid)
+
+###############################################
+############################################### FIT LOGISTIC/PENALIZED CLASSIFICATION AND MAKE PREDICTIONS
+############################################### 
+
+#################################### Logistic
+
+library(dplyr)
+
+log_mod <- glm(Label ~ ., data = dsTrain, family = binomial) # for multiclass -> nnet::multinom
+summary(log_mod)
+print(log_mod)
+# make predictions on the validation dataset
+probabilities <- log_mod %>% predict(dsValid, type = "response")
+contrasts(dsValid$Label)
+predicted.classes <- ifelse(probabilities > 0.5, "TG", "CG") # adjust to your data
+
+#################################### Logistic Stepwise
+
+library(dplyr)
+library(MASS)
+
+log_step_mod <- glm(Label ~ ., data = dsTrain, family = binomial) %>% stepAIC(trace = F, direction = "both")
+summary(log_step_mod)
+print(log_step_mod)
+# make predictions on the validation dataset
+probabilities <- log_step_mod %>% predict(dsValid, type = "response")
+contrasts(dsValid$Label)
+predicted.classes <- ifelse(probabilities > 0.5, "TG", "CG") # adjust to your data
+
+#################################### Penalized
+
+library(glmnet)
+library(dplyr)
+
+# predictor variables
+x <- model.matrix(Label~., dsTrain)[,-1]
+# outcome (Label) to a numerical variable
+y <- ifelse(dsTrain$Label == "TG", 1, 0) # set class for target -> "TG"
+
+# perform
+
+# alpha: the elasticnet mixing parameter. Allowed values include:
+# "1": for lasso regression
+# "0": for ridge regression
+# a value between 0 and 1 for elastic net regression
+set.seed(1234) 
+alpha <- 0.5 # set type of penalized regression
+cv.penal <- cv.glmnet(x, y, alpha = alpha, family = "binomial", nfolds = 10, type.measure="auc") # adjust type.measure for your data
+# plot(cv.penal)
+
+# Final model with optimal lambda
+
+# lambda = cv.penal$lambda.1se or lambda = cv.penal$lambda.min
+# lambda = lambda.1se produces a simpler model compared to lambda.min, but the model might be a little bit less accurate than the one obtained with lambda.min
+penal.model <- glmnet(x, y, alpha = alpha, family = "binomial", lambda = cv.penal$lambda.min)
+summary(penal.model)
+print(penal.model)
+coef_glm <- as.matrix(coef(penal.model)) # coefficients of regression
+fs_glm <- subset(coef_glm[-1,], coef_glm[-1,] != 0) # selected variables
+names(fs_glm) # variable names
+# make predictions on the validation dataset
+x.test <- model.matrix(Label ~., dsValid)[,-1]
+probabilities <- penal.model %>% predict(newx = x.test, type = "response")
+predicted.classes <- ifelse(probabilities > 0.5, "TG", "CG") # adjust to your data
+
+###############################################
+############################################### PERFORMANCE
+###############################################
+
+library(caret)
+library(pROC)
+
+# Confusion Matrix
+confusionMatrix(predicted.classes, dsValid$Label) # confusionMatrix(as.factor(predicted.classes), as.factor(dsValid$Label)) or confusionMatrix(predicted.classes, dsValid$Label)
+
+# ROC curve
+res.roc <- roc(as.numeric(predicted.classes), as.numeric(dsValid$Label)) # roc(as.numeric(predicted.classes), as.numeric(dsValid$Label)) or roc(as.numeric(as.factor(predicted.classes)), as.numeric(dsValid$Label))
+plot.roc(res.roc, print.auc = TRUE) # for compute only AUC: auc(res.roc)
+
+###############################################
+############################################### gWQS REGRESSION
+###############################################
+
+library(gWQS)
+library(caret)
+library(pROC)
+
+# generate data
+meta <- cbind(Order = order, meta)
+ds <- cbind(Label = ds$Label, meta, ds[,-1])
+ds$Label <- as.numeric(ds$Label) # factors to numeric
+
+# split data into train and validation with balanced class 
+set.seed(1234) 
+trainIndex <- createDataPartition(ds$Label, p = 0.8, list = F, times = 1) # or simple unbalanced splitting: sample(2, length(ds$Label), replace = T, prob=c(0.8, 0.2))
+dsTrain <- ds[ trainIndex,]
+dsValid <- ds[-trainIndex,]
+
+# perform
+formula <- names(ds)[-c(1:6)] # adjust to your data
+results <- gwqs(Label ~ wqs, mix_name = formula, data = dsTrain, 
+                q = 10, validation = 0.8, b = 50, b1_pos = F,  # adjust to your data
+                b1_constr = F, family = "gaussian", seed = 1234)
+
+# summary
+summary(results)
+
+# performance
+predictions <- predict(results, newdata = dsValid)
+predictions <- round(predictions$df_pred$ypred,0)
+confusionMatrix(as.factor(predictions), as.factor(dsValid$Label))
+
+# visualization
+# bar plot
+gwqs_barplot(results)
+# scatter plot y vs wqs
+gwqs_scatterplot(results)
+# scatter plot residuals vs fitted values
+gwqs_fitted_vs_resid(results)
+# ROC plot
+res.roc <- roc(as.numeric(predictions), as.numeric(dsValid$Label))
+plot.roc(res.roc, print.auc = TRUE)
+
+###############################################
+############################################### PLOT RESULTS
+###############################################
+
+library(reshape2)
+library(ggplot2)
+
+df.m <- melt(ds, id.var = "Label") # reshape data frame
+
+p <- ggplot(data = df.m, aes(x=variable, y=value)) + xlab("") + ylab("") +
+  geom_boxplot(aes(fill=Label)) + theme(legend.position="bottom") + theme_classic() + scale_x_discrete(labels=c("")) 
+
+pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legend.position="bottom") 
+
+# pp
+
+##############################################################################################################################################################
+# Regression Machine Learning task
+##############################################################################################################################################################
+
+# Content:
+# Load data and installation
+# Data sampling
+# Resampling
+# Fit caret regression and make predictions
+# Performance
+# Stepwise regression
+# Penalized regression
+# gWQS regression
+# Plot results
+
+###############################################
+############################################### LOAD DATA AND INSTALLATION
+############################################### 
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+# ds$Label should be numeric: 
+ds$Label <- c(1:nrow(ds)) # toy example
+
+# PEAK TABLE
+# dataset with intensities, annotation and label column
+ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))
+ds <- ds[-c(1:8),]
+rownames(ds) <- ds[,5]
+ds <- ds[,-c(1,3:5)]
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+# ds$Label should be numeric: 
+ds$Label <- c(1:nrow(ds)) # toy example
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+###############################################
+############################################### DATA SPLITTING
+############################################### 
+
+library(caret)
+
+# split data into train and validation with balanced class 
+set.seed(1234) 
+trainIndex <- createDataPartition(ds$Label, p = 0.8, list = F, times = 1) # or simple unbalanced splitting: sample(2, length(ds$Label), replace = T, prob=c(0.8, 0.2))
+dsTrain <- ds[ trainIndex,]
+dsValid <- ds[-trainIndex,]
+
+###############################################
+############################################### RESAMPLING
+############################################### 
+
+library(caret)
+
+# repeated cross validation
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10) # or bootstrap: trainControl(method="boot", number=100)
+metric <- "RMSE" # RMSE or MAE or Rsquared
+
+###############################################
+############################################### FIT CARET REGRESSION AND MAKE PREDICTIONS
+############################################### 
+
+library(caret)
+library(parallel)
+library(doParallel)
+
+# stop parallel
+stopCluster(cl)
+stopImplicitCluster()
+registerDoSEQ()
+
+# start parallel processing
+fc <- as.numeric(detectCores(logical = F))
+cl <- makePSOCKcluster(fc+1)
+registerDoParallel(cl)
+
+# LM (as example) see http://topepo.github.io/caret/train-models-by-tag.html for other regression algorithm
+set.seed(1234)
+fit.regr <- train(Label~ ., data=dsTrain, method="lm", metric=metric, trControl=trainControl, tuneLength = 10)
+# model summary
+summary(fit.regr)
+print(fit.regr)
+# make predictions on the validation dataset
+predictions <- predict(fit.regr, newdata=dsValid)
+
+###############################################
+############################################### PERFORMANCE
+###############################################
+
+library(caret)
+
+# Quality metrics
+rmse <- caret::RMSE(predictions, dsValid$Label)
+r2 <- caret::R2(predictions, dsValid$Label)
+mae <- caret::MAE(predictions, dsValid$Label)
+tbl_regr <- c("RMSE" = rmse, "R2" = r2, "MAE" = mae)
+tbl_regr
+
+###############################################
+############################################### STEPWISE REGRESSION
+###############################################
+
+library(leaps)
+library(MASS)
+library(caret)
+library(parallel)
+library(doParallel)
+
+# Label should be numeric: 
+ds$Label <- as.numeric(ds$Label)
+dsTrain$Label <- as.numeric(dsTrain$Label)
+dsValid$Label <- as.numeric(dsValid$Label)
+
+# Full model
+full_m <- lm(Label~ ., data=dsTrain)
+
+#################################### Stepwise regression by MASS
+step.model <- stepAIC(full_m, direction = "both", trace = F)
+summary(step.model)
+# print coefficients of selected model
+coef(step.model)
+
+# predictions
+predictions <- step.model %>% predict(dsValid)
+
+#################################### Stepwise regression by leaps
+models_ss <- regsubsets(Label~ ., data=dsTrain, nvmax = ncol(dsTrain[,-1]),  method = "seqrep") # adjust nvmax, method=c("exhaustive","backward", "forward", "seqrep")
+summary(models_ss)
+res_sum <- summary(models_ss)
+# print Adj.R2, CP and BIC stats for every model ID
+data.frame(Adj.R2 = which.max(res_sum$adjr2), 
+           CP = which.max(res_sum$cp),
+           BIC = which.max(res_sum$bic))
+# print coefficients of selected model
+coefs <- coef(models_ss, 2) # enter selected model ID
+coefs
+
+# predict
+valid.mat = model.matrix(Label ~ ., data = dsValid)
+predictions <- valid.mat[, names(coefs)]%*%coefs
+
+#################################### Stepwise regression by caret
+# stop parallel
+stopCluster(cl)
+stopImplicitCluster()
+registerDoSEQ()
+
+# start parallel processing
+fc <- as.numeric(detectCores(logical = F))
+cl <- makePSOCKcluster(fc+1)
+registerDoParallel(cl)
+
+# repeated cross validation
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10) # or bootstrap: trainControl(method="boot", number=100)
+metric <- "RMSE" # RMSE or MAE or Rsquared
+
+# see http://topepo.github.io/caret/train-models-by-tag.html for other regression algorithm
+set.seed(1234)
+fit.regr <- train(Label~ ., data=dsTrain, method="lmStepAIC", metric=metric, trControl=trainControl, tuneLength = 5) # leapBackward or leapSeq or leapForward or lmStepAIC, adjust tuneLength to your data
+
+# results 
+fit.regr$results
+fit.regr$bestTune
+summary(fit.regr)
+print(fit.regr)
+# print variables names for results of best tune for leaps methods only!
+results_leaps <- as.data.frame(summary(fit.regr)$which)
+colnames(results_leaps)[which(results_leaps[as.numeric(fit.regr$bestTune),] == T)]
+# print coefficients and variable names for results of best tune for MASS method only!
+summary(fit.regr)$coefficients
+
+# predictions
+predictions <- fit.regr %>% predict(dsValid)
+
+###############################################
+############################################### PENALIZED REGRESSION
+############################################### 
+
+library(glmnet)
+library(dplyr)
+
+# predictor variables
+x <- model.matrix(Label~., dsTrain)[,-1]
+# outcome (Label) to a numerical variable
+y <- as.numeric(dsTrain$Label)
+
+# perform
+
+# alpha: the elasticnet mixing parameter. Allowed values include:
+# "1": for lasso regression
+# "0": for ridge regression
+# a value between 0 and 1 for elastic net regression
+set.seed(1234) 
+alpha <- 0.5 # set type of penalized regression
+cv.penal <- cv.glmnet(x, y, alpha = alpha, nfolds = 10, type.measure="mse") # adjust type.measure for your data
+# plot(cv.penal)
+
+# Final model with optimal lambda
+
+# lambda = cv.penal$lambda.1se or lambda = cv.penal$lambda.min
+# lambda = lambda.1se produces a simpler model compared to lambda.min, but the model might be a little bit less accurate than the one obtained with lambda.min
+penal.model <- glmnet(x, y, alpha = alpha, lambda = cv.penal$lambda.min)
+summary(penal.model)
+print(penal.model)
+coef_glm <- as.matrix(coef(penal.model)) # coefficients of regression
+fs_glm <- subset(coef_glm[-1,], coef_glm[-1,] != 0) # selected variables
+names(fs_glm) # variable names
+# make predictions on the validation dataset
+x.test <- model.matrix(Label ~., dsValid)[,-1]
+predictions <- penal.model %>% predict(newx = x.test)
+
+###############################################
+############################################### gWQS REGRESSION
+###############################################
+
+library(gWQS)
+library(caret)
+
+# generate data
+meta <- cbind(Order = order, meta)
+ds <- cbind(Label = ds$Label, meta, ds[,-1])
+
+# split data into train and validation with balanced class 
+set.seed(1234) 
+trainIndex <- createDataPartition(ds$Label, p = 0.8, list = F, times = 1) # or simple unbalanced splitting: sample(2, length(ds$Label), replace = T, prob=c(0.8, 0.2))
+dsTrain <- ds[ trainIndex,]
+dsValid <- ds[-trainIndex,]
+
+# perform
+formula <- names(ds)[-c(1:6)] # adjust to your data
+results <- gwqs(Label ~ wqs, mix_name = formula, data = dsTrain, 
+                q = 10, validation = 0.8, b = 10, b1_pos = T,  # adjust to your data
+                b1_constr = F, family = "gaussian", seed = 1234)
+
+# summary
+summary(results)
+
+# performance
+predictions <- predict(results, newdata = dsValid)
+predictions <- predictions$df_pred$ypred
+rmse <- caret::RMSE(predictions, dsValid$Label)
+r2 <- caret::R2(predictions, dsValid$Label)
+mae <- caret::MAE(predictions, dsValid$Label)
+tbl_regr <- c("RMSE" = rmse, "R2" = r2, "MAE" = mae)
+tbl_regr
+
+# visualization
+# bar plot
+gwqs_barplot(results)
+# scatter plot y vs wqs
+gwqs_scatterplot(results)
+# scatter plot residuals vs fitted values
+gwqs_fitted_vs_resid(results)
+
+###############################################
+############################################### PLOT RESULTS
+###############################################
+
+# plot original values versus predicted
+x <- 1:length(dsValid$Label)
+plot(x, dsValid$Label, col = "red", type = "l", lwd=2,
+     main = "", xlab = "Observations", ylab = "Values")
+lines(x, predictions, col = "blue", lwd=2)
+legend("top",  legend = c("original", "predicted"), 
+       fill = c("red", "blue"), col = 2:3,  adj = c(0, 0.6))
+
+##############################################################################################################################################################
+# Testing set of biomarkers
+##############################################################################################################################################################
+
+# Content:
+# Load data and installation
+# Plot results
+# MANOVA
+# PERMANOVA
+# Moderated t-test
+# Fold Change Calculation
+# Comparing Means
+
+###############################################
+############################################### LOAD DATA AND INSTALLATION
+############################################### 
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+###############################################
+############################################### PLOT RESULTS
+###############################################
+
+library(reshape2)
+library(ggplot2)
+
+#################################### box plots / violin plots
+df.m <- melt(ds, id.var = "Label") # reshape data frame
+
+p <- ggplot(data = df.m, aes(x=variable, y=value)) + xlab("") + ylab("") +
+  geom_boxplot(aes(fill=Label)) + theme(legend.position="bottom") + theme_classic() + scale_x_discrete(labels=c("")) 
+
+# try also: geom_boxplot or geom_violin
+
+pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legend.position="bottom") 
+
+# pp
+
+#################################### scatter plots
+
+ds1 <- as.data.frame(cbind(Patient = rownames(ds), ds))
+df.m <- melt(ds, id.var = "Label")
+df.m <- cbind(1:nrow(df.m), df.m)
+colnames(df.m)[1] <- "Patient"
+p <- ggplot(data = df.m, aes(x=Patient, y=value)) + xlab("") + ylab("") +
+  geom_point(aes(colour=Label)) + theme(legend.position="bottom") + theme_classic() + scale_x_discrete(labels=c("")) + geom_smooth(method = "lm") # or method = "loess" or no geom_smooth
+
+pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legend.position="bottom") 
+
+# pp
+# or pairs(ds[,-1]) or psych::pairs.panels(ds[,-1], method = "pearson", hist.col = "#00AFBB",density = T, ellipses = T )
+
+#################################### box plots / violin plots for 2 group variables
+
+Sex <- as.factor(meta$Sex) # name and select factor from metadata
+ds2 <- cbind(Sex, ds) 
+df.m2 <- melt(ds2, id.var = c("Label", "Sex"))
+
+p <- ggplot(data = df.m2, aes(x=variable, y=value)) + xlab("") + ylab("") +
+  geom_boxplot(aes(fill = Label, linetype = Sex)) + theme(legend.position="bottom") + theme_classic() + scale_x_discrete(labels=c("")) 
+
+# try also: geom_boxplot or geom_violin
+
+pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legend.position="bottom") 
+# pp
+
+###############################################
+############################################### MANOVA
+###############################################
+
+mnv <- sapply(2:ncol(ds), function(y) cbind(ds[,y]))
+res.man <- manova(mnv ~ Label, data = ds) # adjust to data
+summary(res.man)
+summary.aov(res.man)
+
+###############################################
+############################################### PERMANOVA
+###############################################
+
+library(vegan)
+library(pairwiseAdonis)
+
+pmnv <- ds[,-1]
+res.perman <- adonis(pmnv ~ Label, data = ds, method = "euclidean", permutations = 1000) # perform PERMANOVA
+res.perman
+res.perman.ph <- pairwise.adonis(x = ds[,-1], factors = ds$Label, p.adjust.m = "BH", perm = 1000) # perform PERMANOVA with multilevel comparison
+res.perman.ph
+
+###############################################
+############################################### MODERATED T-TEST
+###############################################
+
+library(limma)
+
+mdl_mtrx <- model.matrix(~Label, ds)
+lmf <- lmFit(t(ds[,-1]), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
+efit <- eBayes(lmf)
+tableTop <- topTable(efit, coef = 2, adjust = "BH", p.value = 0.05, number = ncol(ds))
+
+############################################### 
+############################################### FOLD CHANGE CALCULATION
+###############################################
+
+library(dplyr)
+
+# transform data into log2 base
+ds_log <- as.data.frame(log2(ds[,-1]))
+ds_log <- cbind(Label = ds[,1], ds_log)
+
+#calculate the mean of each feature per group
+FOLD.CHANGE <- function(data) {
+  ds_log_subsets <- lapply(1:length(unique(data[,1])), function(y) filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
+  mean_r_l <- lapply(1:length(ds_log_subsets), function(y) apply(ds_log_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
+  foldchange <- abs(mean_r_l[[1]] - mean_r_l[[2]])
+  fc_res <- as.data.frame(foldchange)
+  return(fc_res)
+}
+
+fc_res <- FOLD.CHANGE(ds_log)
+
+################################################### Multigroup Fold Change
+
+library(structToolbox)
+
+D1 <- DatasetExperiment(data = data.frame(ds[,-1]),
+                        sample_meta = data.frame(Label = ds$Label),
+                        variable_meta = data.frame(colnames(ds[,-1])))
+M1 = fold_change(factor_name="Label", alpha = 0.05, threshold = 2)
+M2 = model_apply(M1,D1)
+fdr <- M2@fold_change@value
+fdr
+fdt_tr <- 1.0
+f <- as.data.frame(apply(fdr, 1, function(x) x> fdt_tr | x< -fdt_tr))
+f1 <- as.data.frame(which(f == T, arr.ind = T))
+colnames(f) <- colnames(ds[,-1])
+fc <- colnames(f)[unique(f1$col)]
+detach("package:structToolbox", unload = TRUE)
+
+############################################### 
+############################################### COMPARING MEANS 
+###############################################
+
+#################################### t-test
+
+# prepare data
+data_l <- lapply(1:length(unique(ds$Label)), function(y) subset(ds, Label==unique(ds$Label)[y])[,-1])
+data_l <- lapply(1:length(data_l), function(y) sapply(data_l[[y]], as.numeric))
+# perform
+res.t.test <- lapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # t-test
+res.t.test.pval <- sapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)
+p_adj <-p.adjust(res.t.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
+
+#################################### Wilcoxon test
+
+# prepare data
+data_l <- lapply(1:length(unique(ds$Label)), function(y) subset(ds, Label==unique(ds$Label)[y])[,-1])
+data_l <- lapply(1:length(data_l), function(y) sapply(data_l[[y]], as.numeric))
+# perform
+res.w.test <- lapply(1:ncol(data_l[[1]]), function(y) wilcox.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # wilcox test
+res.w.test.pval <- sapply(1:ncol(data_l[[1]]), function(y) wilcox.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)
+p_adj <-p.adjust(res.w.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
+
+#################################### Kruskal-Wallis test
+
+# perform
+res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # kruskal test
+res.kw.test.pval <- sapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])$p.value)
+p_adj <-p.adjust(res.kw.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
+
+#################################### Two-way ANOVA
+
+# prepare data
+dat <- cbind(sex = as.factor(meta$Sex), ds) # adjust to your data
+# perform
+res.anova <- lapply(3:ncol(dat), function(y) aov(dat[,y] ~ sex*Label, data = my_data)) # adjust to your data
+res.anova.sum <- lapply(3:ncol(dat), function(y) summary(aov(dat[,y] ~ sex*Label, data = my_data)))
+p_adj <- lapply(1:length(res.anova), function(y) TukeyHSD(res.anova[[y]], which = "Label")) # Adjust P-values for Multiple Comparisons
+
+#################################### One-Way ANOVA with automatic detection for normality and homogeneity, returns only adjusted p-value 
+
+# if some error in Shapiro normality test:
+# use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
+# library(cwhmisc)
+# norm.test <- apply(xx, 2, function(t) cwhmisc::shapiro.wilk.test(t)$p)
+
+uva <- function(x, p.adjust = "BH"){
+  
+  norm_homog_tests <- function(x) {
+    xx <- x[,-1]
+    # normality test
+    norm.test <- apply(xx, 2, function(t) shapiro.test(t)$p.value)
+    # if some error in Shapiro normality test:
+    # use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
+    # library(cwhmisc)
+    # norm.test <- apply(xx, 2, function(t) cwhmisc::shapiro.wilk.test(t)$p)
+    
+    # homogeneity test
+    homog.test <- apply(xx, 2, function(t) bartlett.test(t,g = x[,1])$p.value)
+    return(as.data.frame(cbind(norm.test, homog.test)))}
+  
+  res_tests <- norm_homog_tests(x)
+  
+  
+  wilcox_test <- function(x,y) {
+    xx <- x[,-1]
+    wx.t <- as.vector(which(y[,1] < 0.05))
+    wilcox_test <- list()
+    ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    names(wilcox_test) <- (colnames(x)[-1])[wx.t]
+    return(as.list(wilcox_test))}
+  
+  wx.t.res <- wilcox_test(x, res_tests)
+  
+  
+  welch_test <- function(x,y) {
+    xx <- x[,-1]
+    wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
+    welch_test <- list()
+    ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    names(welch_test) <- (colnames(x)[-1])[wl.t]
+    return(as.list(welch_test))}
+  
+  wl.t.res <- welch_test(x, res_tests)
+  
+  
+  student_test <- function(x,y) {
+    xx <- x[,-1]
+    st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
+    student_test <- list()
+    ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    names(student_test) <- (colnames(x)[-1])[st.t]
+    return(as.list(student_test))}
+  
+  st.t.res <- student_test(x, res_tests)
+  
+  return(list(wilcox_test = wx.t.res, welch_test = wl.t.res, student_test = st.t.res))
+}
+
+# 1 st argument -> dataset with 1st "Label" column, 2nd -> the method of adjustment for multiple comparisons.
+ds_uva <- uva(ds, p.adjust = "BH")
+
+##############################################################################################################################################################
+# MWAS/ANCOVA
+##############################################################################################################################################################
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+############################################### 
+############################################### MWAS/ANCOVA LM MODELLING
+###############################################
+
+library(MetabolomicsBasics)
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+
+# perform
+model <- MetaboliteANOVA(dat=dat, sam=s_d, model="Batch+Class+Age+Sex") # "Batch+Class+Age+Sex" or "Batch+Class+Age+Sex+Order"
+model
+
+################################################### other type of LM modelling
+
+library(multcomp)
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+ds_ancova <- as.data.frame(cbind(s_d, dat))
+
+# perform
+n_start <- 7 # adjust to your data
+ancova <- lapply(n_start:ncol(ds_ancova), function(y) aov(ds_ancova[,y]~ Batch+Class+Age+Sex, ds_ancova)) # adjust formula to your data
+sum_ancova <- lapply(1:length(ancova), function(y) summary(ancova[[y]]))
+sum_ancova
+res_ancova <- lapply(1:length(ancova), function(y) summary(glht(ancova[[y]], linfct = mcp(Class = "Tukey")))) # adjust formula to your data
+res_ancova
+
+############################################### 
+############################################### MWAS/ANCOVA LMM MODELLING
+###############################################
+
+library(lme4)
+library(lmerTest)
+
+# data
+dat <- cbind(meta, ds)
+n_meta <- 5 # adjust to your data
+colnames(dat)[-c(1:n_meta)] <- paste0("X", c(1:ncol(dat))) # adjust to your data
+dat$Batch <- as.factor(dat$Batch)
+dat$Age <- as.integer(dat$Age)
+dat$Sex <- as.integer(dat$Sex)
+dat$Label <- as.factor(dat$Label)
+
+# perform
+n_start <- 6 # adjust to your data
+lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data
+lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
+lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
+dat2 <- cbind(meta, ds)
+rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
+colnames(lmm_fit_pval_all_df)[2:4] <- c("Class", "Sex", "Age") # adjust to your data
+
+##############################################################################################################################################################
+# N-Factor Analysis
+##############################################################################################################################################################
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+############################################### 
+############################################### LM, LMM modelling
+###############################################
+
+# see "MWAS/ANCOVA" for LM and LMM modelling 
+
+############################################### 
+############################################### ASCA
+###############################################
+
+library(MetStaT)
+
+# data
+dat <- as.matrix(ds[,-1])
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+factors <- cbind(as.numeric(s_d$Class),as.numeric(s_d$Sex)) # adjust to your data
+
+# perform
+ASCA <- ASCA.Calculate(dat, factors, scaling = F)
+ASCA.Plot(ASCA)
+ASCA.DoPermutationTest(ASCA, perm = 500)
+
+##############################################################################################################################################################
+# Repeated Measures
+##############################################################################################################################################################
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+############################################### 
+############################################### LM MODELLING
+###############################################
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+ds_rep <- as.data.frame(cbind(s_d, dat))
+id <- as.numeric(stringr::str_remove(ds_rep$Batch, "b")) # define repeats -> sample id, this is just toy example
+ds_rep <- as.data.frame(cbind(id = id, ds_rep))
+
+# perform
+n_start <- 8 # adjust to your data
+rep_aov <- lapply(n_start:ncol(ds_rep), function(y) aov(ds_rep[,y]~ Class+Age+Sex+Error(id), ds_rep)) # adjust formula to your data, Error(id) -> for repeated measures
+sum_rep_aov <- lapply(1:length(rep_aov), function(y) summary(rep_aov[[y]]))
+sum_rep_aov
+
+############################################### 
+############################################### LMM MODELLING
+###############################################
+
+library(lme4)
+library(lmerTest)
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+ds_rep <- as.data.frame(cbind(s_d, dat))
+id <- as.numeric(stringr::str_remove(ds_rep$Batch, "b")) # define repeats -> sample id. This just example
+ds_rep <- as.data.frame(cbind(id = id, ds_rep))
+
+# perform
+n_start <- 8 # adjust to your data
+lmm_fit <- lapply(n_start:ncol(ds_rep), function(x) lmer(ds_rep[,x] ~ Class + Sex + Age + (1|id), ds_rep)) # adjust to your data
+lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
+lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
+rownames(lmm_fit_pval_all_df) <- colnames(dat)
+lmm_fit_pval_all_df
+
+############################################### 
+############################################### multilevel sPLS for repeated measure
+###############################################
+
+library(mixOmics)
+
+# data
+dat <- as.matrix(ds[,-1])
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+Y <- data.frame(Class = as.factor(s_d$Class), Sex = as.factor(s_d$Sex)) # adjust to your data
+id <- as.numeric(stringr::str_remove(s_d$Batch, "b")) # define repeats -> sample id. This just example
+
+################################################### Two factor analysis
+
+splsda.multilevel <- splsda(X=dat,
+                            Y = Y, 
+                            multilevel = id, # use for repeated measure
+                            ncomp = 3) # adjust to your data
+
+splsda.multilevel
+
+plotIndiv(splsda.multilevel, ind.names = id, group = as.factor(s_d$Class))
+
+tune.splsda <- tune.splsda(X=dat, Y=Y, 
+                              ncomp=3, # adjust to your data
+                              multilevel = id, # use for repeated measure 
+                              dist = 'mahalanobis.dist',
+                              validation = 'Mfold', folds = 10, nrepeat = 5, # adjust to your data
+                              test.keepX = c(1:ncol(dat)),
+                              progressBar = T)
+
+tune.splsda
+
+################################################### One factor analysis
+
+splsda.multilevel <- splsda(X=dat,
+                            Y = as.factor(s_d$Class), 
+                            multilevel = id, # use for repeated measure
+                            ncomp = 3) # adjust to your data
+
+splsda.multilevel
+
+plotIndiv(splsda.multilevel, ind.names = id, group = as.factor(s_d$Class))
+
+tune.splsda <- tune.splsda(X=dat, Y=as.factor(s_d$Class),
+                           ncomp=3, # adjust to your data
+                           multilevel = id, # use for repeated measure 
+                           dist = 'mahalanobis.dist',
+                           validation = 'Mfold', folds = 10, nrepeat = 5, # adjust to your data
+                           test.keepX = c(1:ncol(dat)),
+                           progressBar = T)
+
+tune.splsda
+
+tune.splsda$choice.ncomp
+tune.splsda$choice.keepX
+plot(tune.splsda)
+
+##############################################################################################################################################################
+# Time series
+##############################################################################################################################################################
+
+# setup environment
+library(data.table)
+setwd("D:/...")
+
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+setwd("D:/...")
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+############################################### 
+############################################### LM, LMM modelling
+###############################################
+
+# see "MWAS/ANCOVA" for LM and LMM modelling 
+
+############################################### 
+############################################### ASCA
+###############################################
+
+# see "N-Factor Analysis" for ASCA
+
+############################################### 
+############################################### Multivariate Empirical Bayes Statistics
+###############################################
+
+library(timecourse)
+
+# data
+dat <- as.matrix(ds[,-1])
+s_d <- cbind(Class = ds$Label, Order = order, meta)
+ds_tc <- as.data.frame(cbind(s_d, dat))
+ds_tc <- ds_tc[order(ds_tc$Class, decreasing = F),] # order by group variable
+dat <- t(ds_tc[,-c(1:ncol(s_d))])
+tp <- 4 # define time point, this is just toy example
+assay <- rep(c(1:(ncol(dat)/tp)), each = tp) # define repeats -> sample id, this is just toy example. This 4 time points and 31 repeats
+trt <- s_d$Class
+l <- levels(as.factor(trt))
+reps <- sapply(1:length(l), function(y) length(trt[trt==l[y]])/tp)
+
+################################################### with condition group
+size <- matrix(reps, nrow=nrow(dat), ncol=length(l), byrow=T)
+long <- mb.long(dat, method="2", times=tp, reps=size, rep.grp=assay, condition.grp=trt)
+ht2 <- long$HotellingT2 # Hotelling T2
+
+plotProfile(long, type="b", ranking = 1) # plot 1 feature by rank
+names <- as.character(1:nrow(dat))
+plotProfile(long, gid="8", type="b", gnames=names)
+
+################################################### no condition group
+size <- matrix(length(unique(assay)), nrow=nrow(dat), ncol=1, byrow=T)
+long <- mb.long(dat, method="1", times=tp, reps=size, rep.grp=assay)
+ht2 <- as.data.frame(long$HotellingT2) # Hotelling T2
+
+# plot
+plotProfile(long, type="b", ranking = 1) # plot 1 feature by rank
+names <- as.character(1:nrow(dat))
+plotProfile(long, gid="8", type="b", gnames=names)
+
+##############################################################################################################################################################
+# Unsupervised Data Projection
+##############################################################################################################################################################
+
+# Content:
+# PCA
+# HCA
+# KM
+# HCA on PCA
+# Heatmap
+# t-SNE
+# Validation Clustering
+
+# LOAD DATA
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# PEAK TABLE
+# dataset with intensities, annotation and label column
+ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))
+ds <- ds[-c(1:8),]
+rownames(ds) <- ds[,5]
+ds <- ds[,-c(1,3:5)]
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# METADATA
+meta <- as.data.frame(fread(input = "metadata.csv", header=T))
+rownames(meta) <- meta[,5]
+order <- meta[,2]
+meta <- meta[,c(3,8:10)]
+colnames(meta) <- c("Batch", "Creatinine", "Age", "Sex")
+# check identical rownames between peak table and metadata
+identical(rownames(ds), rownames(meta))
+
+# Settings for projection
+library(factoextra)
+library(FactoMineR)
+library(dendextend)
+library(rafalib)
+library(RSEIS)
+library(ggsci)
+library(pheatmap)
+library(Rtsne)
+library(NbClust)
+library(clustertend)
+library(mclust)
+library(clValid)
+library(fpc)
+library(pvclust)
+library(parallel)
+library(doParallel)
+
+# dataset
+base1 <- ds # dataset
+mtrx1 <- ds[,-1] # numeric data
+grp1 <- as.character(base1[,1]) # label of dataset
+
+###############################################
+############################################### PRINCIPAL COMPONENT ANALYSIS
+############################################### 
+
+palette_pca <- pal_gsea("default", n = length(unique(grp1)), alpha = 0.6, reverse = T)(length(unique(grp1))) # color: "lancet" or "category20" or pal_gsea("default", n = length(unique(grp1)), alpha = 0.6, reverse = T)(length(unique(grp1)))
+# palette_pca <- JGRAY(length(unique(grp1))) # grey
+
+pca.ds1 <- PCA(mtrx1, scale.unit = T, graph = FALSE)
+pca <- fviz_pca_ind(pca.ds1,
+                    title = "",
+                    geom.ind = "point", # show points only 
+                    col.ind = grp1, # color by groups
+                    palette = palette_pca, # color "jco" gray JGRAY(length(unique(grp1)))
+                    addEllipses = T, # Concentration ellipses
+                    legend.title = "Groups")
+pca # add: "+scale_shape_manual(values=rep(0:length(unique(grp1))))" if shape palette error 
+
+###############################################
+############################################### HIERARCHICAL CLUSTER ANALYSIS
+############################################### 
+
+# number of groups
+k <- length(unique(grp1)) # groups in HC
+
+# color
+Cols = function(vec, ord){
+  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec)))
+  return(cols[as.fumeric(vec)[ord]])}
+
+# grey
+#Cols = function(vec, ord){
+# cols = JGRAY(length(unique(vec)))
+# return(cols[as.fumeric(vec)[ord]])}
+
+mtrx1_1 <- mtrx1
+#mtrx1_1 <- data.frame(scale(mtrx1, center = T, scale = T))
+rownames(mtrx1_1) = make.names(grp1, unique=TRUE)
+res.dist1 <- dist(mtrx1_1, method = "manhattan") #{euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+res.hc1 <- hclust(d = res.dist1, method = "ward.D2") #{ward (ward.D), (ward.D2)}, {single}, {complete}, {average}, {mcquitty},{median}, {centroid}
+hca <- fviz_dend(res.hc1, k = k, # Cut in k groups
+                 cex = 0.3, # label size 0.3/0.7
+                 k_colors = unique(Cols(grp1,res.hc1$order)), # "lancet" color "jco" gray JGRAY(k_hc)
+                 color_labels_by_k = F, # color labels by groups
+                 label_cols = Cols(grp1,res.hc1$order),#Cols(ds[,1])[res.hc1$order], #as.fumeric(ds[,1])[res.hc1$order]
+                 rect = T, # Add rectangle around groups
+                 rect_fill = T,
+                 rect_border = unique(Cols(grp1,res.hc1$order)), #"lancet"# color "jco" gray JGRAY(k_hc)
+                 horiz = F,
+                 lwd = 0.3, # lines size 0.3/0.7
+                 show_labels = T,
+                 main = "",
+                 ylab = "")
+hca
+
+########################################### other HCA
+
+# number of groups
+k <- length(unique(grp1)) # groups in HC
+
+# color
+Cols = function(vec, ord){
+  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec)))
+  return(cols[as.fumeric(vec)[ord]])}
+
+# grey
+#Cols = function(vec, ord){
+# cols = JGRAY(length(unique(vec)))
+# return(cols[as.fumeric(vec)[ord]])}
+
+mtrx <- mtrx1
+#mtrx <- data.frame(scale(mtrx1, center = T, scale = T))
+rownames(mtrx) = make.names(grp1, unique=TRUE)
+res.dist1 <- dist(mtrx, method = "manhattan")
+res.hc1 <- hclust(d = res.dist1, method = "ward.D2")
+dend1 <- as.dendrogram(res.hc1, hang =70)
+dend1 <- color_branches(dend1, k=k, groupLabels = F, col =unique(Cols(grp1,res.hc1$order))) 
+labels_colors(dend1) <-Cols(grp1,res.hc1$order)
+dend1 <- assign_values_to_leaves_nodePar(dend1, 0.6, "lab.cex")
+plot(dend1)
+dend1 <- rect.dendrogram(dend1, k=k, border = 1, lty = 1, lwd = 1, col=rgb(0.1, 0.2, 0.4, 0.1))
+legend("topright", legend = unique(grp1), fill = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(grp1))))
+
+###############################################
+############################################### k-MEANS CLUSTERING
+############################################### 
+
+k <- length(unique(grp1)) # groups in KM
+km.res1 <- kmeans(mtrx1, centers = k, nstart = 25)
+fviz_cluster(list(data = mtrx1, cluster = km.res1$cluster), repel = T,
+             ellipse.type = "euclid", geom = "point", stand = FALSE,
+             palette = "jco", ggtheme = theme_classic())
+
+# Hierarchical K-Means Clustering
+res.hk <- hkmeans(mtrx1, k)
+fviz_dend(res.hk, cex = 0.6, palette = "jco",
+          rect = TRUE, rect_border = "jco", rect_fill = TRUE)
+
+###############################################
+############################################### HCA ON PCA
+###############################################
+
+k <- length(unique(grp1)) # groups in HC
+res.pca <- PCA(mtrx1, ncp = 3, graph = F)
+res.hcpc <- HCPC(res.pca, nb.clust = k, graph = F)
+
+fviz_dend(res.hcpc,
+          cex = 0.7, # Label size
+          palette = "jco", # Color palette see ?ggpubr::ggpar
+          rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+          rect_border = "jco", # Rectangle color
+          labels_track_height = 0.8 # Augment the room for labels
+)
+
+fviz_cluster(res.hcpc,
+             repel = TRUE, # Avoid label overlapping
+             show.clust.cent = TRUE, # Show cluster centers
+             palette = "jco", # Color palette see ?ggpubr::ggpar
+             ggtheme = theme_minimal(),
+             main = "PCA")
+
+plot(res.hcpc, choice = "3D.map")
+
+###############################################
+############################################### HEATMAP
+###############################################
+
+# Correlation Distance by sample
+rows.cor <- cor(t(mtrx1), use = "pairwise.complete.obs", method = "pearson") # use any: "pearson", "kendall", "spearman"
+
+# Correlation Distance by feature
+cols.cor <- cor(mtrx1, use = "pairwise.complete.obs", method = "pearson") # use any: "pearson", "kendall", "spearman"
+
+# Plot the heatmap of correlation
+pheatmap(mtrx1, 
+         clustering_distance_cols = as.dist(1 - cols.cor),
+         clustering_distance_rows = as.dist(1 - rows.cor)
+)
+
+# Plot the heatmap by sample
+pheatmap(mtrx1, clustering_rows = T, cluster_cols = F,
+         clustering_distance_rows = "manhattan", clustering_distance_cols	= "manhattan", # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+         clustering_method = "ward.D2") # use any: {ward (ward.D), (ward.D2)}, {single}, {complete}, {average}, {mcquitty},{median}, {centroid}
+
+# Plot the heatmap by feature
+pheatmap(t(mtrx1), clustering_rows = T, cluster_cols = F,
+         clustering_distance_rows = "manhattan", clustering_distance_cols	= "manhattan", # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+         clustering_method = "ward.D2") # use any: {ward (ward.D), (ward.D2)}, {single}, {complete}, {average}, {mcquitty},{median}, {centroid}
+
+###############################################
+############################################### t-DISTRIBUTED STOCHASTIC NEIGHBOR EMBEDDING
+############################################### 
+
+# in Rtsne function matrix or dist(matrix or df) can be used and pca = T or F, perplexity number should be checked
+set.seed(1234)
+ds_ul_tsne <- as.matrix(unique(mtrx1))
+tsne_out <- Rtsne(ds_ul_tsne, pca = T, perplexity = 10)
+Cols = function(vec){
+  cols = rainbow(length(unique(vec)))
+  return(cols[as.numeric(as.factor(vec))])}
+plot(tsne_out$Y, col = Cols(grp1),pch = 19, xlab = "", ylab = "", main = "")
+legend(-20, 20, unique(grp1), col = rainbow(length(unique(grp1))),
+       text.col = "black", pch = c(19), bty = "Y", merge = F, bg = "white")
+
+###############################################
+############################################### VALIDATION CLUSTERING
+###############################################
+
+# "fviz_nbclust" function
+c <- fviz_nbclust(mtrx1, hcut, linecolor = "red", method = "gap_stat", nboot = 100)+ # "silhouette" or "wss" or "gap_stat"
+  labs(subtitle = "")
+c
+
+# "NbClust" function
+nb <- NbClust(mtrx1, distance = "manhattan", diss=NULL, min.nc = 1, max.nc = 20, method = "ward.D2", index ="all") # see index in documentation
+d <- fviz_nbclust(nb)
+
+# hopkins statistics
+set.seed(1234)
+hopkins(mtrx1, n = nrow(mtrx1)-1)
+
+# mclust
+mc <- Mclust(mtrx1) # mclust method
+summary(mc)
+
+mc$modelName # Optimal selected model
+mc$G # Optimal number of cluster
+head(mc$z, 30) # Probality to belong to a given cluster
+head(mc$classification, 30) # Cluster assignement of each observation
+plot(mc, what = "classification")
+
+BIC <- mclustBIC(mtrx1) # mclust method with BIC
+mc <- Mclust(mtrx1, x = BIC, G = 1:20)
+summary(mc)
+
+# clValid
+clmethods <- c("hierarchical","kmeans")
+stab <- clValid(mtrx1, nClust = 2:6, clMethods = clmethods, validation = "stability")
+optimalScores(stab)
+
+# fpc
+k <- length(unique(grp1)) # groups for clusters
+km.res2 <- eclust(mtrx1, "kmeans", k = k, nstart = 25, graph = FALSE)
+hc.res2 <- eclust(mtrx1, "hclust", k = k, hc_metric = "euclidean", hc_method = "ward.D2", graph = FALSE)
+# Silhouette information
+silinfo <- km.res2$silinfo
+names(silinfo)
+# Silhouette widths of each observation
+head(silinfo$widths[, 1:3], 10)
+# Average silhouette width of each cluster
+silinfo$clus.avg.widths
+# The total average (mean of all individual silhouette widths)
+silinfo$avg.width
+# The size of each clusters
+km.res2$size
+# Silhouette width of observation
+sil <- km.res2$silinfo$widths[, 1:3]
+# Objects with negative silhouette
+neg_sil_index <- which(sil[, "sil_width"] < 0)
+sil[neg_sil_index, , drop = F]
+# Dunn index
+km_stats <- cluster.stats(dist(mtrx1), km.res2$cluster)
+km_stats$dunn
+# Compute cluster stats
+species <- as.numeric(as.factor(grp1)) 
+clust_stats <- cluster.stats(d = dist(mtrx1), species, km.res2$cluster)
+# Corrected Rand index
+clust_stats$corrected.rand
+# VI
+clust_stats$vi
+
+# Classification Accuracy by clustering
+misclass <- function(pred, obs) {
+  tbl <- table(pred, obs)
+  sum <- colSums(tbl)
+  dia <- diag(tbl)
+  msc <- (sum - dia)/sum * 100
+  m.m <- mean(msc)
+  cat("Classification table:", "\n")
+  print(tbl)
+  cat("Misclassification errors:", "\n")
+  (round(msc, 1))}
+# for n groups
+k <- length(unique(grp1)) # groups in HC
+res.hc <- eclust(mtrx1, "hclust", k = k, graph = FALSE, hc_metric = "manhattan", hc_method = "ward.D2")
+pred_cl <- cutree(res.hc, k=k)
+for (i in 1:length(unique(pred_cl))) {
+  pred_cl[pred_cl==i] <- as.character(as.data.frame(unique(grp1))[i,1])} # use <- levels(ds_group) or <- as.character(as.data.frame(unique(ds_group))[i,1]) function or as.numeric(as.factor(ds_group)) or as.fumeric(ds_group) function from rafalib package
+misclass(pred_cl, grp1)
+
+# Computing P-value for HCA
+set.seed(1234)
+# start parallel processing
+fc <- as.numeric(detectCores(logical = F))
+cl <- makePSOCKcluster(fc+1)
+registerDoParallel(cl)
+# parallel version of pvclust
+res.pv <- parPvclust(cl, mtrx1, nboot=100)
+plot(res.pv, hang = -1, cex = 0.5)
+pvrect(res.pv)
+clusters <- pvpick(res.pv)
+clusters
+# stop parallel
+stopCluster(cl)
+stopImplicitCluster()
+registerDoSEQ()
+
+##############################################################################################################################################################
+# Correlation analysis
+##############################################################################################################################################################
+
+# LOAD DATA
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# Library
+library(Hmisc)
+library(corrplot)
+library(psych)
+
+# Correlation matrix
+# for features
+corr <- cor(as.matrix(ds[,-1]), method = "spearman") # method: "pearson", "kendall", "spearman"
+corr
+# for samples
+corr <- cor(as.matrix(t(ds[,-1])), method = "spearman") # method: "pearson", "kendall", "spearman"
+corr
+# other type
+res_corr <- rcorr(as.matrix(ds[,-1]), type = "spearman") # type: "pearson", "spearman". For correlation between samples use: as.matrix(t(ds[,-1]))
+res_corr$r # matrix of correlations
+res_corr$P # p values
+
+# Correlograms
+corrplot(corr, diag = F, order = "FPC", tl.pos = "td", tl.cex = 0.5, method = "color", type = "upper")
+
+pairs.panels(ds[,-1], method = "pearson", # correlation method: "pearson","spearman","kendall"
+       hist.col = "#00AFBB",
+       density = T,  # show density plots
+       ellipses = T )# show correlation ellipses
+
+# Auto detect type of correlation for correlation with specific feature
+smart.corr.test <- function(x, n){
+  b <- vector(mode="numeric")
+  res <- apply(x, 2, shapiro.test)
+  for (i in 1:ncol(x)) b[i] = res[[i]]$p.value 
+  names(b) <- colnames(x)
+  for (i in 1:ncol(x))
+    if (b[i] < 0.05) {
+      b[i] <- (cor.test(x = x[, i], y = x[, n], method = "spearman")$estimate)
+    } else{
+      b[i] <- (cor.test(x = x[, i], y = x[, n], method = "pearson")$estimate)
+    }
+  return(b) }
+
+corr.2.f <- as.data.frame(smart.corr.test(ds[,-1], n = 1)) # n - target feature
+corr.2.f
+
+##############################################################################################################################################################
+# Distance analysis
+##############################################################################################################################################################
+
+# LOAD DATA
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# Library
+library(pheatmap)
+
+# Distance by sample
+raw.dist <- dist(ds[,-1], method = "euclidian") # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+
+# Distance by feature
+col.dist <- dist(t(ds[,-1]), method = "euclidian") # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+
+# Correlation Distance by sample
+rows.cor <- cor(t(ds[,-1]), use = "pairwise.complete.obs", method = "pearson") # use any: "pearson", "kendall", "spearman"
+
+# Correlation Distance by feature
+cols.cor <- cor(ds[,-1], use = "pairwise.complete.obs", method = "pearson") # use any: "pearson", "kendall", "spearman"
+
+# Plot the heatmap of correlation
+pheatmap(ds[,-1], 
+  clustering_distance_cols = as.dist(1 - cols.cor),
+  clustering_distance_rows = as.dist(1 - rows.cor))
+
+# Plot the heatmap by sample
+pheatmap(ds[,-1], clustering_rows = T, cluster_cols = F,
+         clustering_distance_rows = "manhattan", clustering_distance_cols	= "manhattan", # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+         clustering_method = "ward.D2") # use any: {ward (ward.D), (ward.D2)}, {single}, {complete}, {average}, {mcquitty},{median}, {centroid}
+
+# Plot the heatmap by feature
+pheatmap(t(ds[,-1]), clustering_rows = T, cluster_cols = F,
+         clustering_distance_rows = "manhattan", clustering_distance_cols	= "manhattan", # use any: {euclidean}, {maximum}, {manhattan}, {canberra}, {binary}, {minkowski}
+         clustering_method = "ward.D2") # use any: {ward (ward.D), (ward.D2)}, {single}, {complete}, {average}, {mcquitty},{median}, {centroid}
+
+##############################################################################################################################################################
+# Sample Size and Power Calculation
+##############################################################################################################################################################
+
+# LOAD DATA
+library(data.table)
+setwd("D:/...")
+
+# PEAK TABLE
+# dataset with intensities and label column only
+ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
+rownames(ds) <- ds[,1]
+ds <- ds[,-1]
+colnames(ds)[1] <-"Label"
+ds[,-1] <- sapply(ds[,-1], as.numeric)
+ds$Label <- as.factor(ds$Label)
+
+# Library
+library(effectsize)
+library(pwr)
+library(ggplot2)
+
+# Effect size
+es <- mean(sapply(2:ncol(ds), function(y) cohens_d(ds[,y], ds[,1])$Cohens_d)) # Cohen's d
+es <- mean(sapply(2:ncol(ds), function(y) hedges_g(ds[,y], ds[,1])$Hedges_g)) # Hedges' g
+
+# Other values
+n <- nrow(ds) # Number of observations
+n1 <- length(which(ds[,1] == unique(ds[,1])[1])) # Number of observations in the 1 sample
+n2 <- length(which(ds[,1] == unique(ds[,1])[2])) # Number of observations in the 2 sample
+
+# Chi squared power calculation
+pwr <- pwr.chisq.test(w = es, df = 2, sig.level = 0.05, power = 0.8) # adjust to your study
+
+# t test power calculation
+pwr <- pwr.t.test(d = es, sig.level = 0.05, power = 0.8, type = "two.sample") # adjust to your study
+pwr <- pwr.t2n.test(n1 = length(which(ds[,1] == unique(ds[,1])[1])), # adjust to your study
+             n2 = length(which(ds[,1] == unique(ds[,1])[2])), sig.level = 0.05, power = 0.8)
+
+# ANOVA power calculation
+pwr <- pwr.anova.test(k = length(unique(ds[,1])), n = nrow(ds)/length(unique(ds[,1])), # adjust to your study
+                sig.level = 0.05, power = 0.8)
+
+# results
+pwr
+
+# plot
+plot(pwr) + theme_minimal()
+
+##############################################################################################################################################################
+# References
+##############################################################################################################################################################
+
+# 1. Li, Shuzhao, ed. Computational Methods and Data Analysis for Metabolomics. Humana Press, 2020.
+# 2. Kuhn, Max, and Kjell Johnson. Applied predictive modeling. Vol. 26. New York: Springer, 2013.
+# 3. James, Gareth, et al. An introduction to statistical learning. Vol. 112. New York: springer, 2013.
+# 4. Lewis, Nigel Da Costa. 100 Statistical Tests in R: What to Choose, how to Easily Calculate, with Over 300 Illustrations and Examples. Heather Hills Press, 2013.
+# 5. Kabacoff, Robert. R in Action. Shelter Island, NY, USA: Manning publications, 2011.
+# 6. Smyth, Gordon K. "Limma: linear models for microarray data." Bioinformatics and computational biology solutions using R and Bioconductor. Springer, New York, NY, 2005. 397-420.
+# 7. De Livera, Alysha M., et al. "Normalizing and integrating metabolomics data." Analytical chemistry 84.24 (2012): 10768-10776.
+# 8. Tanner, Eva M., Carl-Gustaf Bornehag, and Chris Gennings. "Repeated holdout validation for weighted quantile sum regression." MethodsX 6 (2019): 2855-2860.
+# 9. Smilde, Age K., et al. "ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data." Bioinformatics 21.13 (2005): 3043-3048.
+# 10. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
+# 11. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
+# 12. Van der Maaten, Laurens, and Geoffrey Hinton. "Visualizing data using t-SNE." Journal of machine learning research 9.11 (2008).
