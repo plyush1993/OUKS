@@ -12,7 +12,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 <img src="Logo.jpeg">
 
-- Instruction and introduction into the *OUKS* software tool is provided by Basic tutorial file. Session info and installed packages are listed in corresponding files.
+- Instruction and introduction into the *OUKS* software tool is provided by [Basic tutorial.pdf](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. Session info and installed packages are listed in corresponding files.
 - Scripts (with comments, notes and references) are stored in Scripts folder at a previously defined order along with code for figures construction.
 - MS2 spectra for selected potential biomrkers of bladder cancer are stored in mzXML format at corresponding folder.
 - Datasets in .csv and other files (.RData, .R) are available for reproducibility from corresponding folders. Files descriptions are provived by Roadmap file.
