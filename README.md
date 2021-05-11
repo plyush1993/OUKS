@@ -1,7 +1,7 @@
 # OUKS <img src="graphical abstract.jpg" align="right" height="304" width="280"/> 
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing: 
-1) experimental design and sample randomization; 
-2) peaks integration and time alignment; 
+##1) experimental design and sample randomization; 
+##2) peaks integration and time alignment; 
 3) missing value imputation (MVI) and artifacts removal; 
 4) signal drift correction and batch effect removal;
 5) feature annotation and tentative identification by database search; 
