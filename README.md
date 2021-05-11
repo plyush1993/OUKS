@@ -10,7 +10,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 8) peaks grouping and molecular features clustering; 
 9) statistical analysis and hypothesis testing.
 
-![Logo](https://user-images.githubusercontent.com/40541666/116581984-9098a280-a91d-11eb-8411-735eca130c51.jpeg)
+<img src="Logo.jpg">
 
 - Instruction and introduction into the *OUKS* software tool is provided by Basic tutorial file. Session info and installed packages are listed in corresponding files.
 - Scripts (with comments, notes and references) are stored in Scripts folder at a previously defined order along with code for figures construction.
