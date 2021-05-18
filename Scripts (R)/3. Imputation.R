@@ -24,8 +24,8 @@ setwd("D:/...")
 # load dataset
 # load peak table in csv
 # load in format: 1st column: 1. qc1(s78_1) b1 QC1(KMS 53).X --- ro. nameN(nameN_NREPEAT) BatchIndex QCN(Label N)
-# "150. qc30 b6 QC30.lcd" 
-# "167. s64_2 b7 MS 45.lcd"
+# "150. qc30 b6 QC30.CDF" 
+# "167. s64_2 b7 MS 45.CDF"
 dsr <-as.data.frame(fread(input = "xcms after IPO.csv", header=T))
 rownames(dsr) <- dsr[,1]
 dsr <- dsr[,-1]
