@@ -175,7 +175,7 @@ save(res_sr, file = "optimiz sr RumClustR.RData")
 
 # perform
 expDes=defineExperiment(force.skip = T)
-RC1 <- ramclustR(ms='xcms after IPO MVI.csv',
+RC1 <- ramclustR(ms='xcms after IPO MVI.csv', # you can use also ms2 data with argument "idmsms"
                  featdelim = " / ",
                  st = st_val,
                  sr = sr_val,
@@ -354,5 +354,5 @@ fwrite(an_t_xma, "xcms xMSannotator.csv", row.names = T)
 
 # 1. Kuhl, Carsten, et al. "CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets." Analytical chemistry 84.1 (2012): 283-289.
 # 2. Broeckling, Corey David, et al. "RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data." Analytical chemistry 86.14 (2014): 6812-6817.
-# 3. Fernández-Ochoa, Álvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
+# 3. FernÃ¡ndez-Ochoa, Ãlvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
 # 4. Uppal, Karan, Douglas I. Walker, and Dean P. Jones. "xMSannotator: an R package for network-based annotation of high-resolution metabolomics data." Analytical chemistry 89.2 (2017): 1063-1067.
