@@ -270,7 +270,7 @@ b_id <- data.frame(t(all_id[3,])) # obtain batch ID (3 row)
 dsr <- dsr_qc
 
 # Descriptive Statistics calculation
-dsc <- apply(dsr, 2, function(y) mean(y, na.rm = T)) # try also "min", "max", "median" funs
+dsc <- apply(dsr, 2, function(y) mean(y, na.rm = T)) # try also "min", "max", "median", "sd" funs
 dsc <- data.frame(names(dsc), as.numeric(dsc))
 colnames(dsc) <- c("name", "stats")
 
@@ -425,9 +425,9 @@ fwrite(dsr_PR, "xcms after IPO MVI filter corr.csv", row.names = T)
 # References
 ##############################################################################################################################################################
 
-# 1. Mathé, Ewy A., et al. "Noninvasive urinary metabolomic profiling identifies diagnostic and prognostic markers in lung cancer." Cancer research 74.12 (2014): 3259-3270.
-# 2. Martín-Blázquez, Ariadna, et al. "Untargeted LC-HRMS-based metabolomics to identify novel biomarkers of metastatic colorectal cancer." Scientific reports 9.1 (2019): 1-9.
+# 1. MathÃ©, Ewy A., et al. "Noninvasive urinary metabolomic profiling identifies diagnostic and prognostic markers in lung cancer." Cancer research 74.12 (2014): 3259-3270.
+# 2. MartÃ­n-BlÃ¡zquez, Ariadna, et al. "Untargeted LC-HRMS-based metabolomics to identify novel biomarkers of metastatic colorectal cancer." Scientific reports 9.1 (2019): 1-9.
 # 3. Pezzatti, Julian, et al. "Implementation of liquid chromatography-high resolution mass spectrometry methods for untargeted metabolomic analyses of biological samples: A tutorial." Analytica Chimica Acta 1105 (2020): 28-44.
 # 4. Chong, Jasmine, David S. Wishart, and Jianguo Xia. "Using MetaboAnalyst 4.0 for comprehensive and integrative metabolomics data analysis." Current protocols in bioinformatics 68.1 (2019): e86.
-# 5. Klåvus, Anton, et al. ""Notame": Workflow for Non-Targeted LC-MS Metabolic Profiling." Metabolites 10.4 (2020): 135.
+# 5. KlÃ¥vus, Anton, et al. ""Notame": Workflow for Non-Targeted LC-MS Metabolic Profiling." Metabolites 10.4 (2020): 135.
 # 6. Helmus, Rick, et al. "patRoon: open source software platform for environmental mass spectrometry based non-target screening." Journal of Cheminformatics 13.1 (2021): 1-25.
