@@ -150,7 +150,7 @@ rownames(ds_mvi_hf) <- rownames(ds_mvi)
 
 ########################################## KNN MVI
 library(impute)  
-ds_mvi_knn <- impute.knn(t(ds_mvi), k = 3, rowmax = 90, colmax = 90)[[1]]
+ds_mvi_knn <- as.data.frame(t(impute.knn(t(ds_mvi), k = 3, rowmax = 90, colmax = 90)[[1]]))
 
 ########################################## CART MVI
 library(mice)
