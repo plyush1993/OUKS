@@ -317,6 +317,8 @@ stopCluster(cl)
 
 colnames(ds_mvi_best) <- colnames(dsr) # assign initial colnames
 identical(colnames(dsr), colnames(ds_mvi_best)) # check colnames
+rownames(ds_mvi_best) <- rownames(dsr) # assign initial rownames
+identical(rownames(dsr), rownames(ds_mvi_best)) # check rownames
 
 fwrite(ds_mvi_best, "xcms after IPO MVI.csv", row.names = T)
 
