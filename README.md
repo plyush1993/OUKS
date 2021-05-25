@@ -1,4 +1,4 @@
-# *OUKS* <img src="spider 2.tiff" align="right" height="304" width="280"/> 
+# *OUKS* <img src="Spider 2.tif" align="right" height="304" width="280"/> 
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing:
 
 1. experimental design and sample randomization
