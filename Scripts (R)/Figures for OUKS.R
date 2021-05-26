@@ -10,7 +10,7 @@ library(fmsb)
 
 scores <- data.frame(
   "1.Randomization"  = c(191),
-  "2.Integration" = c(618),
+  "2.Integration" = c(624),
   "3.Imputation" = c(385),
   "4.Correction" = c(1580),
   "5.Annotation" = c(358),
@@ -80,7 +80,7 @@ library(ggsci)
 
 scores <- data.frame(
   "1.Randomization"  = c(191),
-  "2.Integration" = c(618),
+  "2.Integration" = c(624),
   "3.Imputation" = c(385),
   "4.Correction" = c(1580),
   "5.Annotation" = c(358),
