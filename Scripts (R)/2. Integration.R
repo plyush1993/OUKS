@@ -112,7 +112,7 @@ rawPaths <- "D:/..." # folder for raw data files
 PerformDataInspect(rawPaths,res = 1000, rt.range = c(1,800), mz.range = c(80,800), dimension = "3D") # if some error: specify one file and mzXML
 
 # Data trimming
-#raw_data <- PerformDataTrimming(rawPaths,rt.idx = 0.2) # The percentage of RT dimension retained is set as 20%
+#raw_data <- PerformDataTrimming(rawPaths,rt.idx = 1) # The percentage of RT dimension retained is set as 20%
 raw_data <- PerformDataTrimming(rawPaths, rt.idx = 0.2) # Time select, adjust to your data
 
 # Initial platform specific parameters
@@ -619,6 +619,6 @@ ncol(ds_pt) # or nrow
 # 2. McLean, Craig, and Elizabeth B. Kujawinski. "AutoTuner: high fidelity and robust parameter selection for metabolomics data processing." Analytical chemistry 92.8 (2020): 5724-5732.
 # 3. Pang, Zhiqiang, et al. "MetaboAnalystR 3.0: Toward an optimized workflow for global metabolomics." Metabolites 10.5 (2020): 186.
 # 4. Libiseller, Gunnar, et al. "IPO: a tool for automated optimization of XCMS parameters." BMC bioinformatics 16.1 (2015): 118.
-# 5. Fernández-Ochoa, Álvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
+# 5. FernÃ¡ndez-Ochoa, Ãlvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
 # 6. Mahieu, Nathaniel G., Jonathan L. Spalding, and Gary J. Patti. "Warpgroup: increased precision of metabolomic data processing by consensus integration bound analysis." Bioinformatics 32.2 (2016): 268-275.
 # 7. Wu, Chiung-Ting, et al. "Targeted realignment of LC-MS profiles by neighbor-wise compound-specific graphical time warping with misalignment detection." Bioinformatics 36.9 (2020): 2862-2871.
