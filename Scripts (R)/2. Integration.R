@@ -247,7 +247,7 @@ feat_det <- findChromPeaks(raw_data, param = cwp)
 # retention time correction
 BiocParallel::register(BiocParallel::SerialParam())
 app <- ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep,
-                    center = resultRetcorGroup$best_settings$center,
+                    center = resultRetcorGroup$best_settings$center, # or use 1st sample
                     response = resultRetcorGroup$best_settings$response,
                     distFun = resultRetcorGroup$best_settings$distFunc,
                     gapInit = resultRetcorGroup$best_settings$gapInit,
