@@ -539,7 +539,7 @@ dat$Label <- as.factor(dat$Label)
 
 # perform
 n_start <- 6 # adjust to your data
-lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data
+lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
 lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
@@ -1545,7 +1545,7 @@ dat$Label <- as.factor(dat$Label)
 
 # perform
 n_start <- 6 # adjust to your data
-lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data
+lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
 lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
@@ -1660,7 +1660,7 @@ ds_rep <- as.data.frame(cbind(id = id, ds_rep))
 
 # perform
 n_start <- 8 # adjust to your data
-lmm_fit <- lapply(n_start:ncol(ds_rep), function(x) lmer(ds_rep[,x] ~ Class + Sex + Age + (1|id), ds_rep)) # adjust to your data
+lmm_fit <- lapply(n_start:ncol(ds_rep), function(x) lmer(ds_rep[,x] ~ Class + Sex + Age + (1|id), ds_rep)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
 lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
