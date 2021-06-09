@@ -1400,8 +1400,8 @@ p_adj <-p.adjust(res.kw.test.pval, method = "BH") # Adjust P-values for Multiple
 # prepare data
 dat <- cbind(sex = as.factor(meta$Sex), ds) # adjust to your data
 # perform
-res.anova <- lapply(3:ncol(dat), function(y) aov(dat[,y] ~ sex*Label, data = my_data)) # adjust to your data
-res.anova.sum <- lapply(3:ncol(dat), function(y) summary(aov(dat[,y] ~ sex*Label, data = my_data)))
+res.anova <- lapply(3:ncol(dat), function(y) aov(dat[,y] ~ sex*Label, data = dat)) # adjust to your data
+res.anova.sum <- lapply(3:ncol(dat), function(y) summary(aov(dat[,y] ~ sex*Label, data = dat)))
 p_adj <- lapply(1:length(res.anova), function(y) TukeyHSD(res.anova[[y]], which = "Label")) # Adjust P-values for Multiple Comparisons
 
 #################################### One-Way ANOVA with automatic detection for normality and homogeneity, returns only adjusted p-value 
