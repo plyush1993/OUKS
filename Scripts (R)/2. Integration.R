@@ -355,6 +355,11 @@ library(xcms)
 
 # load feature detection xcmsSet object
 load("xcms obj feat_det.RData") # filename and the same folder of raw data as in section 2
+               
+# parallel processing
+cores = detectCores()-1
+register(bpstart(SnowParam(cores)))
+BiocParallel::register(BiocParallel::SerialParam())
 
 ######################################################### Improve data after peak detection
 # Remove all peaks with a width larger "rt_max" seconds
