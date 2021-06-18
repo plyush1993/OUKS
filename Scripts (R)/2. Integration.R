@@ -272,7 +272,7 @@ pk_gr <- groupChromPeaks(ret_cor, param = pgp)
 pk_fil <- fillChromPeaks(pk_gr)
 
 # final feature table
-ft_tbl <- featureValues(pk_fil, value = "into")
+ft_tbl <- featureValues(pk_fil, value = "into")  # "index" for height "into" for area
 
 # final peak info table
 ft_inf <- featureDefinitions(pk_fil)
@@ -341,7 +341,7 @@ pg <- group(rc,
 fp <- fillPeaks(pg)
 
 # final feature table
-ft <- groupval(fp, "medret", "into")
+ft <- groupval(fp, "medret", "into") # "index" for height "into" for area
 mz <- as.numeric(xcms::groups(fp)[, 1])
 time <- as.numeric(xcms::groups(fp)[, 4])
 rownames(ft) <- paste(mz, time, sep = " / ")
