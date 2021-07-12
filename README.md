@@ -21,6 +21,9 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 ## Requirements
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
 
+## Changelog
+- *Current version* V. 0.1 freely available at [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2)
+
 ## Citation
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
 
