@@ -22,8 +22,8 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
 
 ## Changelog
-- V. 0.1: freely available at [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2)
-- *Current version* V. 0.2: 9. Statistics: Outlier detection method implementation (by Mahalanobis distance) via ClassDiscovery package (3.3.13, CRAN) was added.          OutlierDetection package require spatstat package version 1.64-1 (CRAN).
+- **V. 0.1:** freely available at [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2)
+- *Current version* **V. 0.2:** 9. Statistics: Outlier detection method implementation (by Mahalanobis distance) via ClassDiscovery package (3.3.13, CRAN) was added.          OutlierDetection package require spatstat package version 1.64-1 (CRAN).
           9. Statistics: Add adjusted p-value for multiple comparisons in all cases. 
           9. Statistics: Multigroup Fold Change (structToolbox package) was replaced by base packages implementation.
           7. Normalization: Add adjusted p-value for multiple comparisons in all cases.
