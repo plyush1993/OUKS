@@ -132,6 +132,7 @@ param_optimized$best_parameters # see parameters
 library(IPO)
 library(xcms)
 library(doParallel)
+library(BiocParallel)
 
 nCore=detectCores()-1
 
@@ -193,6 +194,7 @@ library(xcms)
 library(data.table)
 library(dplyr)
 library(stringr)
+library(BiocParallel)
 
 # load best parameters from IPO
 # load("IPO_optimiz_xcms_CDF_7QC.RData")
