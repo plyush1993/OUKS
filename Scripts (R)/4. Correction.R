@@ -441,7 +441,7 @@ batch <- as.numeric(batch)
 
 # generate group data
 group <- as.character(ds$n_gr_t)
-qc_id <- which(group == "QC") # should be exactly the "QC" label for the QC samples
+qc_id <- which(group == "QC") # should be exactly the "QC" label for the QC samples name in table (files)
 group[qc_id] <- "NA"
 group[-qc_id] <- as.numeric(as.factor(group[-qc_id]))
 class <- group
@@ -488,7 +488,7 @@ batch <- as.numeric(batch)
 
 # generate group data
 group <- as.character(ds$n_gr_t)
-qc_id <- which(group == "QC") # should be exactly the "QC" label for the QC samples
+qc_id <- which(group == "QC") # should be exactly the "QC" label for the QC samples name in table (files)
 group[qc_id] <- "NA"
 group[-qc_id] <- as.numeric(as.factor(group[-qc_id]))
 class <- group
