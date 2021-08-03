@@ -57,6 +57,7 @@ setwd("D:/...")
 ############################################### 
 
 library(OutlierDetection) # require spatstat package version 1.64-1 (CRAN)
+# library(spatstat)
 library(pcaMethods)
 
 # perform
