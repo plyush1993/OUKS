@@ -29,8 +29,10 @@ The only requirements are to be familiar with the basic syntax of the R language
           7. Normalization: Add adjusted p-value for multiple comparisons in all cases.
           4. Correction: Add PCA with gradient color.
           “Deleted functionality.R” was created for storing deleted code strings.
-- **Current version V. 0.3:** 7. Normalization: GAM (mgcv, 1.8-32, CRAN) and GAMM (gamm4, 0.2-6, CRAN) were added as new biological factor adjustment algorithms. 9. Statistics: Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling. 9. Statistics: In section “Time series” Dose-Response curve analysis and modeling was added (DRomics, 2.2-0, CRAN).
-   
+- **V. 0.3:** 7. Normalization: GAM (mgcv, 1.8-32, CRAN) and GAMM (gamm4, 0.2-6, CRAN) were added as new biological factor adjustment algorithms. 9. Statistics: Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling. 9. Statistics: In section “Time series” Dose-Response curve analysis and modeling was added (DRomics, 2.2-0, CRAN).
+- **Current version V. 0.4:** 5. Annotation: mWISE (0.1.0, GitHub, forked from b2slab/mWISE to plyush1993/mWISE and depends were manually changed to R (>= 4.0). 
+                              9. Statistics: add tdfdr (0.1, GitHub) for two-dimensional false discovery rate control in filtration and multigroup analysis.
+                              Update all scripts (from 5. Annotation to 9. Statistics) and files.
      
 ## Citation
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
