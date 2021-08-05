@@ -274,7 +274,7 @@ b_id <- data.frame(t(all_id[3,])) # obtain batch ID (3 row)
 dsr <- dsr_qc
 
 # Descriptive Statistics calculation
-dsc <- apply(dsr, 2, function(y) mean(y, na.rm = T)) # try also "min", "max", "median", "sd" funs
+dsc <- apply(dsr, 2, function(y) mean(y, na.rm = T)) # try also "min", "max", "mean", "median", "sd" funs
 dsc <- data.frame(names(dsc), as.numeric(dsc))
 colnames(dsc) <- c("name", "stats")
 
