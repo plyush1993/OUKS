@@ -1846,7 +1846,7 @@ identical(rownames(ds), rownames(meta))
 ############################################### Two-way ANOVA
 ###############################################
 
-# see"Two-way ANOVA" for N-way ANOVA
+# see"Two-way ANOVA" for N-way ANOVA in "Testing set of biomarkers" 
 
 ############################################### 
 ############################################### ASCA
