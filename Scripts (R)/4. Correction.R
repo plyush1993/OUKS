@@ -1397,7 +1397,7 @@ class[-qc_id] <- "Subject"
 
 # Sample data
 s_d <- data.frame(FullRunName = rownames(ds), batch, class)
-rownames(s_d) <- rownames(ds)
+rownames(s_d) <- NULL
 
 # Feature data
 f_d <- as.matrix(t(ds[,-c(1:7)]))
