@@ -36,8 +36,10 @@ The only requirements are to be familiar with the basic syntax of the R language
 - **V. 0.4:** 5. Annotation: mWISE (0.1.0, GitHub, forked from b2slab/mWISE to plyush1993/mWISE and depends were manually changed to R (>= 4.0). 
                               9. Statistics: Add tdfdr (0.1, GitHub) for two-dimensional false discovery rate control in filtration and multigroup analysis.
                               All scripts (from 5. Annotation to 9. Statistics) and files were updated.
-- **Current version V. 0.5:** 4. Correction: Add PC-PR2 for correction evaluation (pcpr2, 0.0.0.1, GitHub).
+- **V. 0.5:** 4. Correction: Add PC-PR2 for correction evaluation (pcpr2, 0.0.0.1, GitHub).
                               9. Statistics: Add PC-PR2 and PVCA for multigroup analysis.
+- **Current version V. 0.6:** 4. Correction: Add box-plot, mean Silhouette Score and One-Sample Test metric.
+                              7. Normalization: box plots updated.        
      
 ## Citation
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
