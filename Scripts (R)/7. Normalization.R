@@ -530,23 +530,36 @@ CompareRlaPlots(rla_data ,groupdata=ds[,1], normmeth = c("version1","version2"),
 library(RColorBrewer)
 library(NormalizeMets)
 library(ggplot2)
+library(stringr)
 
 # Log transform
 log_data <- LogTransform(featuredata = ds_ra[,-1])
 lg_data <- log_data$featuredata
 
-# boxplot
+# data by group
+label <- as.factor(ds_ra$Class) # adjust to your data
+ds_bp <- sapply(1:nrow(lg_data), function(x) sum(lg_data[x,], na.rm = T))
+ds_bp <- as.data.frame(cbind(label = label, ds_bp))
+ds_bp$label <- label 
+colnames(ds_bp) <- c("label", "value")
+
+# boxplot by group
+bp <- ggplot(data = ds_bp, aes(x=label, y=value)) + xlab("") + ylab("") +
+  geom_boxplot(aes(fill=label)) + theme(legend.position="bottom") + theme_classic() 
+
+# bp
+
+# boxplot by sample
 pal <-brewer.pal(n =9,name ="Set1")
 cols <-pal[as.factor(ds_ra$Class)]
 boxplot(t(lg_data), col =cols, main ="box plot")
 legend("topright",levels(ds_ra$Class),fill =pal,bty ="n",xpd =T,  legend = c(unique(ds_ra$Class)))
 
-# other type of boxplot
-log_data <- LogTransform(featuredata = ds_ra[,-1])
-dat <- stack(as.data.frame(t(log_data$featuredata)))
+# other type of boxplot by sample
+dat <- stack(as.data.frame(t(lg_data)))
 dat$Label <- ifelse(str_detect(dat$ind, "KMS"), "GG", "TG") # adjust to your data: create label for every value
 bp <- ggplot(dat) + 
-  geom_boxplot(aes(x = ind, y = values, fill = Label), outlier.size = 0.3) + theme_classic() + xlab("Sample") + ylab("Log Intensity")+theme(legend.position="none")+theme(axis.text.x = element_blank())
+  geom_boxplot(aes(x = ind, y = values, fill = Label), outlier.size = 0.3) + theme_classic() + xlab("Sample") + ylab("Log Intensity")+theme(legend.position="top")+theme(axis.text.x = element_blank())
 
 # bp
 
