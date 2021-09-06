@@ -164,7 +164,7 @@ ds_plot <- as.data.frame(cbind(ds[,1:7], ds_s))
 ds_plot <- subset(ds_plot, n_gr_t == "QC")
 a <- ggplot(ds_plot, aes(x=ro_id, y=ds_s, color=b_id)) + 
   geom_point(size = 2) + theme_bw() + ggtitle("") +
-  xlab("Run order") + ylab("log2(Total intensity)") + labs(color = "Batch") + theme(legend.position="top") +
+  xlab("Run order") + ylab("Total intensity") + labs(color = "Batch") + theme(legend.position="top") +
   scale_color_gradient(low="blue", high="red", breaks = c(as.numeric(quantile(ds$b_id))))  +  geom_smooth(method=lm) # lm or loess
 
 dat <- ds[,-c(1:7)]
@@ -175,7 +175,7 @@ ds_plot <- as.data.frame(cbind(ds[,1:7], ds_s))
 ds_plot <- subset(ds_plot, n_gr_t == "Sample")
 b <- ggplot(ds_plot, aes(x=ro_id, y=ds_s, color=b_id)) + 
   geom_point(size = 2) + theme_bw() + ggtitle("") +
-  xlab("Run order") + ylab("log2(Total intensity)") + labs(color = "Batch") + theme(legend.position="top") +
+  xlab("Run order") + ylab("Total intensity") + labs(color = "Batch") + theme(legend.position="top") +
   scale_color_gradient(low="blue", high="red", breaks = c(as.numeric(quantile(ds$b_id))))  +  geom_smooth(method=lm) # lm or loess
 
 ######################
@@ -218,7 +218,7 @@ ds_plot <- as.data.frame(cbind(ds[,1:7], ds_s))
 ds_plot <- subset(ds_plot, n_gr_t == "QC")
 c <- ggplot(ds_plot, aes(x=ro_id, y=ds_s, color=b_id)) + 
   geom_point(size = 2) + theme_bw() + ggtitle("") +
-  xlab("Run order") + ylab("log2(Total intensity)") + labs(color = "Batch") + theme(legend.position="top") +
+  xlab("Run order") + ylab("Total intensity") + labs(color = "Batch") + theme(legend.position="top") +
   scale_color_gradient(low="blue", high="red", breaks = c(as.numeric(quantile(ds$b_id))))   +  geom_smooth(method=lm) # lm or loess
 
 dat <- ds[,-c(1:7)]
@@ -229,7 +229,7 @@ ds_plot <- as.data.frame(cbind(ds[,1:7], ds_s))
 ds_plot <- subset(ds_plot, n_gr_t == "Sample")
 d <- ggplot(ds_plot, aes(x=ro_id, y=ds_s, color=b_id)) + 
   geom_point(size = 2) + theme_bw() + ggtitle("") +
-  xlab("Run order") + ylab("log2(Total intensity)") + labs(color = "Batch") + theme(legend.position="top") +
+  xlab("Run order") + ylab("Total intensity") + labs(color = "Batch") + theme(legend.position="top") +
   scale_color_gradient(low="blue", high="red", breaks = c(as.numeric(quantile(ds$b_id))))   +  geom_smooth(method=lm) # lm or loess
 
 ######################
