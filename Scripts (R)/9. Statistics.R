@@ -497,10 +497,6 @@ fc <- rownames(subset(fc_res, foldchange > fc_t))
 
 ################################################### Multigroup Fold Change
 
-# transform data into log2 base
-ds_log <- as.data.frame(log2(ds[,-1]))
-ds_log <- cbind(Label = ds[,1], ds_log)
-
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "/"(x,y)}){
   x <- log2(x)
   f <- as.factor(f)
@@ -513,7 +509,7 @@ FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y)
   t(ret)
 }
 
-fdr <- FOLD.CHANGE.MG(ds_log[,-1], ds[,1])
+fdr <- FOLD.CHANGE.MG(ds[,-1], ds[,1])
 fdt_tr <- 1.0
 f <- as.data.frame(apply(fdr, 1, function(x) x> fdt_tr | x< -fdt_tr))
 f1 <- as.data.frame(which(f == T, arr.ind = T))
@@ -1402,10 +1398,6 @@ fc_res <- FOLD.CHANGE(ds_log)
 
 ################################################### Multigroup Fold Change
 
-# transform data into log2 base
-ds_log <- as.data.frame(log2(ds[,-1]))
-ds_log <- cbind(Label = ds[,1], ds_log)
-
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "/"(x,y)}){
   x <- log2(x)
   f <- as.factor(f)
@@ -1418,7 +1410,7 @@ FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y)
   t(ret)
 }
 
-fdr <- FOLD.CHANGE.MG(ds_log[,-1], ds[,1])
+fdr <- FOLD.CHANGE.MG(ds[,-1], ds[,1])
 
 # by mean
 fdr_mean <- apply(abs(fdr),1, mean, na.rm=T)
