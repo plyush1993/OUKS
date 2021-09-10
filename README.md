@@ -42,9 +42,11 @@ The only requirements are to be familiar with the basic syntax of the R language
 ## **V. 0.5:** 
 * "4. Correction": Add PC-PR2 for correction evaluation (pcpr2, 0.0.0.1, GitHub).
 * "9. Statistics": Add PC-PR2 and PVCA for multigroup analysis.
-## **Current version V. 0.6:** 
+## **V. 0.6:** 
 * "4. Correction": Add box-plot, mean Silhouette Score and One-Sample Test metric.
-* "7. Normalization": box plots updated.        
+* "7. Normalization": box plots updated.
+## **V. 0.7:**
+* "5. Annotation": metID (1.1.0, GitHub) for database identification.
      
 ## Citation
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
