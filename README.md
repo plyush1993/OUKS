@@ -46,7 +46,9 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "4. Correction": Add box-plot, mean Silhouette Score and One-Sample Test metric.
 * "7. Normalization": box plots updated.
 ## **V. 0.7:**
-* "5. Annotation": metID (1.1.0, GitHub) for database identification.
+* "5. Annotation": metID (1.1.0, GitHub) for database identification from peak table.
+* "7. Normalization": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new biological factor adjustment algorithms.
+* "9. Statistics": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new algorithms in Section “Signal Modeling”.
      
 ## Citation
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
