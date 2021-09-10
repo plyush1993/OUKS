@@ -48,7 +48,6 @@ The only requirements are to be familiar with the basic syntax of the R language
 ## **V. 0.7**
 * "5. Annotation": metID (1.1.0, GitHub) for database identification from peak table.
 * "7. Normalization": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new biological factor adjustment algorithms.
-* "9. Statistics": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new algorithms in Section “Signal Modeling”.
 * "9. Statistics": slightly change Fold Change calculations, limma implementation was also added.
      
 # Citation
