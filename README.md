@@ -4,25 +4,15 @@ R based open-source collection of scripts :books: called *OUKS* (*Omics Untarget
 
 Script | Purpose
 ------------ | -------------
-[1. Randomization.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/1.%20Randomization.R) |  experimental design and sample randomization
-[2. Integration.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/2.%20Integration.R) |  peaks integration and time alignment
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-[1. Randomization.R](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) |  experimental design and sample randomization
-Content in the first column | Content in the second column
-- :dart: 1. experimental design and sample randomization
-- :dart: 2. peaks integration and time alignment
-- :dart: 3. missing value imputation (MVI) and artifacts removal
-- :dart: 4. signal drift correction and batch effect removal
-- :dart: 5. feature annotation and tentative identification by database search
-- :dart: 6. peaks filtering for quality checking and accounting of technical variation
-- :dart: 7. data normalization and adjusting of biological variation
-- :dart: 8. peaks grouping and molecular features clustering
-- :dart: 9. statistical analysis and hypothesis testing
+[1. Randomization.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/1.%20Randomization.R) | experimental design and sample randomization
+[2. Integration.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/2.%20Integration.R) | peaks integration and time alignment
+[3. Imputation.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/3.%20Imputation.R) | missing value imputation (MVI) and artifacts removal
+[4. Correction.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/4.%20Correction.R) | signal drift correction and batch effect removal
+[5. Annotation.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/5.%20Annotation.R) | feature annotation and tentative identification by database search
+[6. Filtering.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/6.%20Filtering.R) | peaks filtering for quality checking and accounting of technical variation
+[7. Normalization.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/7.%20Normalization.R) | data normalization and adjusting of biological variation
+[8. Grouping.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/8.%20Grouping.R) | peaks grouping and molecular features clustering
+[9. Statistics.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/9.%20Statistics.R) | statistical analysis and hypothesis testing
 
 # Table of Contents :clipboard:
 - Instruction and introduction into the *OUKS* toolbox is provided by [Basic tutorial](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. [Session info](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [installed packages](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
@@ -42,7 +32,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "9. Statistics": Multigroup Fold Change (structToolbox package) was replaced by base packages implementation.
 * "7. Normalization": Add adjusted p-value for multiple comparisons in all cases.
 * "4. Correction": Add PCA with gradient color.
-* “Deleted functionality.R” was created for storing deleted code strings.
+* [“Deleted functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deleted%20functionality.R) was created for storing deleted code strings.
 ## **V. 0.3** :three:
 * "7. Normalization": GAM (mgcv, 1.8-32, CRAN) and GAMM (gamm4, 0.2-6, CRAN) were added as new biological factor adjustment algorithms.
 * "9. Statistics": Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling.
