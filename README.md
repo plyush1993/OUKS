@@ -1,6 +1,6 @@
 # *OUKS* <img src="Spider 2.jpg" align="right" height="304" width="280"/> 
 # Brief Description
-R based open-source collection of scripts :books: called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data :dna: processing toolbox :hammer_and_wrench::
+R based open-source collection of scripts :books: called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data :dna: processing toolbox :toolbox::
 
 1. experimental design and sample randomization
 2. peaks integration and time alignment
