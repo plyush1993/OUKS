@@ -21,7 +21,7 @@ R based open-source collection of scripts :books: called *OUKS* (*Omics Untarget
 # Requirements :heavy_check_mark:
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
 
-# Release notes :pushpin:
+# Release notes :new:
 ## **V. 0.1** :one:
 * freely available at [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2)
 ## **V. 0.2** :two:
