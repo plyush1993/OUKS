@@ -50,7 +50,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "7. Normalization": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new biological factor adjustment algorithms.
 * "9. Statistics": slightly changed Fold Change calculations and canonical limma implementation was added.
      
-# Citation :link: :label:
+# Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
 
 Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. *Omics Untargeted Key Script*: R‑Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021, [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392).
