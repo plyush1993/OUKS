@@ -2,15 +2,15 @@
 # Brief Description :old_key:
 R based open-source collection of scripts :books: called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data :dna: processing toolbox :toolbox::
 
- - :dart: 1. experimental design and sample randomization
- - :dart: 2. peaks integration and time alignment
-* :dart: 3. missing value imputation (MVI) and artifacts removal
-* :dart: 4. signal drift correction and batch effect removal
-* :dart: 5. feature annotation and tentative identification by database search
-* :dart: 6. peaks filtering for quality checking and accounting of technical variation
-* :dart: 7. data normalization and adjusting of biological variation
-* :dart: 8. peaks grouping and molecular features clustering
-* :dart: 9. statistical analysis and hypothesis testing
+- :dart: 1. experimental design and sample randomization
+- :dart: 2. peaks integration and time alignment
+- :dart: 3. missing value imputation (MVI) and artifacts removal
+- :dart: 4. signal drift correction and batch effect removal
+- :dart: 5. feature annotation and tentative identification by database search
+- :dart: 6. peaks filtering for quality checking and accounting of technical variation
+- :dart: 7. data normalization and adjusting of biological variation
+- :dart: 8. peaks grouping and molecular features clustering
+- :dart: 9. statistical analysis and hypothesis testing
 
 # Table of Contents :clipboard:
 - Instruction and introduction into the *OUKS* toolbox is provided by [Basic tutorial](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. [Session info](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [installed packages](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
