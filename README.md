@@ -59,5 +59,6 @@ Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin 
 
 ## Contact :memo:
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko :man_scientist:)
+------------ | -------------
 :e-mail: | plyushchenko.ivan@gmail.com
 , :e-mail:: plyushchenko.ivan@gmail.com , <img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png">: [0000-0003-3883-4695](https://orcid.org/0000-0003-3883-4695).
