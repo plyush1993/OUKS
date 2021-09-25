@@ -1,6 +1,6 @@
-# *OUKS* :toolbox: <img src="Spider 2.jpg" align="right" height="304" width="280"/> 
+# *OUKS* <img src="Spider 2.jpg" align="right" height="304" width="280"/> 
 ## Brief Description :old_key:
-R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox
+R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox :toolbox:
 
 Script | Purpose
 ------------ | -------------
