@@ -42,17 +42,17 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "9. Statistics": Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling.
 * "9. Statistics": In section “Time series” Dose-Response curve analysis and modeling was added (DRomics, 2.2-0, CRAN).
 ### **V. 0.4** :four:
-* "5. Annotation": mWISE (0.1.0, GitHub, forked from b2slab/mWISE to plyush1993/mWISE and depends were manually changed to R (>= 4.0)). 
-* "9. Statistics": Add tdfdr (0.1, GitHub) for two-dimensional false discovery rate control in filtration and multigroup analysis.
+* "5. Annotation": mWISE (0.1.0, GH, forked from b2slab/mWISE to plyush1993/mWISE and depends were manually changed to R (>= 4.0)). 
+* "9. Statistics": Add tdfdr (0.1, GH) for two-dimensional false discovery rate control in filtration and multigroup analysis.
 * All scripts (from 5. Annotation to 9. Statistics) and files were updated.
 ### **V. 0.5** :five: 
-* "4. Correction": Add PC-PR2 for correction evaluation (pcpr2, 0.0.0.1, GitHub).
+* "4. Correction": Add PC-PR2 for correction evaluation (pcpr2, 0.0.0.1, GH).
 * "9. Statistics": Add PC-PR2 and PVCA for multigroup analysis.
 ### **V. 0.6** :six: 
 * "4. Correction": Add box-plot, mean Silhouette Score and One-Sample Test metric.
 * "7. Normalization": Box-plot construction updated.
 ### **V. 0.7** :seven:
-* "5. Annotation": metID (1.1.0, GitHub) for database identification from peak table.
+* "5. Annotation": metID (1.1.0, GH) for database identification from peak table.
 * "7. Normalization": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new biological factor adjustment algorithms.
 * "9. Statistics": Slightly changed Fold Change calculations and canonical limma implementation was added.
 ### **V. 0.8** :eight:
