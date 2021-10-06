@@ -29,7 +29,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 
 ## Release notes :new:
 ### **V. 0.1** :one:
-* Freely available at [https://doi.org/10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2)
+* Freely available at [link](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2).
 ### **V. 0.2** :two:
 * "9. Statistics": Outlier detection method implementation (by Mahalanobis distance) via ClassDiscovery package (3.3.13, CRAN) was added. OutlierDetection package require spatstat package version 1.64-1 (CRAN).
 * "9. Statistics": Add adjusted p-value for multiple comparisons in all cases.
