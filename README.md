@@ -2,7 +2,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 <!-- badges: end -->
 
-# Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="304" width="350"/> 
+# Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="200" width="250"/> 
 ## Brief Description :old_key:
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox :toolbox:
 
