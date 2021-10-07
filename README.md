@@ -69,7 +69,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 ### **V. 0.8**
 * :spiral_calendar: 2021.10.07
 * "9. Statistics": In section “Time series” TOXcms (1.0.3, GH) and timeOmics (1.0.1, BC) were added, also DRomics part was updated.
-* * "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method.
+* "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method.
 * Add reports (by R Markdown, folder [Report (Rmd)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))).
 
 ## Citation :link:
