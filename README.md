@@ -29,9 +29,10 @@ Script | Purpose
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
 
 ## Release notes :new:
+### **V. 0.0** 
+* Creation date :tada:
 ### **V. 0.1** 
 * :spiral_calendar: 2021.06.23
-* First release :tada:
 * Freely available at [link](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2).
 ### **V. 0.2** 
 * :spiral_calendar: 2021.07.12
