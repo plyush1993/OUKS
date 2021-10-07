@@ -31,7 +31,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 ## Release notes :new:
 ### **V. 0.0** 
 * :spiral_calendar: 2021.04.29
-* Creation date :tada:
+* Creation date :clapper:
 ### **V. 0.1** 
 * :spiral_calendar: 2021.06.23
 * Freely available at [link](https://doi.org/10.1021/acs.jproteome.1c00392) (Supporting Information File 2).
