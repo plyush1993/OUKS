@@ -421,7 +421,7 @@ setwd("D:/...")
 ######################
 
 ds <-as.data.frame(fread(input = "xcms after IPO MVI filter repeats annot.csv", header=T)) # first column with all metadata
-ds <- ds[-c(1:8),]
+ds <- ds[-c(1:12),]
 rownames(ds) <- ds[,5]
 ds <- ds[,-c(1,3:5)]
 ds[,-1] <- sapply(ds[,-1], as.numeric)
@@ -528,7 +528,7 @@ setwd("D:/...")
 ######################
 
 ds <-as.data.frame(fread(input = "xcms after IPO MVI filter repeats annot.csv", header=T)) # first column with all metadata
-ds <- ds[-c(1:8),]
+ds <- ds[-c(1:12),]
 rownames(ds) <- ds[,5]
 ds <- ds[,-c(1,3:5)]
 ds[,-1] <- sapply(ds[,-1], as.numeric)
