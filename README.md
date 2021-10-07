@@ -30,6 +30,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 
 ## Release notes :new:
 ### **V. 0.0** 
+* :spiral_calendar: 2021.05.11
 * Creation date :tada:
 ### **V. 0.1** 
 * :spiral_calendar: 2021.06.23
