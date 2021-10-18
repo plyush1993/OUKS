@@ -886,7 +886,7 @@ QC.SM.GB <- function(int_data, order, class, qc_label, model = "xgboost", max.de
   if (model == "catboost") {
     library(catboost)
     catb_train <- pblapply(2:ncol(int_data_ro_qc), function(t) catboost.load_pool(data = as.matrix(as.numeric(ro_qc)), label = as.matrix(as.numeric(int_data_ro_qc[,t]))))
-    catb_test <- pblapply(2:ncol(int_data_ro), function(t) catboost.load_pool(data = as.matrix(as.numeric(ro)), label = as.matrix(as.numeric(f_d_ro[,t]))))
+    catb_test <- pblapply(2:ncol(int_data_ro), function(t) catboost.load_pool(data = as.matrix(as.numeric(ro)), label = as.matrix(as.numeric(int_data_ro[,t]))))
     
     fit_catb <- pblapply(1:length(catb_train), function(t) catboost.train(catb_train[[t]], params = params))
     predict_gb <- pblapply(1:length(fit_catb), function(t) catboost.predict(fit_catb[[t]], catb_test[[t]], verbose = F)) 
