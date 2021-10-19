@@ -46,4 +46,4 @@ return(b_b_c_result)
 ds_qc_norm <- QC.NORM(data = ds_bbc)
 
 # save
-fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM.csv", row.names = T)
+fwrite(ds_qc_norm, "... QC-NORM.csv", row.names = T)
