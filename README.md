@@ -73,7 +73,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 * Add reports (by R Markdown, folder [Report (Rmd)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))).
 ### **V. 0.9**
 * :spiral_calendar: 2021.10.19
-* "4. Correction": Two features (tf) mode was implemented for QC-BT/DT/KNN/GBM (xgboost/catboost). 
+* "4. Correction": Two features (tf) mode was implemented for QC-BT/DT/KNN/GBM. 
 
 ## Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
