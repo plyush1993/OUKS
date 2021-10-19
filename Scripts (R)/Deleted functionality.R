@@ -17,3 +17,33 @@ detach("package:structToolbox", unload = TRUE)
 # by mean
 fdr_mean <- apply(abs(fdr),1, mean, na.rm=T)
 
+###############################################################################
+########################################## Median Between Batches (QC-norm)
+###############################################################################
+
+# generate batch data
+batch <- ds$b_id
+batch <- str_remove(batch, "b")
+batch <- as.numeric(batch)
+
+# generate data
+ds_bbc <- cbind(batch = ds$b_id, ds[,-c(1:7)])
+ds_bbc$batch <- batch
+
+# perform
+QC.NORM <- function(data){
+library(dplyr)
+ds_bbc <- data
+b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches
+b_b_c_factor <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) median(b_b_c_subsets[[y]][,z], na.rm = T)/median(ds_bbc[,(z+1)], na.rm = T))) # calculate factor for every feature
+b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) b_b_c_subsets[[y]][,z]/b_b_c_factor[[y]][z])) # results by batch
+b_b_c_result <- data.frame(do.call("rbind",b_b_c_result_l)) # results in data frame
+rownames(b_b_c_result) <- rownames(ds_bbc)
+colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
+return(b_b_c_result)
+}
+
+ds_qc_norm <- QC.NORM(data = ds_bbc)
+
+# save
+fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM.csv", row.names = T)
