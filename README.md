@@ -67,10 +67,13 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "7. Normalization": GPBoost (gpboost, 0.6.7, CRAN) with boosting and mixed effects boosting were added as new biological factor adjustment algorithms.
 * "9. Statistics": Slightly changed Fold Change calculations and canonical limma implementation was added.
 ### **V. 0.8**
-* :spiral_calendar: 2021.10.18
+* :spiral_calendar: 2021.10.07
 * "9. Statistics": In section “Time series” TOXcms (1.0.3, GH) and timeOmics (1.0.1, BC) were added, also DRomics part was updated.
-* "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method. Two features mode was implemented for QC-BT/DT/KNN/GBM (xgboost/catboost). 
+* "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method.
 * Add reports (by R Markdown, folder [Report (Rmd)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))).
+### **V. 0.9**
+* :spiral_calendar: 2021.10.19
+* "4. Correction": Two features (tf) mode was implemented for QC-BT/DT/KNN/GBM (xgboost/catboost). 
 
 ## Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
