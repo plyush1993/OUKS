@@ -485,7 +485,6 @@ s_d <- data.frame(cbind(sample = rownames(ds), batch, class, order))
 rownames(s_d) <- rownames(ds)
 
 # Feature data
-ds[,1] <- rownames(ds)
 f_d <- data.frame(t(ds[,-c(1:7)]))
 f_d <- cbind(name = colnames(ds[,-c(1:7)]), f_d)
 colnames(f_d) <- c("name", rownames(ds[,-c(1:7)]))
@@ -532,7 +531,6 @@ s_d <- data.frame(cbind(sample = rownames(ds), batch, class, order))
 rownames(s_d) <- rownames(ds)
 
 # Feature data
-ds[,1] <- rownames(ds)
 f_d <- data.frame(t(ds[,-c(1:7)]))
 f_d <- cbind(name = colnames(ds[,-c(1:7)]), f_d)
 colnames(f_d) <- c("name", rownames(ds[,-c(1:7)]))
