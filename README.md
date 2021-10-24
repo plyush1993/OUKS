@@ -72,8 +72,9 @@ The only requirements are to be familiar with the basic syntax of the R language
 * "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method.
 * Add reports (by R Markdown, folder [Report (Rmd)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))).
 ### **V. 1.8**
-* :spiral_calendar: 2021.10.21
+* :spiral_calendar: 2021.10.24
 * "4. Correction": Two features (tf) and subtraction modes were implemented for QC-BT/DT/KNN/GBM in all combinations. QC-norm was modified and division-/subtraction-based versions are provided (original version of the function is available at [“Deleted functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deleted%20functionality.R)).
+* "6. Filtering": Small changes in Descriptive Statistics, Missing Value and Blank filtering approaches.
 
 ## Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
