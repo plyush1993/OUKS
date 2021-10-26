@@ -2,7 +2,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![Changelog](https://img.shields.io/badge/keep%20a-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
-[![](https://img.shields.io/badge/devel%20version-1.9-blue.svg)](https://github.com/plyush1993/OUKS/)
+[![](https://img.shields.io/badge/devel%20version-1.8-yellow.svg)](https://github.com/plyush1993/OUKS/)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
