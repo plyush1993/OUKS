@@ -1,4 +1,4 @@
-## Release notes :new:
+## Changelog :new:
 ### **V. 0.1** 
 * :spiral_calendar: 2021.04.29
 * Creation date :clapper:
