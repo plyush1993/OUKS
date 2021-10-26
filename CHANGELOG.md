@@ -53,11 +53,11 @@
 * "4. Correction": Add WaveICA2.0 (0.1.0, GH) correction method.
 * Add reports (by R Markdown, folder [Report (Rmd)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))).
 ## **V. 1.8**
-* :spiral_calendar: 2021.10.25
+* :spiral_calendar: 2021.10.26
 ### Added
 * "4. Correction": Two features (tf) and subtraction (s) modes were implemented for QC-BT/DT/KNN/GBM in all combinations.
 ### Changed
 * "4. Correction": QC-norm was modified and division-/subtraction-based versions are provided (original version of the function is available at [“Deleted functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deleted%20functionality.R)).
 ### Fixed
 * "6. Filtering": Small changes in Descriptive Statistics, Missing Value and Blank filtering approaches.
-* "4. Correction": Fixed dependencies for QC-SVR, QC-LOESS and QC-RF.
+* "4. Correction": Fixed dependencies for QC-SVR, QC-LOESS, QC-RF and updated one sample test quality metric.
