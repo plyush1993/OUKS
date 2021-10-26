@@ -2,7 +2,7 @@
 [![](https://img.shields.io/badge/R-%23276DC3.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Report](https://img.shields.io/badge/see-report-ff69b4.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
-[![Changelog](https://img.shields.io/badge/keep-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/keep-changelog-d30b0b.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![](https://img.shields.io/badge/devel%20version-1.8-yellow.svg)](https://github.com/plyush1993/OUKS/)
 [![](https://img.shields.io/badge/Article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
