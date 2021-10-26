@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![Changelog](https://img.shields.io/badge/keep%20a-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
 [![](https://img.shields.io/badge/devel%20version-1.8-yellow.svg)](https://github.com/plyush1993/OUKS/)
+[![](https://img.shields.io/badge/doi-10.1021/acs.jproteome.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
