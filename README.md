@@ -1,5 +1,5 @@
 <!-- badges: starts -->
-[![](https://img.shields.io/badge/R-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
+[![](https://img.shields.io/badge/R≥4.0.0-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
 [![Changelog](https://img.shields.io/badge/keep-Changelog-d30b0b.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
