@@ -1,6 +1,7 @@
 <!-- badges: starts -->
 [![](https://img.shields.io/badge/R≥4.0.0-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![](https://img.shields.io/badge/ask%20me-Anything-1abc9c.svg)](https://github.com/plyush1993)
 [![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
 [![Changelog](https://img.shields.io/badge/keep-Changelog-d30b0b.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
@@ -9,7 +10,9 @@
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
-![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)   
+![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
+![](https://img.shields.io/github/forks/plyush1993/OUKS.svg?style=social&logo)
+![](https://img.shields.io/github/stars/plyush1993/OUKS.svg?style=social&logo)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
@@ -48,3 +51,4 @@ Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin 
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko :man_scientist:): 
 - :e-mail: plyushchenko.ivan@gmail.com
 - <img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png"> [0000-0003-3883-4695](https://orcid.org/0000-0003-3883-4695)
+- :octocat: [plyush1993](https://github.com/plyush1993)
