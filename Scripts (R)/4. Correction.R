@@ -1936,7 +1936,7 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
   return(filt_p_val(x, wx.t.res, st.t.res))
 }
 
-# 1 st argument -> dataset with only numeric values, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
+# 1st argument -> dataset with only numeric values, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
 ds_ost <- as.data.frame(ost(ds_bd[,-c(1:7)], p.val.sig = 0.05, p.adjust = "BH"))
 os_test <- round(ncol(ds_ost)/ncol(ds[,-c(1:7)])*100, 0)
 os_test
