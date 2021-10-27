@@ -10,7 +10,7 @@
 ![](https://img.shields.io/github/commit-activity/m/plyush1993/OUKS)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
-![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS) 
+![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)   
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
