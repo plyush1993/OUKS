@@ -7,6 +7,7 @@
 [![](https://img.shields.io/badge/devel%20version-1.8-ff6500.svg)](https://github.com/plyush1993/OUKS/)
 [![](https://img.shields.io/badge/dependencies-R%20session-yellow.svg)](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
+![](https://img.shields.io/github/languages/code-size/Plyush1993/OUKS)
 ![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 <!-- badges: end -->
