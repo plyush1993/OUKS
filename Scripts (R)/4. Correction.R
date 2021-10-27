@@ -1872,6 +1872,10 @@ anova_per
 ########################################## One-Sample Test
 ###############################################################################
 
+# feature data
+ds_bd <- subset(ds, n_gr_t == "QC")               
+
+# perform
 ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
   
   norm_tests <- function(x) {
@@ -1933,7 +1937,6 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
 }
 
 # 1 st argument -> dataset with only numeric values, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
-ds_bd <- subset(ds, n_gr_t == "QC")
 ds_ost <- as.data.frame(ost(ds_bd[,-c(1:7)], p.val.sig = 0.05, p.adjust = "BH"))
 os_test <- round(ncol(ds_ost)/ncol(ds[,-c(1:7)])*100, 0)
 os_test
