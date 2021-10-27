@@ -11,8 +11,6 @@
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
 ![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
-![](https://img.shields.io/github/forks/plyush1993/OUKS.svg?style=social&logo)
-![](https://img.shields.io/github/stars/plyush1993/OUKS.svg?style=social&logo)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
