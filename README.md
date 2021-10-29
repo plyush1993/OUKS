@@ -1,15 +1,15 @@
 <!-- badges: starts -->
-[![](https://img.shields.io/badge/R≥4.0.0-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
-[![Changelog](https://img.shields.io/badge/keep-Changelog-d30b0b.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
+[![](https://img.shields.io/badge/R≥4.0.0-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![](https://img.shields.io/badge/devel%20version-1.8-ff6500.svg)](https://github.com/plyush1993/OUKS/)
+[![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
+[![Changelog](https://img.shields.io/badge/keep-Changelog-d30b0b.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
 [![](https://img.shields.io/badge/dependencies-R%20session-yellow.svg)](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt)
-[![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
 ![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
+[![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
