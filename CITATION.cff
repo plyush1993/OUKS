@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Plyushchenko"
+  given-names: "Ivan V."
+  orcid: "https://orcid.org/0000-0003-3883-4695"
+title: "Omics Untargeted Key Script (OUKS)"
+version:
+doi: 10.1021/acs.jproteome.1c00392
+date-released: 2021-04-29
+url: "https://github.com/plyush1993/OUKS"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Plyushchenko"
+    given-names: "Ivan V."
+    orcid: "https://orcid.org/0000-0003-3883-4695"
+  - family-names: "Fedorova"
+    given-names: "Elizaveta S."
+    orcid: "https://orcid.org/0000-0002-5774-7901"
+  - family-names: "Potoldykova"
+    given-names: "Natalia V."
+  - family-names: "Polyakovskiy"
+    given-names: "Konstantin A."
+  - family-names: "Glukhov"
+    given-names: "Alexander I."
+  - family-names: "Rodin"
+    given-names: "Igor A."
+  doi: "10.1021/acs.jproteome.1c00392"
+  journal: "Journal of Proteome Research"
+  month:
+  start:
+  end: 
+  title: "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study"
+  issue: 
+  volume: 
+  year: 2021
