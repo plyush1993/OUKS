@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0 http://sashimi.sourceforge.net/schema_revision/mzXML_2.0/mzXML_idx_2.0.xsd">
+	<msRun scanCount="1" startTime="PT15.60720S" endTime="PT15.73140S">
+		<parentFile fileName="file://C:\LabSolutions\Data\plyush_metabolomics\2021_04_15 DDA BPC\MS2 CID 20 1.lcd" fileType="RAWData"></parentFile>
+		<msInstrument>
+			<msManufacturer category="msManufacturer" value="Shimadzu"></msManufacturer>
+			<msModel category="msModel" value="LCMS-IT-TOF"></msModel>
+			<msIonisation category="msIonisation" value="ESI"></msIonisation>
+			<msMassAnalyzer category="msMassAnalyzer" value="IT-TOF"></msMassAnalyzer>
+			<msDetector category="msDetector" value="MCP"></msDetector>
+			<software type="acquisition" name="LCMSsolution" version="3.00"></software>
+		</msInstrument>
+		<dataProcessing centroided="1">
+			<software type="conversion" name="TTFLDataExport" version="1"></software>
+		</dataProcessing>
+		<scan num="1549" msLevel="2" peaksCount="50" polarity="+" retentionTime="PT936.43S" lowMz="123" highMz="314" basePeakMz="313.226" basePeakIntensity="98176">
+			<precursorMz precursorIntensity="0">312.22</precursorMz>
+			<peaks precision="32" byteOrder="network" pairOrder="m/z-int">QvYt7QAAAABC9jNaRgfMAEL2OMdHCTMAQvY+NUcEDQBC9kOiRjIAAEL2SQIAAAAAQxcULAAAAABDFxcrRX5gAEMXGjBGsGYAQxcdL0cBcwBDFyAuRjtoAEMXIzMAAAAAQykWtQAAAABDKRnhRKmgAEMpHQ5GeTQAQykgO0arZgBDKSNnRacwAEMpJpQAAAAAQ30ZzgAAAABDfR2yRhFoAEN9IZZHOg0AQ30lekdlpgBDfSlYRqW0AEN9LTxEo0AAQ30xIAAAAABDfiJoAAAAAEN+JkxFeaAAQ34qMAAAAABDmxRdAAAAAEObFoRFfNAAQ5sYqkYRmABDmxrRRdBoAEObHPdFKmAAQ5sfIQAAAABDm5WOAAAAAEObl7hFUaAAQ5uZ3kW8AABDm5wFRVDQAEObni5EpMAAQ5ugVQAAAABDnJZpAAAAAEOcmJNGv2YAQ5yavUenYABDnJznR7/AAEOcnxFHExoAQ5yhOkW7mABDnKNkAAAAAEOdGDsAAAAAQ50aZUSpoABDnRySAAAAAA==</peaks>
+		</scan>
+	</msRun>
+</mzXML>

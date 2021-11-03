@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0 http://sashimi.sourceforge.net/schema_revision/mzXML_2.0/mzXML_idx_2.0.xsd">
+	<msRun scanCount="1" startTime="PT16.12950S" endTime="PT16.33030S">
+		<parentFile fileName="file://C:\LabSolutions\Data\plyush_metabolomics\2021_04_15 DDA BPC\MS2 CID 20 3.lcd" fileType="RAWData"></parentFile>
+		<msInstrument>
+			<msManufacturer category="msManufacturer" value="Shimadzu"></msManufacturer>
+			<msModel category="msModel" value="LCMS-IT-TOF"></msModel>
+			<msIonisation category="msIonisation" value="ESI"></msIonisation>
+			<msMassAnalyzer category="msMassAnalyzer" value="IT-TOF"></msMassAnalyzer>
+			<msDetector category="msDetector" value="MCP"></msDetector>
+			<software type="acquisition" name="LCMSsolution" version="3.00"></software>
+		</msInstrument>
+		<dataProcessing>
+			<software type="conversion" name="TTFLDataExport" version="1"></software>
+		</dataProcessing>
+		<scan num="2412" msLevel="2" peaksCount="64" polarity="+" retentionTime="PT967.77S" lowMz="91" highMz="477" basePeakMz="476.247" basePeakIntensity="91558">
+			<precursorMz precursorIntensity="0">475.25</precursorMz>
+			<peaks precision="32" byteOrder="network" pairOrder="m/z-int">QreyRwAAAABCt7bwREIAAEK3u6YAAAAAQyQDnAAAAABDJAa7REtAAEMkCdtFRpAAQyQM+gAAAABDJBAgREAAAEMkE0AAAAAAQykZ4QAAAABDKR0ORa4gAEMpIDtFuPAAQykjZ0UVMABDKSaUAAAAAEN9Gc4AAAAAQ30dskYImABDfSGWR068AEN9JXpHiVMAQ30pWEb0AABDfS08RRUwAEN9MSAAAAAAQ34amQAAAABDfh59REmAAEN+ImhF3iAAQ34mTEYBLABDfiowRSywAEN+LhQAAAAAQ5UUTQAAAABDlRZpRXeAAEOVGIZGxloAQ5Uao0bViABDlRy/RZOIAEOVHtkAAAAAQ5WXNQAAAABDlZlRRSxAAEOVm25FdxAAQ5WdiwAAAABDnRplAAAAAEOdHJJF0WgAQ50eu0XR4ABDnSDlRMWgAEOdIw8AAAAAQ60WoQAAAABDrRjlRZXgAEOtGyxFolgAQ60dcAAAAABD7heqAAAAAEPuGldFxiAAQ+4dAUc8YgBD7h+qR7LTAEPuIlRHelMAQ+4lAUabxABD7ieqRa/AAEPuKlQAAAAAQ+5PqgAAAABD7lJUREeAAEPuVQEAAAAAQ+6XsQAAAABD7ppeREPAAEPunQdGOAAAQ+6ftEaJLgBD7qJeRjGkAEPupQtFRpAAQ+6ntAAAAAA=</peaks>
+		</scan>
+	</msRun>
+</mzXML>
