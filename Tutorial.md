@@ -67,3 +67,33 @@ Some functions in xMSannotator package are not available for R version ≥ 4.0.0
 Each algorithm was characterized by a fraction of annotated features. The xMSannotator and mWISE provided the maximum value of annotated ions.
 
 Also, metID [36] can be used for simple databases search from peak table. Databases from (https://github.com/jaspershen/demoData/tree/master/inst/ms2_database) should be copied in "ms2_database" folder in metID library folder.
+
+## 6.	Filtering
+Several most common options are available [1,23,37]: RSD based filtering by QC samples, annotation based (remove non-annotated features), by descriptive statistics for biological samples (by mean, max, min, median values of the feature or sd), by the fraction of missing values in the feature for biological samples, by the cutoff between median values of feature in QS or biological samples and blanks injections and by the Pearson correlation coefficient for samples (mainly for repeated injections). The mean values for every feature for all repeats are also computed. The mean values for two repeats were obtained in our study.
+
+## 7.	Normalization
+Five normalization methods are performed [38,39]: mass spectrometry total useful signal (MSTUS), probabilistic quotient normalization (PQN), quantile, median fold change and sample-specific factor. Also, several scaling and transformation algorithms are introduced: log transformation, auto- , range- , pareto- , vast- , level- , power-, etc. scaling.
+
+Biological and phenotyping metadata (classification class, age, sex, BMI, etc.) as well as experimental conditions (run order, batch number, etc.) can be adjusted by linear model (LM) [40] or linear mixed effect model (LMM) [41] fitting. Both algorithms were implemented in the study.
+
+The LMM approach fits the model according to a user-defined formula. In this study, model was constructed for each metabolite intensity as an dependent variable; age, class and sex – as fixed effects and batch ID – as a random effect. Then, the original data was employed as input and predicted values from the models were the final output.
+![5-6](/vignette/5-6.png)
+
+where, i – is the index of metabolite, j – is the index of independent variable j = 1,2, … n (fixed effects), Φ – is a LMM model is fitted by function f, β0 – is the intercept constant, ε – is the random error, β – is the coefficient of the regression model, x – is an independent variable, I – is a dependent variable (a vector of an original intensity values), μ0 – is the random effect, I’ – is a vector of an adjusted intensity values, that was predicted by model Φ.
+
+The LM factorwise approach works in a similar way. At first, linear model was constructed for each metabolite intensity as a dependent variable and other covariates – as independent variables (Age, Sex, Batch, Class, Order in our study). One of the covariates should be noted as a feature of interest (this biological factor was kept, Class in our study). Then, residuals of models were obtained and design matrix was constructed for the feature of interest and constant intercept. For each model, design matrix was multiplied by regression coefficients of intercept and feature of interest and then was summed with residuals. Obtained values were summed with the difference between their mean values and mean values of the original data. The resulted values were the final output.
+![7-9](/vignette/7-9.png)
+
+where, i – is the index of metabolite, j – is the index of independent variable j = 1,2, … n (fixed effects), Φ – is a LM model is fitted by function f, β0 – is the intercept constant, ε – is the random error, β – is the coefficient of the regression model, x – is an independent variable, I – is a dependent variable (a vector of an original intensity values), I’ – is a vector of a transformed intensity values, I’’ – is a vector of an adjusted intensity value, M – is a design matrix, that was constructed for the feature of interest and constant intercept, coef – is a vector of regression coefficients of intercept and feature of interest from the model Φ, res – is a vector of the residuals of model Φ, mean – the function, that generates the mean value from the input vector.
+
+Other type of LM adjustment was implemented in similar way to LMM (eq. 5-6 without random effect).
+
+GAM, GAMM [42], GBM, GBMM [43] adjustment were also realized (as in eq. 5-6).
+
+Four algorithms were utilized for evaluation of normalization methods, including: MA- , Box- , relative log abundance (RLA)– plots and mean/range of relative abundance between all features [21,44,45]. Biological adjustment methods were tested by classification accuracy via four machine learning (ML) algorithms (RF, linear SVM, nearest shrunken centroids (PAM), PLS), the high value of accuracy indicates successful removing of biological variation. ML parameters are listed in Section 9. PCA modeling was used for visualization of final adjustment. LM and LMM models were fitted in a similar way as described above (eq. 7,5). The fraction of p-values for the target variable and/or other covariates in the model less than the threshold (0.05) can serve as other character of the adjustment quality (the fraction should be the lowest for covariates and the largest for the target variable).
+
+## 8.	Grouping
+Molecular features from data table after integration and alignment can be clustered (grouped) by different algorithms in order to determine an independent molecular feature and dimensionality reduction. The pmd package [46] performs hierarchical cluster analysis for this purpose (and also provides reactomics). The notame package [23] and CROP algorithm [47] utilize the Pearson correlation coefficient. Final signals represent the largest/mean/median values of features groups. 
+
+All .RData files that are needed to implement the CROP algorithm can be loaded from the GitHub repository.
+
