@@ -1,5 +1,5 @@
 # Omics Untargeted Key Scripts
-
+![logo](/vignette/logo.png)
 ## Preface
 R based open-source collection of scripts called OUKS (Omics Untargeted Key Script) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox.
 
@@ -19,3 +19,37 @@ Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin 
 
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: plyushchenko.ivan@gmail.com.
 
+## 1. Randomization 
+All samples were analyzed at random order to prevent systematic bias [1,2]. Each analytical batch consisted of ten samples in two technical repeats (repeat samples were acquired after last tenth sample and repeats were analyzed at the same order as first repeat). The QC samples were acquired at the beginning of the batch and after every five injections (overall five QC samples for each batch). The code generates a random sequence of samples in accordance with the user's conditions: the number of samples, technical and biological repeats and batch size.
+
+## 2. Integration
+In our case 311 injects in 13 batches were acquired. All raw data were stored in a specific folder. Seven injects were selected for integration and alignment parameters optimization via IPO [3] (1 (batch 1, 1st QC from 5), 75 (3, 5), 101 (5, 1), 163 (7, 3), 219 (9, 4), 257 (11, 2), 311 (13, 3 of 3)) in order to decrease time of computing. QC samples spanning all study were randomly selected (at the beginning, end and middle of batch).
+
+Best parameters were selected for XCMS processing [4] according to IPO optimization. Only bw and minfrac parameters were manually checked according to [5,6]. The “bw” parameter did not introduce any benefits in terms of the number of peaks. The decreasing of “minfrac” parameter sequentially increase the number of peaks and “minfrac” was finally set equal to minimum proportion of the smallest experimental group (0.2 for QC group). Peaks integration, grouping and retention time alignment were performed for all 311 sample injections (without blank injections). The final peak table was described by total number of peaks and fraction of missing values.
+
+Warpgroup algorithm [7] for increasing of precision XCMS results integration was also tested. However, time of computing was approximately 6 days (test was performed via 5 random peak groups). The algorithm has not been implemented for this reason.
+
+ncGTW algorithm [8] for increasing of precision XCMS alignment results was also implemented. Alternative way is checking different “bw “values.
+
+Other approaches for XCMS parameters selection (Autotuner [9] in semi-automatic mode and MetaboAnalystR [10] in automatic) were also implemented as alternative options. Also, old version of XCMS functions (in consistent with xcmsSet objects instead of XCMSnExp objects in recent version) and new capabilities, that are provided by “refineChromPeaks” function and subset-based alignment, were integrated into the script.
+
+## 3. Imputation
+Artifacts checking was performed via MetProc [11] which is based on the comparison of missing rates (all peaks were retained). Nine methods of missing value imputation (MVI) were tested for previously obtained peak table, closely to [12]. The half minimum, KNN (k-nearest neighbors), PLS (partial least squares), PPCA (probabilistic principal component analysis, or other PCA-based), CART (Classification and Regression Tree), three types of RF (random forest) and QRILC (quantile regression for the imputation of left-censored missing data) algorithms were implemented for data table without any NA values and with randomly introducing NA values (proportion of introducing was equal to proportion of NA in the original dataset) [13]. The best algorithm was selected by the normalized root-mean-square error (NRMSE, value between 0 and 1) value close to zero (the RF implementation from missForest package). Assumption about decreasing of mean weighted NRMSE value after dividing the procedure for each group was sequentially tested and rejected (no statistically significant increment). Sum of squared error in Procrustes analysis on principal component scores (minimal value required) and correlation coefficient (maximum value required) were implemented as other quality metrics for MVI.
+
+Moreover, other univariate MVI methods are implemented: converting NA values into the one single number (for example, 0), replacing by mean or median or minimum values and by random generated numbers. Values for random generation are produced by normal distribution with mean equal to the noise level (which was determined by IPO optimization or set manually) and standard deviation which was calculated from the noise (for example, 0.3*noise). 
+
+## 4.	Correction
+31 methods for signal drift correction and batch effects removal were implemented in this work, which include: model-based (WaveICA [14], WaveICA 2.0 [15], EigenMS [16], RUVSeqs family [17,18] (RUVSeqs, RUVSeqg, RUVSeqr), Parametric/Non-Parametric Combat, Ber, Ber-Bagging [19]), internal standards based [20,21] (SIS, NOMIS, CCMN, BMIS), QC metabolites based [21] (ruvrand, ruvrandclust), QC samples based regression algorithms are: cubic smoothing splines [22,23] (in two different implementation via pmp and notame packages respectively), local polynomial regression fitting (LOESS) and RF [24], support vector machine (SVM) [25], least-squares/ robust (LM/RLM) and censored (TOBIT) [26], LOESS or splines with mclust [27], 5 new algorithms each with single, two features and batchwise modes (all also in subtraction/division versions) – KNN (caret package), decision tree (rpart), bagging tree (ipred), XGB (xgboost) and catboost (catboost) gradient boostings and QC-NORM for between batches correction [28]. QC-NORM was implemented in two versions: division-based [28] and subtraction-based [29]. Moreover, sequential combinations of methods without consideration of batch number and QC-NORM were also performed. De facto, random forest method is equal to bagging for the regression with only one variable, but due to some differences in trees growing and pruning, modeling results differ. Also, some other algorithms were tested: Cubist (Cubist package), conditional trees (partykit) and smoothing splines with auto-determination of knots (mgcv). Modeling results for these algorithms did not outperform existing approaches and were not included into the script.
+
+5 new methods in single division mode were performed according to the equations (1-3):
+M_i=f_(i,QC) (y_(i,QC)~x_(i,QC) )								(1)
+F_i=M_i (x_i )										(2)
+I_i^'=I_i/F_i *1000										(3)
+
+where, i – is the index of metabolite, QC – is the index of QC samples (all samples are denoted without this index), M – is a machine learning model, is fitted by function f , y – is an intensity vector (dependent variable), x – is a run order vector (independent variable), F – is a vector of predicted values by the model M (correction factor), I’ – is a vector of a corrected intensity values, I – is a vector of an original intensity values.
+Equations (1-3) are one of the basic algorithms for all QC sample based algorithms for the signal drift correction and are most similar to the statTarget package [24]. The MetNormalizer package [25] also performs clustering of features via Spearman correlation and the same correction operation (division). Correction algorithm, which is described by the eq. 1-3, was marked as single division mode (“d”).
+I_i^'=I_i-F_i+mean(y_(i,QC))								(4)
+
+where, i – is the index of metabolite, QC – is the index of QC samples (all samples are denoted without this index), y – is an intensity vector, F – is a vector of predicted values by the model M (correction factor), I’ – is a vector of a corrected intensity values, I – is a vector of an original intensity values, mean – the function, that generates the mean value from the input vector.
+Equation (4) is the modification for equation (3) of previously described algorithm (eq. 1-3), which is called single subtraction mode (eq. 1-2,4; “s”). The same mode was implemented in the BatchCorrMetabolomics [26] and notame [23] packages. Other mode in notame utilizes a correction factor with some changes (including prediction for the 1st QC sample and raw data).
+Some QC sample based algorithms consider batch number. Batchwise mode (“bw”) is identical to the two types of single mode (eq. 1-3 division and 1-2,4 subtraction), but each equation was repeated for each batch separately. This implementation is similar to pmp package [22] (the difference with division mode in the correction factor, which includes the median value of the feature) and is closely to batchCorr package [27] (the differences are in the correction factor and clustering features by the mclust algorithm). 
