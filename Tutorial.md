@@ -97,3 +97,54 @@ Molecular features from data table after integration and alignment can be cluste
 
 All .RData files that are needed to implement the CROP algorithm can be loaded from the GitHub repository.
 
+## 9.Statistics
+Statistical analysis part is divided into several logical blocks. Basic information and principles behind this chapter are available in [48-52]. Calculations are performed with basic functions, if no package is specified.
+
+Outlier detection is performed by calculation of Mahalanobis/Euclidean distance for PCA scores (packages: OutlierDetection, pcaMethods or ClassDiscovery).
+
+Statistical filtration block includes numerous methods for selection of informative variables: 
+
+1. A combination of four ML models with stable feature extraction (SFE) and recursive feature selection (RFS) [53] (packages: caret, tuple). Lists of the top N (50,100, etc) important features from each model were selected according to the model-specific metric in order to perform SFE. The unique variables are subsequently extracted from the set of important features from all models that are matched in at least n times (from 2 to 4 or equal to 50%-100% frequency). RFS with Naïve Bayes(NB) or RF algorithm is applied to subsets of variables after SFE for collection final variable set. The N and n are determined experimentally. Filtration can be performed by SFE only or SFE with RFS.
+The following parameters were applied when building the models: initial dataset was divided into two subsets by the 10 folds cross-validation with 10 times repeats for internal validation. The hyper-parameters tune length was 10. The four base ML algorithms were implemented: RF, SVM with radial kernel function, PLS and PAM. Only the most important value was tuned in each model (SVM – cost of constraints violation, RF – number of variables at each split, PLS – number of components, PAM – shrinkage threshold). All models were optimized by maximum mean accuracy metric across all cross-validation resampling. RFS was performed by backwards selection between all variables in subset. ML parameters in RFS were equal to those described above.
+2. Filtration by VIP value from PLS (Orthogonal-PLS) model (package: ropls). The filtration threshold is determined experimentally.
+3. Filtration by permutation importance from RF model (packages: permimp, party). The filtration threshold is determined experimentally.
+4. Filtration by penalized or stepwise logistic regression models (packages: glmnet, MASS). The filtration threshold is determined experimentally.
+5. Area Under Receiver Operating Characteristic (AUROC) calculations are computed in caret package. The trapezoidal rule is used to compute the area under the ROC curve for each predictor in binary classification. This area is used as the measure of variable importance and for filtration. The problem is decomposed into all pairwise tasks for multiclass outcomes and the area under the curve is calculated for each class pair. The mean value of AUROC across all predictors is directly calculated for binary classification task, for multiclass – at first, sum of AUROC for all groups pairs is determined and is divided by number of class labels and then mean value of AUROC across all predictors is measured. The filtration threshold is determined experimentally.
+6. Univariate filtering (UVF) is a subsequent implementation of Shapiro-Wilk normality test, Bartlett test of homoscedasticity and Wilcox, Welch, Student tests with Benjamini-Hochberg method for multiple comparison (significance level was set 5% by default). The feature is filtered if significant level is reached between two groups in binary classification and at least any two groups – in multilabel task.
+7. Kruskal-Wallis and t-test can be performed separately. The feature is filtered if significant level is reached.
+8. Filtration by fold change value. The value is set manually. Fold change calculation for multiclass dataset can be also performed.
+9. Filtration by moderated t-test [54] (limma package). The significant level is set manually.
+10. Filtration by LM and LMM models (eq. 7,5; packages: MetabolomicsBasics, lme4, lmerTest). The features are filtered by p-value (set manually) for the target variable.
+11. Filtration by RUV2 algorithm ([55], package NormalizeMets). The p-value cutoff for the target variable is set manually.
+12. Filtration by two-dimensional false discovery rate control [56].
+13. Filtration by removing highly correlated features (package caret). The absolute values of pair-wise correlations are considered. If two variables have a high correlation, the function looks at the mean absolute correlation of each variable and removes the variable with the largest mean absolute correlation. The cutoff for pairwise absolute correlation is set manually.
+14. Filtration by correlation coefficient. Each variable is compared with vector of target numeric variable. Correlation cutoff is set manually.
+
+Statistical filtration output can be adapted for any combination of filtration algorithms by selection of intersected variables or all unique features.
+
+Another part of “Statistics” script is a classification model task. At first, dataset is divided into training and validation subsets. Then, resampling procedure is determined (bootstrap or cross-validation) and classification metric (ROC or accuracy) is specified (internal validation). In the next part ML model is fitted to training set via caret wrapper function. Hyperparameter tune length is set to 10 and can be changed. The resulted ML model is used for prediction on validation set (external validation) and resulted model overview with resampling statistics are provided. Also, logistic, penalized and stepwise logistic regression (packages: glmnet, MASS) are constructed in similar way. Performance of the models are tested by construction of confusion matrix on training and predicted class labels and ROC analysis. Generalized Weighted Quantile Sum (gWQS) Regression [57] is also available as option for classification task. Features can be visualized via box-plot or scatter-plot by groups.
+
+Regression model task is constructed in the same manner as classification task. The differences are as follows: metric is RMSE, MAE or R2; performance is tested by MAE, RMSE, R2 values; optimal subset of variables selection, penalized regression and stepwise regression are performed via leaps, glmnet and MASS packages; visualization is conducted by scatter plot of predicted and training data points. gWQS is also available for regression task.
+
+Next block is testing of biomarker set. Features can be visualized via scatter plot by data points and box or violin plots by one or two groups. MANOVA and PERMANOVA (packages: vegan, pairwiseAdonis) procedures are available. Means comparison can be performed as: fold change calculation, t-/moderated t-/Wilcoxon/ Kruskal-Wallis tests, two-way ANOVA and one-way ANOVA (equal to UVF). In all cases, p-values are adjusted for multiple comparisons.
+
+Metabolomic-Wide association study (MWAS) and analysis of covariance (ANCOVA) are carried out in the form of LM and LMM modeling (eq. 7,5) or similarly by GAM, GAMM and nonlinear dose-response curves (DRC).
+
+Signal modeling can be implemented by LM, LMM, GAM, GAMM and some other nonlinear functions for Dose-Response curve (DRC) analysis.
+
+N-factor analysis is implemented by LM/LMM/GAM/GAMM/DRC modeling equally to MWAS/ANCOVA and Signal modeling case. ANOVA-simultaneous component analysis (ASCA, package MetStaT, [58]) is also accessible as an option for multiway analysis, two-way ANOVA, two-dimensional false discovery rate control, PVCA and PC-PR2.
+
+Analysis of repeated measures is performed by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5) and multilevel sPLS algorithm (package mixOmics, [59]).
+
+Time series or longitudinal analysis is introduced by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5), ASCA and multivariate empirical Bayes statistics (package timecourse, [60]). Also, dose-response modeling is available (DRomics [61], TOXcms [62]), profile modeling by LMM Splines (timeOmics [63]) and PVCA, PC-PR2. 
+
+Multivariate data visualization and projection is provided by unsupervised data analysis. PCA, HCA, k-means clustering (all in packages: factoextra, FactoMineR, dendextend), HCA on PCA scores, heatmap (package pheatmap), t-distributed stochastic neighbor embedding (package Rtsne) and validation with optimization of clustering (Dunn index, silhouette analysis, gap stats, Rand index, p-value for HCA, classification accuracy, etc.; packages: NbClust, clustertend, mclust, clValid, fpc, pvclust) are available as an options for unsupervised data projection.
+
+Correlation analysis is represented by computing correlation matrix and correlograms (packages: Hmisc, corrplot, psych).
+
+Distance analysis part allows to calculate distance matrix for observations or features by distance metrics (Euclidean, maximum, Manhattan, Canberra, binary or Minkowski) or correlation and plot heatmap.
+
+In the next section, effect size (Cohen's d and Hedges'g) and power analysis with sample size calculation are available (packages: effectsize, pwr).
+
+## Conclusion
+The distribution of the number of strings in script file could be used for visualization of the relative contribution of each of nine processing steps into the overall workflow (Fig. 1). 
