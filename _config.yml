@@ -2,4 +2,5 @@ theme: jekyll-theme-architect
 show_downloads: true
 plugins:
   - jekyll-seo-tag
-
+header_pages:
+  - about.md
