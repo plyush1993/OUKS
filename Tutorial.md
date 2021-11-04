@@ -15,7 +15,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 
 OUKS has been published in the Journal of Proteome Research. If you use this software to analyze your own data, please cite it as below, thanks:
 
-[Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. Omics Untargeted Key Script: R‑Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021.](https://doi.org/10.1021/acs.jproteome.1c0039)
+[Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. Omics Untargeted Key Script: R‑Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021.](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00392)
 
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: plyushchenko.ivan@gmail.com.
 
