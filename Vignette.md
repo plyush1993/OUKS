@@ -70,6 +70,8 @@ f <- volcano(foldchange, pval, effect.low = -1.0, effect.high = 1.0, sig.level =
 f
 ```
 
+![volcano](/vignette/volcano.png)
+
 ## HCA plot
 
 ```{r}
@@ -101,6 +103,8 @@ b <- fviz_dend(res.hc1, k = k,
 b
 ```
 
+![HCA](/vignette/HCA.png)
+
 ## PCA plot
 
 ```{r}
@@ -119,6 +123,8 @@ a <- fviz_pca_ind(pca.ds1,
                     legend.title = "Groups")
 a
 ```
+
+![PCA](/vignette/PCA.png)
 
 ## ROC curve
 
@@ -151,6 +157,8 @@ c <- ggroc(res.roc, alpha = 0.5, colour = "blue1", linetype = 1, size = 1.5) +th
 c
 ```
 
+![ROC](/vignette/ROC.png)
+
 ## bootstrap histogram
 
 ```{r}
@@ -174,3 +182,4 @@ d <-ggplot(results$values, aes(x=results$values[,2])) +
   geom_histogram(colour="blue", fill="white") + theme_bw() + xlab("Accuracy") + ylab("Frequency")
 d
 ```
+![bootstrap](/vignette/bootstrap.png)
