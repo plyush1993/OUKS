@@ -12,7 +12,12 @@
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 <!-- badges: end -->
 
-# Omics Untargeted Key Script *(OUKS)* <img src="GH logo .png" align="right" height="250" width="300"/> 
+# Omics Untargeted Key Script *(OUKS)* 
+
+<p align="center">
+  <img width="300" height="250" src="GH logo .png">
+</p>
+
 ## Brief Description
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox
 
