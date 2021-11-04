@@ -12,20 +12,19 @@
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 <!-- badges: end -->
 
-# Omics Untargeted Key Script *(OUKS)* 
-
 <p align="center">
   <img width="300" height="250" src="GH logo .png">
 </p>
 
 ## Brief Description
-R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox
+R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox 
 
-### **See basic tutorial [page](./Tutorial.md)**
+---
+- [x] **See basic [tutorial](./Tutorial.md)**    
+- [x] **See short [vignette](./Vignette.md)**   
+--- 
 
-### **See short introduction [vignette](./Vignette.md)**
-
-Script | Purpose
+**Script** | **Purpose**
 ------------ | -------------
 [`1. Randomization.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/1.%20Randomization.R) | experimental design and sample randomization
 [`2. Integration.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/2.%20Integration.R) | peaks integration and time alignment
