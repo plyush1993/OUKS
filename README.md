@@ -21,6 +21,8 @@
 ## Brief Description
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox
 
+See short introduction [vignette](./Report%20(Rmd)/Report%20example%20OUKS.Rmd) 
+
 Script | Purpose
 ------------ | -------------
 [`1. Randomization.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/1.%20Randomization.R) | experimental design and sample randomization
