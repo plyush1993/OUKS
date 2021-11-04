@@ -3,4 +3,4 @@ show_downloads: true
 plugins:
   - jekyll-seo-tag
 header_pages:
-  - about.md
+  - Vignette.md
