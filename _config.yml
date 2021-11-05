@@ -3,3 +3,5 @@ show_downloads: true
 plugins:
   - jekyll-seo-tag
 
+url: "https://www.ouks.app/"
+baseurl: ""
