@@ -26,7 +26,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 --- 
 
 **Script** | **Purpose**
------------- | -------------
+:--------- | ----------:
 [`1. Randomization.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/1.%20Randomization.R) | experimental design and sample randomization
 [`2. Integration.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/2.%20Integration.R) | peaks integration and time alignment
 [`3. Imputation.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/3.%20Imputation.R) | missing value imputation (MVI) and artifacts removal
