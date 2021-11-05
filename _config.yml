@@ -2,6 +2,6 @@ theme: jekyll-theme-architect
 show_downloads: true
 plugins:
   - jekyll-seo-tag
+title: OUKS
+description: Omics Untargeted Key Script
 
-url: "https://www.ouks.app/"
-baseurl: ""
