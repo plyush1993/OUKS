@@ -101,20 +101,34 @@ Statistical analysis part is divided into several logical blocks. Basic informat
 Outlier detection is performed by calculation of Mahalanobis/Euclidean distance for PCA scores (packages: OutlierDetection, pcaMethods or ClassDiscovery).  
 
 Statistical filtration block includes numerous methods for selection of informative variables:
+
 1.A combination of four ML models with stable feature extraction (SFE) and recursive feature selection (RFS) [53] (packages: caret, tuple). Lists of the top N (50,100, etc) important features from each model were selected according to the model-specific metric in order to perform SFE. The unique variables are subsequently extracted from the set of important features from all models that are matched in at least n times (from 2 to 4 or equal to 50%-100% frequency). RFS with Naïve Bayes(NB) or RF algorithm is applied to subsets of variables after SFE for collection final variable set. The N and n are determined experimentally. Filtration can be performed by SFE only or SFE with RFS.
 The following parameters were applied when building the models: initial dataset was divided into two subsets by the 10 folds cross-validation with 10 times repeats for internal validation. The hyper-parameters tune length was 10. The four base ML algorithms were implemented: RF, SVM with radial kernel function, PLS and PAM. Only the most important value was tuned in each model (SVM – cost of constraints violation, RF – number of variables at each split, PLS – number of components, PAM – shrinkage threshold). All models were optimized by maximum mean accuracy metric across all cross-validation resampling. RFS was performed by backwards selection between all variables in subset. ML parameters in RFS were equal to those described above.
+
 2.Filtration by VIP value from PLS (Orthogonal-PLS) model (package: ropls). The filtration threshold is determined experimentally.
+
 3.Filtration by permutation importance from RF model (packages: permimp, party). The filtration threshold is determined experimentally.
+
 4.Filtration by penalized or stepwise logistic regression models (packages: glmnet, MASS). The filtration threshold is determined experimentally.
+
 5.Area Under Receiver Operating Characteristic (AUROC) calculations are computed in caret package. The trapezoidal rule is used to compute the area under the ROC curve for each predictor in binary classification. This area is used as the measure of variable importance and for filtration. The problem is decomposed into all pairwise tasks for multiclass outcomes and the area under the curve is calculated for each class pair. The mean value of AUROC across all predictors is directly calculated for binary classification task, for multiclass – at first, sum of AUROC for all groups pairs is determined and is divided by number of class labels and then mean value of AUROC across all predictors is measured. The filtration threshold is determined experimentally.
+
 6.Univariate filtering (UVF) is a subsequent implementation of Shapiro-Wilk normality test, Bartlett test of homoscedasticity and Wilcox, Welch, Student tests with Benjamini-Hochberg method for multiple comparison (significance level was set 5% by default). The feature is filtered if significant level is reached between two groups in binary classification and at least any two groups – in multilabel task.
+
 7.Kruskal-Wallis and t-test can be performed separately. The feature is filtered if significant level is reached.
+
 8.Filtration by fold change value. The value is set manually. Fold change calculation for multiclass dataset can be also performed.
+
 9.Filtration by moderated t-test [54] (limma package). The significant level is set manually.
+
 10.Filtration by LM and LMM models (eq. 7,5; packages: MetabolomicsBasics, lme4, lmerTest). The features are filtered by p-value (set manually) for the target variable.
+
 11.Filtration by RUV2 algorithm ([55], package NormalizeMets). The p-value cutoff for the target variable is set manually.
+
 12.Filtration by two-dimensional false discovery rate control [56].
+
 13.Filtration by removing highly correlated features (package caret). The absolute values of pair-wise correlations are considered. If two variables have a high correlation, the function looks at the mean absolute correlation of each variable and removes the variable with the largest mean absolute correlation. The cutoff for pairwise absolute correlation is set manually.
+
 14.Filtration by correlation coefficient. Each variable is compared with vector of target numeric variable. Correlation cutoff is set manually.  
 
 Statistical filtration output can be adapted for any combination of filtration algorithms by selection of intersected variables or all unique features.  
@@ -149,6 +163,7 @@ The distribution of the number of strings in script file could be used for visua
 **Fig. 1.** Pie (A) and spider (B) charts for visualization of relative contribution of each of nine processing steps into overall workflow.
 
 ## Notes
+
 •	In peak table after XCMS all batch index with label “b12_4” was renamed to “b13”.  
 •	The klaR package should be exactly version 0.6-14 for RFS.  
 •	The shapiro.wilk.test function from cwhmisc package should be used in case some error occurred with normality test in UVF and OST.  
