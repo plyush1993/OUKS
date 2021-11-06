@@ -3,5 +3,5 @@ show_downloads: true
 plugins:
   - jekyll-seo-tag
 title: OUKS
-description: Omics Untargeted Key Scripts
+description: Omics Untargeted Key Script
 
