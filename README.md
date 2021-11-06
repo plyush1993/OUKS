@@ -20,10 +20,6 @@
 ## Brief Description
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox   
 
-<ins>New features include:</ins>
-<table><tr><td>5 QC-based correction methods (KNN, DT, BT, CTB, XGB)</td></tr></table>
-<table><tr><td>2 biological adjusting methods (GAMM/GAM, GBMM/GBM)</td></tr></table>
-
 ---
 ### **See basic [tutorial](./Tutorial.md)**    
 ### **See short [vignette](./Vignette.md)**   
