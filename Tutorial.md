@@ -46,9 +46,19 @@ The only requirements are to be familiar with the basic syntax of the R language
 
 OUKS has been published in the Journal of Proteome Research. If you use this software to analyze your own data, please cite it as below, thanks:  
 
-[Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. Omics Untargeted Key Script: R‑Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00392).        
+> [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. Omics Untargeted Key Script: R‑Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00392).        
 
-Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: plyushchenko.ivan@gmail.com.  
+New features include:
+
+>5 QC-based correction methods (KNN, DT, BT, CTB, XGB)[^1]
+
+[^1]: [4. Correction.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/4.%20Correction.R)
+
+>2 biological adjusting methods (GAMM/GAM, GBMM/GBM)[^2]
+
+[^2]: [7. Normalization.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/7.%20Normalization.R)
+
+Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
   
 ## Randomization 
 All samples were analyzed at random order to prevent systematic bias [1,2]. Each analytical batch consisted of ten samples in two technical repeats (repeat samples were acquired after last tenth sample and repeats were analyzed at the same order as first repeat). The QC samples were acquired at the beginning of the batch and after every five injections (overall five QC samples for each batch). The code generates a random sequence of samples in accordance with the user's conditions: the number of samples, technical and biological repeats and batch size.
