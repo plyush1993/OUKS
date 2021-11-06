@@ -25,7 +25,9 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 ### **See short [vignette](./Vignette.md)**   
 --- 
 
-<ins>The quick brown fox jumps over the lazy dog.</ins>
+<ins>New features include:</ins>
+<table><tr><td>5 QC-based correction methods (KNN, DT, BT, CTB, XGB)</td></tr></table
+<table><tr><td>2 biological adjusting methods (GAMM/GAM, GBMM/GBM)</td></tr></table
 
 **Script** | **Purpose**
 :----------: | :----------:
