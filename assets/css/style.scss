@@ -2,15 +2,11 @@
 ---
 
 @import "{{ site.theme }}";
-div { text-align: justify}
-
-div { line-height: 30px}
-div { margin-top: 0}
-div { margin-bottom: 0}
 
 p {
+  text-align: justify ;
   line-height: 30px ;
   margin-top: 0 ;
   margin-bottom: 0 ;
-  text-indent: 25px ;
+  text-indent: 30px ;
 }
