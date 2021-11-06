@@ -50,13 +50,9 @@ OUKS has been published in the Journal of Proteome Research. If you use this sof
 
 New features include:
 
->5 QC-based correction methods (KNN, DT, BT, CTB, XGB)[^a]
+>5 QC-based correction methods (KNN, DT, BT, CTB, XGB) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/4.%20Correction.R#L740-L1272)
 
-[^a]: [4. Correction.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/4.%20Correction.R)
-
->2 biological adjusting methods (GAMM/GAM, GBMM/GBM)[^b]
-
-[^b]: [7. Normalization.R](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/7.%20Normalization.R)
+>2 biological adjusting methods (GAMM/GAM, GBMM/GBM) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/7.%20Normalization.R#L287-L416)
 
 Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
   
