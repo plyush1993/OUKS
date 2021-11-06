@@ -4,8 +4,31 @@
 ---
 
 <!--ts-->
-   * [Preface](#preface)
-   * [Randomization](#randomization)
+   •	[Preface](#preface)
+   
+   •	[Randomization](#randomization)
+   
+   •	[Integration](#integration)
+   
+   •	[Imputation](#imputation)
+   
+   •	[Correction](#correction)
+   
+   •	[Annotation](#annotation)
+   
+   •	[Filtering](#filtering)
+   
+   •	[Normalization](#normalization)
+   
+   •	[Grouping](#grouping)
+   
+   •	[Statistics](#statistics)
+   
+   •	[Conclusion](#conclusion)
+   
+   •	[Notes](#notes)
+   
+   •	[References](#references)
 <!--te-->
 
 ## Preface
@@ -30,7 +53,7 @@ Please send any comment, suggestion or question you may have to the author (Mr. 
 ## Randomization 
 All samples were analyzed at random order to prevent systematic bias [1,2]. Each analytical batch consisted of ten samples in two technical repeats (repeat samples were acquired after last tenth sample and repeats were analyzed at the same order as first repeat). The QC samples were acquired at the beginning of the batch and after every five injections (overall five QC samples for each batch). The code generates a random sequence of samples in accordance with the user's conditions: the number of samples, technical and biological repeats and batch size.
   
-## 2. Integration
+## Integration
 In our case 311 injects in 13 batches were acquired. All raw data were stored in a specific folder. Seven injects were selected for integration and alignment parameters optimization via IPO [3] (1 (batch 1, 1st QC from 5), 75 (3, 5), 101 (5, 1), 163 (7, 3), 219 (9, 4), 257 (11, 2), 311 (13, 3 of 3)) in order to decrease time of computing. QC samples spanning all study were randomly selected (at the beginning, end and middle of batch).  
 
 Best parameters were selected for XCMS processing [4] according to IPO optimization. Only bw and minfrac parameters were manually checked according to [5,6]. The “bw” parameter did not introduce any benefits in terms of the number of peaks. The decreasing of “minfrac” parameter sequentially increase the number of peaks and “minfrac” was finally set equal to minimum proportion of the smallest experimental group (0.2 for QC group). Peaks integration, grouping and retention time alignment were performed for all 311 sample injections (without blank injections). The final peak table was described by total number of peaks and fraction of missing values.  
@@ -41,12 +64,12 @@ ncGTW algorithm [8] for increasing of precision XCMS alignment results was also 
 
 Other approaches for XCMS parameters selection (Autotuner [9] in semi-automatic mode and MetaboAnalystR [10] in automatic) were also implemented as alternative options. Also, old version of XCMS functions (in consistent with xcmsSet objects instead of XCMSnExp objects in recent version) and new capabilities, that are provided by “refineChromPeaks” function and subset-based alignment, were integrated into the script.
 
-## 3. Imputation
+## Imputation
 Artifacts checking was performed via MetProc [11] which is based on the comparison of missing rates (all peaks were retained). Nine methods of missing value imputation (MVI) were tested for previously obtained peak table, closely to [12]. The half minimum, KNN (k-nearest neighbors), PLS (partial least squares), PPCA (probabilistic principal component analysis, or other PCA-based), CART (Classification and Regression Tree), three types of RF (random forest) and QRILC (quantile regression for the imputation of left-censored missing data) algorithms were implemented for data table without any NA values and with randomly introducing NA values (proportion of introducing was equal to proportion of NA in the original dataset) [13]. The best algorithm was selected by the normalized root-mean-square error (NRMSE, value between 0 and 1) value close to zero (the RF implementation from missForest package). Assumption about decreasing of mean weighted NRMSE value after dividing the procedure for each group was sequentially tested and rejected (no statistically significant increment). Sum of squared error in Procrustes analysis on principal component scores (minimal value required) and correlation coefficient (maximum value required) were implemented as other quality metrics for MVI.  
 
 Moreover, other univariate MVI methods are implemented: converting NA values into the one single number (for example, 0), replacing by mean or median or minimum values and by random generated numbers. Values for random generation are produced by normal distribution with mean equal to the noise level (which was determined by IPO optimization or set manually) and standard deviation which was calculated from the noise (for example, 0.3*noise). 
 
-## 4.	Correction
+## Correction
 31 methods for signal drift correction and batch effects removal were implemented in this work, which include: model-based (WaveICA [14], WaveICA 2.0 [15], EigenMS [16], RUVSeqs family [17,18] (RUVSeqs, RUVSeqg, RUVSeqr), Parametric/Non-Parametric Combat, Ber, Ber-Bagging [19]), internal standards based [20,21] (SIS, NOMIS, CCMN, BMIS), QC metabolites based [21] (ruvrand, ruvrandclust), QC samples based regression algorithms are: cubic smoothing splines [22,23] (in two different implementation via pmp and notame packages respectively), local polynomial regression fitting (LOESS) and RF [24], support vector machine (SVM) [25], least-squares/ robust (LM/RLM) and censored (TOBIT) [26], LOESS or splines with mclust [27], 5 new algorithms each with single, two features and batchwise modes (all also in subtraction/division versions) – KNN (caret package), decision tree (rpart), bagging tree (ipred), XGB (xgboost) and catboost (catboost) gradient boostings and QC-NORM for between batches correction [28]. QC-NORM was implemented in two versions: division-based [28] and subtraction-based [29]. Moreover, sequential combinations of methods without consideration of batch number and QC-NORM were also performed. De facto, random forest method is equal to bagging for the regression with only one variable, but due to some differences in trees growing and pruning, modeling results differ. Also, some other algorithms were tested: Cubist (Cubist package), conditional trees (partykit) and smoothing splines with auto-determination of knots (mgcv). Modeling results for these algorithms did not outperform existing approaches and were not included into the script. 
 
 5 new methods in single division mode were performed according to the equations (1-3):
@@ -67,7 +90,7 @@ Thus, totally 30 algorithms were proposed: each of 5 regression algorithms were 
 
 15 methods for the quality checking and comparison of corrections methods [26,28,30,31] were performed, which include: guided principal component analysis (gPCA), principal variance component analysis (PVCA), fraction of features with p-value below the significance level in the ANOVA model, mean Pearson correlation coefficient for QC samples, mean Silhouette score in HCA on PCs scores for QC samples, fraction of features with p-value below the significance level in the One-Sample test (sequential implementation of Shapiro-Wilk normality test and corresponding type of test (t-test or Wilcoxon)) for QC samples, fraction of features under the criterion of 30% RSD reproducibility in QC samples, PCA, hierarchical cluster analysis (HCA), box-plots and scatter plot (total intensity versus run order) data projection and visualization, mean Bhattacharyya distance for QC samples between batches, mean dissimilarity score for QC samples, mean classification accuracy for QC samples after hierarchical clustering on PCs scores, Partial R-square (PC-PR2) method. The best correction method should demonstrate the maximum values of the fraction of features under the criterion of 30% RSD reproducibility in QC samples and the mean Pearson correlation coefficient for QC samples. The values of other metrics should be the lowest. PCA, box-plots, scatter plots and HCA dendrogram should show the absence of tendency for the samples to cluster according to batch number or run order, and simultaneously QC samples should be placed almost between study samples.
 
-## 5.	Annotation
+## Annotation
 Features in peak table (the output of XCMS processing) were annotated via CAMERA [32], RAMClustR [33], xMSannotator [34] and mWISE [35]. The sr and st parameters in RAMClustR were optimized by functions from [5]. Other settings which include mass detection accuracy in ppm and m/z values and time deviation in seconds were derived from IPO optimized parameters and manual inspection respectively. Annotations should be performed for files in the same folder as for XCMS integration and alignment, xcms objects (“xcms obj … .RData”) should be obtained by user. A search of isotope peaks, adducts, neutral losses and in-source fragments were included in all algorithms. The xMSannotator also was considered retention time and database search (HMDB, KEGG, LipidMaps, T3DB, and ChemSpider).  
 
 Some functions in xMSannotator package are not available for R version ≥ 4.0.0. For this reason, you should load file "fix for R 4.0 get_peak_blocks_modulesvhclust.R" in your environment (based on [https://github.com/yufree/xMSannotator](https://github.com/yufree/xMSannotator), other instructions are listed in the script). mWISE package forked from b2slab/mWISE to plyush1993/mWISE and depends were manually changed to R (>= 4.0) (available in “Auxiliary files (RData)” folder).  
@@ -76,10 +99,10 @@ Each algorithm was characterized by a fraction of annotated features. The xMSann
 
 Also, metID [36] can be used for simple databases search from peak table. Databases from ([https://github.com/jaspershen/demoData/tree/master/inst/ms2_database](https://github.com/jaspershen/demoData/tree/master/inst/ms2_database)) should be copied in "ms2_database" folder in metID library folder.
 
-## 6.	Filtering
+## Filtering
 Several most common options are available [1,23,37]: RSD based filtering by QC samples, annotation based (remove non-annotated features), by descriptive statistics for biological samples (by mean, max, min, median values of the feature or sd), by the fraction of missing values in the feature for biological samples, by the cutoff between median values of feature in QS or biological samples and blanks injections and by the Pearson correlation coefficient for samples (mainly for repeated injections). The mean values for every feature for all repeats are also computed. The mean values for two repeats were obtained in our study.
 
-## 7.	Normalization
+## Normalization
 Five normalization methods are performed [38,39]: mass spectrometry total useful signal (MSTUS), probabilistic quotient normalization (PQN), quantile, median fold change and sample-specific factor. Also, several scaling and transformation algorithms are introduced: log transformation, auto- , range- , pareto- , vast- , level- , power-, etc. scaling. 
 
 Biological and phenotyping metadata (classification class, age, sex, BMI, etc.) as well as experimental conditions (run order, batch number, etc.) can be adjusted by linear model (LM) [40] or linear mixed effect model (LMM) [41] fitting. Both algorithms were implemented in the study.  
@@ -98,12 +121,12 @@ GAM, GAMM [42], GBM, GBMM [43] adjustment were also realized (as in eq. 5-6).
 
 Four algorithms were utilized for evaluation of normalization methods, including: MA- , Box- , relative log abundance (RLA)– plots and mean/range of relative abundance between all features [21,44,45]. Biological adjustment methods were tested by classification accuracy via four machine learning (ML) algorithms (RF, linear SVM, nearest shrunken centroids (PAM), PLS), the high value of accuracy indicates successful removing of biological variation. ML parameters are listed in Section 9. PCA modeling was used for visualization of final adjustment. LM and LMM models were fitted in a similar way as described above (eq. 7,5). The fraction of p-values for the target variable and/or other covariates in the model less than the threshold (0.05) can serve as other character of the adjustment quality (the fraction should be the lowest for covariates and the largest for the target variable).
 
-## 8.	Grouping
+## Grouping
 Molecular features from data table after integration and alignment can be clustered (grouped) by different algorithms in order to determine an independent molecular feature and dimensionality reduction. The pmd package [46] performs hierarchical cluster analysis for this purpose (and also provides reactomics). The notame package [23] and CROP algorithm [47] utilize the Pearson correlation coefficient. Final signals represent the largest/mean/median values of features groups.   
 
 All .RData files that are needed to implement the CROP algorithm can be loaded from the GitHub repository.
 
-## 9.Statistics
+## Statistics
 Statistical analysis part is divided into several logical blocks. Basic information and principles behind this chapter are available in [48-52]. Calculations are performed with basic functions, if no package is specified.  
 
 Outlier detection is performed by calculation of Mahalanobis/Euclidean distance for PCA scores (packages: OutlierDetection, pcaMethods or ClassDiscovery).  
