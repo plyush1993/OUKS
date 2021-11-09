@@ -11,16 +11,16 @@
 ![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 [![](https://img.shields.io/badge/web-site-yellowgreen.svg)](https://plyush1993.github.io/OUKS/)
-|[___Tutorial___](./Tutorial.md)|[***Vignette***](./Vignette.md)|
-:----------: | :----------:
+[___Tutorial___](./Tutorial.md)|[***Vignette***](./Vignette.md)
+| --------------- | ----------- |
 <!-- badges: end -->
 
 <p align="center">
   <img width="300" height="250" src="GH logo .png">
 </p>
 
-|[___Tutorial___](./Tutorial.md)|[***Vignette***](./Vignette.md)|
-:----------: | :----------:
+[___Tutorial___](./Tutorial.md)|[***Vignette***](./Vignette.md)
+| --------------- | ----------- |
 
 
 ## Brief Description
