@@ -176,15 +176,15 @@ Regression model task is constructed in the same manner as classification task. 
 
 Next block is testing of biomarker set. Features can be visualized via scatter plot by data points and box or violin plots by one or two groups. MANOVA and PERMANOVA (packages: vegan, pairwiseAdonis) procedures are available. Means comparison can be performed as: fold change calculation, t-/moderated t-/Wilcoxon/ Kruskal-Wallis tests, two-way ANOVA and one-way ANOVA (equal to UVF). In all cases, p-values are adjusted for multiple comparisons.  
 
-Metabolomic-Wide association study (MWAS) and analysis of covariance (ANCOVA) are carried out in the form of LM and LMM modeling (eq. 7,5) or similarly by GAM, GAMM and nonlinear dose-response curves (DRC).  
+Metabolomic-Wide association study (MWAS) and analysis of covariance (ANCOVA) are carried out in the form of LM and LMM modeling (eq. 7,5) or similarly by GAM, GAMM and nonlinear dose-response curves (DRC). Also, LM, LMM, GLM, GLMM and correlation analysis are available (with Class as dependent variable)[58].  
 
 Signal modeling can be implemented by LM, LMM, GAM, GAMM and some other nonlinear functions for Dose-Response curve (DRC) analysis.  
 
-N-factor analysis is implemented by LM/LMM/GAM/GAMM/DRC modeling equally to MWAS/ANCOVA and Signal modeling case. ANOVA-simultaneous component analysis (ASCA, package MetStaT, [58]) is also accessible as an option for multiway analysis, two-way ANOVA, two-dimensional false discovery rate control, PVCA and PC-PR2.  
+N-factor analysis is implemented by LM/LMM/GAM/GAMM/DRC modeling equally to MWAS/ANCOVA and Signal modeling case. ANOVA-simultaneous component analysis (ASCA, package MetStaT, [59]) is also accessible as an option for multiway analysis, two-way ANOVA, two-dimensional false discovery rate control, PVCA and PC-PR2.  
 
-Analysis of repeated measures is performed by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5) and multilevel sPLS algorithm (package mixOmics, [59]).  
+Analysis of repeated measures is performed by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5) and multilevel sPLS algorithm (package mixOmics, [60]).  
 
-Time series or longitudinal analysis is introduced by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5), ASCA and multivariate empirical Bayes statistics (package timecourse, [60]). Also, dose-response modeling is available (DRomics [61], TOXcms [62]), profile modeling by LMM Splines (timeOmics [63]) and PVCA, PC-PR2.   
+Time series or longitudinal analysis is introduced by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5), ASCA and multivariate empirical Bayes statistics (package timecourse, [61]). Also, dose-response modeling is available (DRomics [62], TOXcms [63]), profile modeling by LMM Splines (timeOmics [64]) and PVCA, PC-PR2.   
 
 Multivariate data visualization and projection is provided by unsupervised data analysis. PCA, HCA, k-means clustering (all in packages: factoextra, FactoMineR, dendextend), HCA on PCA scores, heatmap (package pheatmap), t-distributed stochastic neighbor embedding (package Rtsne) and validation with optimization of clustering (Dunn index, silhouette analysis, gap stats, Rand index, p-value for HCA, classification accuracy, etc.; packages: NbClust, clustertend, mclust, clValid, fpc, pvclust) are available as an options for unsupervised data projection.  
 
@@ -271,9 +271,10 @@ The distribution of the number of strings in script file could be used for visua
 55. De Livera, Alysha M., et al. "Normalizing and integrating metabolomics data." Analytical chemistry 84.24 (2012): 10768-10776.
 56. Yi, Sangyoon, et al. "2dFDR: a new approach to confounder adjustment substantially increases detection power in omics association studies." Genome biology 22.1 (2021): 1-18.
 57. Tanner, Eva M., Carl-Gustaf Bornehag, and Chris Gennings. "Repeated holdout validation for weighted quantile sum regression." MethodsX 6 (2019): 2855-2860.
-58. Smilde, Age K., et al. "ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data." Bioinformatics 21.13 (2005): 3043-3048.
-59. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
-60. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
-61. Larras, Floriane, et al. "DRomics: a Turnkey Tool to support the use of the dose–response framework for omics data in ecological risk assessment." Environmental science & technology 52.24 (2018): 14461-14468.
-62. Yao, Cong-Hui, et al. "Dose-response metabolomics to understand biochemical mechanisms and off-target drug effects with the TOXcms software." Analytical chemistry 92.2 (2019): 1856-1864.
-63. Bodein, Antoine, et al. "timeOmics: an R package for longitudinal multi-omics data integration." Bioinformatics (2021).
+58. Rodriguez-Martinez, Andrea, et al. "MWASTools: an R/bioconductor package for metabolome-wide association studies." Bioinformatics 34.5 (2018): 890-892.
+59. Smilde, Age K., et al. "ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data." Bioinformatics 21.13 (2005): 3043-3048.
+60. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
+61. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
+62. Larras, Floriane, et al. "DRomics: a Turnkey Tool to support the use of the dose–response framework for omics data in ecological risk assessment." Environmental science & technology 52.24 (2018): 14461-14468.
+63. Yao, Cong-Hui, et al. "Dose-response metabolomics to understand biochemical mechanisms and off-target drug effects with the TOXcms software." Analytical chemistry 92.2 (2019): 1856-1864.
+64. Bodein, Antoine, et al. "timeOmics: an R package for longitudinal multi-omics data integration." Bioinformatics (2021).
