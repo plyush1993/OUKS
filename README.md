@@ -55,6 +55,8 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 •	[`Changelog`](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md) file is provided and is constantly updated. See also [releases](https://github.com/plyush1993/OUKS/releases) page.
 
+• [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software was performed.
+
 ## Requirements
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
 
