@@ -26,7 +26,8 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 ---
 ### **[Tutorial](./Tutorial.md)**    
-### **[Vignette](./Vignette.md)**   
+### **[Vignette](./Vignette.md)**  
+### **[Comparison](./Comparison.md)**  
 --- 
 
 **Script** | **Purpose**
