@@ -67,7 +67,8 @@ The only requirements are to be familiar with the basic syntax of the R language
 > Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021.](https://doi.org/10.1021/acs.jproteome.1c00392)
 
 <p align="center">
- <img width="80" height="80" src="qrcode.png">
+ <img width="100" height="100" src="qrcode.png">
+ <a href="https://www.scimagojr.com/journalsearch.php?q=17625&amp;tip=sid&amp;exact=no" title="SCImago Journal &amp; Country Rank"><img border="0" src="https://www.scimagojr.com/journal_img.php?id=17625" alt="SCImago Journal &amp; Country Rank" width="100" height="100" /></a>
 </p>
 
 ## Contact
