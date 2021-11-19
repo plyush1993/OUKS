@@ -180,7 +180,7 @@ Metabolomic-Wide association study (MWAS) and analysis of covariance (ANCOVA) ar
 
 Signal modeling can be implemented by LM, LMM, GAM, GAMM and some other nonlinear functions for Dose-Response curve (DRC) analysis.  
 
-N-factor analysis is implemented by LM/LMM/GAM/GAMM/DRC modeling equally to MWAS/ANCOVA and Signal modeling case. ANOVA-simultaneous component analysis (ASCA, package MetStaT, [59]) is also accessible as an option for multiway analysis, two-way ANOVA, two-dimensional false discovery rate control, PVCA and PC-PR2.  
+N-factor analysis is implemented by LM/LMM/GAM/GAMM/DRC modeling equally to MWAS/ANCOVA and Signal modeling case. ANOVA-simultaneous component analysis (ASCA, package MetStaT, [59]) is also accessible as an option for multiway analysis, two-way ANOVA, PLS, sPLS, two-dimensional false discovery rate control, PVCA and PC-PR2.  
 
 Analysis of repeated measures is performed by LM/LMM/GAM/GAMM/DRC modeling (eq. 7,5) and multilevel sPLS algorithm (package mixOmics, [60]).  
 
