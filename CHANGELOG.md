@@ -62,6 +62,6 @@
 * "6. Filtering": Small changes in Descriptive Statistics, Missing Value and Blank filtering approaches.
 * "4. Correction": Fixed dependencies for QC-SVR, QC-LOESS, QC-RF and updated one sample test quality metric.
 ## **V. 1.9**
-:spiral_calendar: 2021.11.11
+:spiral_calendar: 2021.11.19
 ### Added
-* "9. Statistics": LM, LMM, GLM, GLMM and correlation analysis (MWASTools, 1.12.0, BC; glmmsr, 0.2.3, CRAN) are added in "MWAS/ANCOVA" section (with categorical feature as dependent variable).
+* "9. Statistics": LM, LMM, GLM, GLMM and correlation analysis (MWASTools, 1.12.0, BC; glmmsr, 0.2.3, CRAN) are added in "MWAS/ANCOVA" section (with categorical feature as dependent variable). Add PLS and sPLS for multigroup analysis.
