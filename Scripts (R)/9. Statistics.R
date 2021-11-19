@@ -1939,6 +1939,49 @@ ASCA.Plot(ASCA)
 ASCA.DoPermutationTest(ASCA, perm = 500)
 
 ############################################### 
+############################################### PLS/sPLS
+###############################################
+
+library(mixOmics)
+
+# data
+dat <- ds[,-1]
+s_d <- cbind(Class = ds$Label, Order = order, meta) # adjust to your data
+Y <- as.matrix(cbind(Class = as.factor(s_d$Class), Sex = as.factor(s_d$Sex)))
+
+################################################### PLS
+
+pls.multilabel <- pls(X=dat, Y = Y, 
+                            ncomp = 3) # adjust to your data
+
+pls.multilabel
+plotIndiv(pls.multilabel, group = as.factor(s_d$Class))
+
+Q2.pls1 <- perf(pls.multilabel, validation = 'Mfold', folds = 10, nrepeat = 5)
+plot(Q2.pls1, criterion = 'Q2')
+
+################################################### sPLS
+
+spls.multilabel <- spls(X=dat,
+                      Y = Y, 
+                      ncomp = 3) # adjust to your data
+
+spls.multilabel
+plotIndiv(spls.multilabel, group = as.factor(s_d$Class))
+
+Q2.spls1 <- perf(spls.multilabel, validation = 'Mfold', folds = 10, nrepeat = 5)
+plot(Q2.spls1, criterion = 'Q2')
+
+tune.spls <- tune.spls(X=dat, Y=Y, 
+                           ncomp=3, # adjust to your data
+                           validation = 'Mfold', folds = 10, nrepeat = 5, # adjust to your data
+                           test.keepX = c(1:ncol(dat)),
+                           progressBar = T)
+
+tune.spls
+plot(tune.spls)                                
+                                 
+############################################### 
 ############################################### PVCA
 ###############################################
 
