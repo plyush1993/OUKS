@@ -2083,7 +2083,7 @@ sp
 ######################################## PLOT BOXPLOT
 
 # feature data
-ds_bd <- subset(ds, n_gr_t == "QC")
+ds_bd <- ds # ds_bd <- ds or ds_bd <- subset(ds, n_gr_t == "QC")
 
 # generate group data by batch
 batch <- ds_bd$b_id
@@ -2133,4 +2133,4 @@ bp
 # 15. Drotleff, Bernhard, and Michael Lammerhofer. "Guidelines for selection of internal standard-based normalization strategies in untargeted lipidomic profiling by LC-HR-MS/MS." Analytical chemistry 91.15 (2019): 9836-9843.
 # 16. Sanchez-Illana, Angel, et al. "Evaluation of batch effect elimination using quality control replicates in LC-MS metabolite profiling." Analytica chimica acta 1019 (2018): 38-48.
 # 17. Caesar, Lindsay K., Olav M. Kvalheim, and Nadja B. Cech. "Hierarchical cluster analysis of technical replicates to identify interferents in untargeted mass spectrometry metabolomics." Analytica chimica acta 1021 (2018): 69-77.
-# 17. Fages, Anne, et al. "Investigating sources of variability in metabolomic data in the EPIC study: the Principal Component Partial R-square (PC-PR2) method." Metabolomics 10.6 (2014): 1074-1083.
+# 18. Fages, Anne, et al. "Investigating sources of variability in metabolomic data in the EPIC study: the Principal Component Partial R-square (PC-PR2) method." Metabolomics 10.6 (2014): 1074-1083.
