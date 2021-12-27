@@ -497,7 +497,7 @@ fwrite(f_d, "f_d.csv", row.names = F)
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
-shiftCor(samPeno,samFile, MLmethod = 'QCRLSC', QCspan = 0, degree = 2, imputeM = 'min', coCV = 16000, Frule = 0.001) # set coCV as max as possible
+shiftCor(samPeno,samFile, MLmethod = 'QCRLSC', QCspan = 0, degree = 2, imputeM = 'min', coCV = 16000, Frule = 0.001) # set coCV as max as possible, set QCspan and degree
 
 # save
 ds_rlc <- fread(input = "statTarget/shiftCor/After_shiftCor/shift_all_cor.csv", header = T)
