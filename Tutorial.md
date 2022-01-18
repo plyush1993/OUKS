@@ -1,4 +1,4 @@
-![logo](/vignette/logo.png) 
+![logo](/vignette/logo.gif) 
 
 # Table of contents
 ---
