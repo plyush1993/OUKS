@@ -14,7 +14,7 @@
 <!-- badges: end -->
 
 <p align="center">
-  <img width="300" height="250" src="GH logo.gif">
+  <img width="280" height="300" src="GH logo hex.gif">
 </p>
 
 ## Brief Description
