@@ -1,4 +1,4 @@
-![logo](/vignette/GH logo.gif) 
+![logo](GH logo.gif) 
 
 # Table of contents
 ---
