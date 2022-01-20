@@ -1,4 +1,6 @@
-![logo](GH logo.gif) 
+<p align="center">
+  <img width="380" height="400" src="GH logo.gif">
+</p>
 
 # Table of contents
 ---
