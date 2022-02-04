@@ -11,6 +11,9 @@
 ![](https://img.shields.io/tokei/lines/github/plyush1993/OUKS)
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 [![](https://img.shields.io/badge/web-site-yellowgreen.svg)](https://plyush1993.github.io/OUKS/)
+![](https://img.shields.io/github/last-commit/plyush1993/OUKS)
+![](https://img.shields.io/github/commit-activity/m/plyush1993/OUKS)
+![](https://img.shields.io/github/release-date/plyush1993/OUKS)
 <!-- badges: end -->
 
 <p align="center">
