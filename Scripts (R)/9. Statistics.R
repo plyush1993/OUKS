@@ -462,7 +462,7 @@ pval_ttest <- rownames(subset(pval.ttest, pval.ttest$pval <= th_ttest))
 
 ################################################### Kruskal-Wallis test
 
-res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # Kruskal test
+res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # Kruskal test # Try also wilcox.test or pairwise.wilcox.test (aka Mann-Whitney test)
 res.kw.test.pval <- sapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])$p.value)
 p_adj <-p.adjust(res.kw.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
 pval.kw <- as.data.frame(cbind(name = colnames(ds[,-1]), pval = as.numeric(p_adj))) 
@@ -1438,13 +1438,13 @@ res.t.test <- lapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y]
 res.t.test.pval <- sapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)
 p_adj <-p.adjust(res.t.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
 
-#################################### Wilcoxon test
+#################################### Wilcoxon test (aka Mann-Whitney test)
 
 # prepare data
 data_l <- lapply(1:length(unique(ds$Label)), function(y) subset(ds, Label==unique(ds$Label)[y])[,-1])
 data_l <- lapply(1:length(data_l), function(y) sapply(data_l[[y]], as.numeric))
 # perform
-res.w.test <- lapply(1:ncol(data_l[[1]]), function(y) wilcox.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # wilcox test
+res.w.test <- lapply(1:ncol(data_l[[1]]), function(y) wilcox.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # wilcox test # Try also pairwise.wilcox.test
 res.w.test.pval <- sapply(1:ncol(data_l[[1]]), function(y) wilcox.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)
 p_adj <-p.adjust(res.w.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
 
