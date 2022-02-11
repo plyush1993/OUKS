@@ -56,6 +56,7 @@
 :spiral_calendar: 2021.10.26
 ### Added
 * "4. Correction": Two features (tf) and subtraction (s) modes were implemented for QC-BT/DT/KNN/GBM in all combinations.
+* [Releases](https://github.com/plyush1993/OUKS/releases) page and [tags](https://github.com/plyush1993/OUKS/tags).
 ### Changed
 * "4. Correction": QC-norm was modified and division-/subtraction-based versions are provided (original version of the function is available at [“Deleted functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deleted%20functionality.R)).
 ### Fixed
