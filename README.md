@@ -46,7 +46,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 ## Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
 
-<img src="qrcode.png" align="right" height="100" width="100"/> 
+<img src="qrcode1.png" align="right" height="100" width="200"/> 
 
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, Igor A. Rodin. *Omics Untargeted Key Script*: R‑Based
 > Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study, Journal of Proteome Research, 2021.](https://doi.org/10.1021/acs.jproteome.1c00392)
