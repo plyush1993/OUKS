@@ -28,10 +28,10 @@ preferred-citation:
     given-names: "Igor A."
   doi: "10.1021/acs.jproteome.1c00392"
   journal: "Journal of Proteome Research"
-  month:
-  start:
-  end: 
+  month: March
+  start: 833
+  end: 847
   title: "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study"
-  issue: 
-  volume: 
-  year: 2021
+  issue: 3
+  volume: 21
+  year: 2022
