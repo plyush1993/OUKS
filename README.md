@@ -52,7 +52,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 > Journal of Proteome Research 2022 21 (3), 833-847. DOI: 10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392)
 
 ## Contact :memo:
-Please send any comment, suggestion or question you may have to the author (:man_scientist: Mr. Ivan Plyushchenko): 
+Please send any comment, suggestion or question you may have to the author (:man_scientist: Dr. Ivan Plyushchenko): 
 
 [:octocat:](https://github.com/plyush1993)
 [<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png">](https://orcid.org/0000-0003-3883-4695)
