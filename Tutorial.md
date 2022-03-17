@@ -57,7 +57,7 @@ New features include:
 
 >2 biological adjusting methods (GAMM/GAM, GBMM/GBM) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/7.%20Normalization.R#L287-L416)
 
-Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
+Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
   
 ## Randomization 
 All samples were analyzed at random order to prevent systematic bias [1,2]. Each analytical batch consisted of ten samples in two technical repeats (repeat samples were acquired after last tenth sample and repeats were analyzed at the same order as first repeat). The QC samples were acquired at the beginning of the batch and after every five injections (overall five QC samples for each batch). The code generates a random sequence of samples in accordance with the user's conditions: the number of samples, technical and biological repeats and batch size.
