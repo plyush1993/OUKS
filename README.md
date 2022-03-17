@@ -72,7 +72,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 </p>
 
 ## Contact
-Please send any comment, suggestion or question you may have to the author (Mr. Ivan Plyushchenko): 
+Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko): 
 
 [<img src="https://user-images.githubusercontent.com/40541666/140234594-eea6e2fa-7910-4c51-b15d-193cf6ab6c1f.png" height="25" width="25">](https://github.com/plyush1993)
 [<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png">](https://orcid.org/0000-0003-3883-4695)
