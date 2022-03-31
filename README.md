@@ -71,6 +71,9 @@ The only requirements are to be familiar with the basic syntax of the R language
  <a href="https://www.scimagojr.com/journalsearch.php?q=17625&amp;tip=sid&amp;exact=no" title="SCImago Journal &amp; Country Rank"><img border="0" src="https://www.scimagojr.com/journal_img.php?id=17625" alt="SCImago Journal &amp; Country Rank" width="150" height="150" /></a>
 </p>
 
+*`OUKS`* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their
+work when using these algorithms via *`OUKS`*: [*1*](https://github.com/plyush1993/OUKS/wiki/Tutorial#references), [*2*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
+
 ## Contact
 Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko):  
 
