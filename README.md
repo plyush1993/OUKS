@@ -43,7 +43,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 [`9. Statistics.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/9.%20Statistics.R) | statistical analysis and hypothesis testing
 
 ## Table of Contents
-•	Instruction and introduction into the *OUKS* toolbox are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) and [__Tutorial__](https://github.com/plyush1993/OUKS/blob/gh-pages/Tutorial.md) files. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
+•	Instruction and introduction into the *OUKS* toolbox are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf),  [__Tutorial__](https://github.com/plyush1993/OUKS/blob/gh-pages/Tutorial.md) files and [`Wiki page`](https://github.com/plyush1993/OUKS/wiki/Tutorial). [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
 
 •	[Scripts](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) with comments, notes and references are stored in Scripts folder at a previously defined order along with [code](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Figures%20for%20OUKS.R) for plotting figures associated with [article](https://doi.org/10.1021/acs.jproteome.1c00392).
 
