@@ -19,6 +19,9 @@
 ##############################################################################################################################################################
 
 # setup environment
+library(data.table)
+library(stringr)
+library(dplyr)
 setwd("D:/...")
 
 wd_1 <- c("D:/...") # folder with files for IPO optimization process
