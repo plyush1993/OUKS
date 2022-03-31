@@ -51,6 +51,9 @@ The only requirements are to be familiar with the basic syntax of the R language
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, and Igor A. Rodin
 > Journal of Proteome Research 2022 21 (3), 833-847. DOI: 10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392)
 
+*`OUKS`* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their
+work when using these algorithms via *`OUKS`*: [*1*](https://github.com/plyush1993/OUKS/wiki/Tutorial#references), [*2*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
+
 ## Contact :memo:
 Please send any comment, suggestion or question you may have to the author (:man_scientist: Dr. Ivan Plyushchenko): 
 
