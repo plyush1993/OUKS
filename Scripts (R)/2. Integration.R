@@ -491,6 +491,7 @@ library(xcms)
 library(data.table)
 library(dplyr)
 library(stringr)
+library(doParallel)
 
 # increase memory
 memory.limit(999999)
