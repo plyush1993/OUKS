@@ -530,7 +530,10 @@ feat_det <- xcmsSet(files_all, method="centWave", peakwidth=c(resultPeakpicking$
                     ppm=resultPeakpicking$best_settings$parameters$ppm, noise= resultPeakpicking$best_settings$parameters$noise,
                     snthresh = resultPeakpicking$best_settings$parameters$snthresh, integrate = resultPeakpicking$best_settings$parameters$integrate,
                     prefilter = c(resultPeakpicking$best_settings$parameters$prefilter, resultPeakpicking$best_settings$parameters$value_of_prefilter))
-
+# or:
+# load(file = "xcms obj feat_det.RData")                              
+# feat_det <- as(feat_det, "xcmsSet")
+                                  
 # peak grouping
 pk_gr <- group(feat_det, mzwid=mzdiff_ipo, bw=bw_ipo)
 
