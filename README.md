@@ -72,7 +72,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 </p>
 
 ```diff
-! Attantion!
+! Attantion !
 ```
 *OUKS* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993/OUKS/wiki/Tutorial#references), [*2*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
 
