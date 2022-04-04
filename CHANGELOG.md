@@ -12,7 +12,7 @@
 * "9. Statistics": Add adjusted p-value for multiple comparisons in all cases.
 * "7. Normalization": Add adjusted p-value for multiple comparisons in all cases.
 * "4. Correction": Add PCA with gradient color.
-* [“Deleted functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deleted%20functionality.R) was created for storing deleted code strings.
+* [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R) was created for storing deleted/deprecated code strings.
 ### Changed
 * "9. Statistics": Multigroup Fold Change (structToolbox package) was replaced by base packages implementation.
 ## **V. 1.2**
