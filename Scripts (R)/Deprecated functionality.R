@@ -1,4 +1,4 @@
-################################################### Multigroup Fold Change
+################################################### Multigroup Fold Change (Stats)
 
 library(structToolbox)
 
@@ -18,7 +18,7 @@ detach("package:structToolbox", unload = TRUE)
 fdr_mean <- apply(abs(fdr),1, mean, na.rm=T)
 
 ###############################################################################
-########################################## Median Between Batches (QC-norm)
+########################################## Median Between Batches (QC-norm correction)
 ###############################################################################
 
 # generate batch data
@@ -47,3 +47,68 @@ ds_qc_norm <- QC.NORM(data = ds_bbc)
 
 # save
 fwrite(ds_qc_norm, "... QC-NORM.csv", row.names = T)
+
+########################################## EACH GROUPS ONE METHODS (NRMSE FOR MVI)
+
+# create Label (group) column
+rname <- rownames(dsr)
+rname <- str_remove(rname, ".CDF")
+rname <- data.frame(rname)
+all_id <- sapply(1:nrow(rname), function(y) unlist(str_split(rname[y,], " "))) # split info from rownames
+all_id1 <- lapply(1:length(all_id), function(y) as.numeric(all_id[[y]][1])) # as numeric run order in [[x]][1]
+all_id2 <- lapply(1:length(all_id), function(y) replace(all_id[[y]],1, all_id1[[y]][1]))
+
+p1_id <- unlist(lapply(all_id, function(y) unlist(y[4]))) # obtain patient ID (every [4] element)
+un_raw_l <- unique(gsub("[[:digit:]]", "", p1_id)) # obtain unique raw label from p1_id (every [4] element)
+true_l <- c("QC", "TG", "CG") # write desired label in order as in unique raw label (should be analogical)
+rbind(un_raw_l,true_l) # visual check agreement between true and raw labels
+raw_l <- gsub("[[:digit:]]", "", p1_id) # obtain raw label from p1_id (every [4] element)
+n_gr_t <- as.character(match(raw_l, un_raw_l)) # obtain index for raw label by unique raw label
+for (i in 1:length(unique(n_gr_t))) {
+  n_gr_t <- str_replace(n_gr_t, unique(n_gr_t)[i], true_l[i]) } # exchange raw label by true label via index
+n_gr_t <- data.frame(n_gr_t)
+un_l <- unique(n_gr_t)[[1]]
+
+# create list with separated data frames with NA for each label (group)
+dsr_Label <- cbind(n_gr_t, dsr)
+colnames(dsr_Label)[1] <- "Label"
+l_dsr_Label <- lapply(c(1:length(un_l)), function(y) subset(dsr_Label, Label == un_l[y]))
+l_dsr <- lapply(c(1:length(un_l)), function(y) l_dsr_Label[[y]][,-1])
+
+# calculate NA in % for each group
+calc_NA <- function(x) {
+ tn <- nrow(x)*ncol(x)
+ mv_c <- sum(is.na(x)) 
+ pr_mv <- round(mv_c/tn*100,0) 
+ pr_mv }
+
+groups_NA <- sapply(1:length(l_dsr), function(y) calc_NA(l_dsr[[y]]))
+
+# create list with separated data frames without NA for each label (group)
+ds_true_Label <- cbind(n_gr_t, ds_true)
+colnames(ds_true_Label)[1] <- "Label"
+l_ds_true_Label <- lapply(c(1:length(un_l)), function(y) subset(ds_true_Label, Label == un_l[y]))
+l_ds_true <- lapply(c(1:length(un_l)), function(y) l_ds_true_Label[[y]][,-1])
+
+# perform NA randomly in percent as amount NA in data
+library(imputeR)
+l_ds_miss <- lapply(1:length(l_ds_true), function(y) SimIm(l_ds_true[[y]], p = groups_NA[y]/100))
+ 
+# copy and perform best methods funs
+library(missForest)
+library(doParallel)
+nCore=detectCores()-1
+cl=makeCluster(nCore)
+registerDoParallel(cl)
+l_ds_mvi_rf2 <- lapply(1:length(l_ds_miss), function(y) missForest(l_ds_miss[[y]], maxiter = 10, ntree = 100, mtry = floor(sqrt(ncol(l_ds_miss[[y]]))), parallelize = "forests")[[1]])
+stopCluster(cl)
+
+# proportion of each group
+n_r <- lapply(1:length(l_ds_miss), function(y) nrow(l_ds_miss[[y]]))
+s_n_r <- sum(unlist(n_r))
+pr_gr <- round(unlist(n_r)/s_n_r,2)
+
+# compute weighted mean NRMSE
+library(imputeR)
+NRMSE_gr <- lapply(1:length(l_ds_miss), function(y) Rmse(imp = l_ds_mvi_rf2[[y]], mis = l_ds_miss[[y]], true = l_ds_true[[y]], norm = T))
+NRMSE_gr_w_mean <- round(weighted.mean(unlist(NRMSE_gr), pr_gr), 2)
