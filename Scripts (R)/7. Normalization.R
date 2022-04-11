@@ -761,3 +761,4 @@ fwrite(dsf_c, "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG
 # 7. Livera, Alysha M. De, et al. "Statistical methods for handling unwanted variation in metabolomics data." Analytical chemistry 87.7 (2015): 3606-3615.
 # 8. Wood, Simon N. Generalized additive models: an introduction with R. CRC press, 2017.
 # 9. Sigrist, Fabio. "Gaussian Process Boosting." arXiv preprint arXiv:2004.02653 (2020).
+# 10. Plyushchenko, Ivan V., et al. "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study." Journal of Proteome Research (2021).
