@@ -637,7 +637,7 @@ colnames(ds_bp) <- c("label", "value")
 bp <- ggplot(data = ds_bp, aes(x=label, y=value)) + xlab("") + ylab("") +
   geom_boxplot(aes(fill=label)) + theme(legend.position="bottom") + theme_classic() 
 
-# bp
+bp
 
 # boxplot by sample
 pal <-brewer.pal(n =9,name ="Set1")
@@ -651,7 +651,7 @@ dat$Label <- ifelse(str_detect(dat$ind, "KMS"), "GG", "TG") # adjust to your dat
 bp <- ggplot(dat) + 
   geom_boxplot(aes(x = ind, y = values, fill = Label), outlier.size = 0.3) + theme_classic() + xlab("Sample") + ylab("Log Intensity")+theme(legend.position="top")+theme(axis.text.x = element_blank())
 
-# bp
+bp
 
 ######################################## PLOT MA PLOT (two class study)
 
