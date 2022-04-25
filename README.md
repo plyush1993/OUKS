@@ -1,6 +1,6 @@
 <!-- badges: starts -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/R≥4.0.0-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
+[![](https://img.shields.io/badge/R≥4.1.2-5fb9ed.svg?style=flat-square&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![](https://img.shields.io/github/v/release/plyush1993/OUKS?include_prereleases&color=ff6500)](https://github.com/plyush1993/OUKS/releases)
 [![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat-square)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
@@ -58,7 +58,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 • [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software was performed.
 
 ## Requirements
-The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.0.0).
+The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.1.2).
 
 ## Citation 
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
