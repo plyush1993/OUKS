@@ -49,7 +49,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 OUKS has been published in the Journal of Proteome Research. If you use this software to analyze your own data, please cite it as below, thanks:  
 
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, and Igor A. Rodin
-> Journal of Proteome Research 2022 21 (3), 833-847. DOI: 10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392)        
+> Journal of Proteome Research 2022, 21 (3), 833-847. DOI: 10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392)        
 
 New features include:
 
