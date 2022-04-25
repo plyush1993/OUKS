@@ -44,7 +44,7 @@ Raw data (.CDF format) and table with metadata (“metadata.csv”) are the only
 
 To reproduce any script code, download all files to the working directory folder, set the working directory and load (install) the corresponding packages. The R Markdown document and reports files were provided as an example to reproduce the OUKS code script (available in “Report (Rmd)” folder).   
 
-The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), RStudio and R (≥ 4.0.0).  
+The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), RStudio and R (≥ 4.1.2).  
 
 OUKS has been published in the Journal of Proteome Research. If you use this software to analyze your own data, please cite it as below, thanks:  
 
