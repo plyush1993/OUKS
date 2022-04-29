@@ -57,6 +57,8 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 • [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software was performed.
 
+• [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) is for storing packages archives with strong version dependency.
+
 ## Requirements
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.1.2).
 
