@@ -214,7 +214,7 @@ The distribution of the number of strings in script file could be used for visua
 
 •	The klaR package should be exactly version 0.6-14 for RFS (is available from folder “Required packages (archive)”).  
 
-•	The OutlierDetection should be installed from GitHub "rubak/spatstat.revdep" (is available from folder “Required packages (archive)”).
+•	The OutlierDetection package should be installed from GitHub "rubak/spatstat.revdep" (is available from folder “Required packages (archive)”).
 
 •	The shapiro.wilk.test function from cwhmisc package should be used in case some error occurred with normality test in UVF and OST. 
 
