@@ -8,8 +8,7 @@
 ## **V. 1.1** 
 :spiral_calendar: 2021.07.12
 ### Added
-* "9. Statistics": Outlier detection method implementation (by Mahalanobis distance) via ClassDiscovery package (3.3.13, CRAN) was added. OutlierDetection package require spatstat package version 1.64-1 (CRAN).
-* "9. Statistics": Add adjusted p-value for multiple comparisons in all cases.
+* "9. Statistics": Outlier detection method implementation (by Mahalanobis distance) via ClassDiscovery package (3.3.13, CRAN) was added. OutlierDetection package require spatstat package version 1.64-1 (CRAN). Adjusted p-value for multiple comparisons in all cases were added.
 * "7. Normalization": Add adjusted p-value for multiple comparisons in all cases.
 * "4. Correction": Add PCA with gradient color.
 * [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R) was created for storing deleted/deprecated code strings.
@@ -19,8 +18,7 @@
 :spiral_calendar: 2021.07.17
 ### Added
 * "7. Normalization": GAM (mgcv, 1.8-32, CRAN) and GAMM (gamm4, 0.2-6, CRAN) were added as new biological factor adjustment algorithms.
-* "9. Statistics": Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling.
-* "9. Statistics": In section “Time series” Dose-Response curve analysis and modeling was added (DRomics, 2.2-0, CRAN).
+* "9. Statistics": Section “Signal Modeling” was added for LM, LMM, GAM (mgcv, 1.8-32, CRAN), GAMM (gamm4, 0.2-6, CRAN) and some other nonlinear functions for Dose-Response curve analysis (drc, 3.0-1, CRAN) modeling. In section “Time series” Dose-Response curve analysis and modeling was added (DRomics, 2.2-0, CRAN).
 ## **V. 1.3**
 :spiral_calendar: 2021.08.04
 ### Added
@@ -66,3 +64,14 @@
 :spiral_calendar: 2021.11.19
 ### Added
 * "9. Statistics": LM, LMM, GLM, GLMM and correlation analysis (MWASTools, 1.12.0, BC; glmmsr, 0.2.3, CRAN) are added in "MWAS/ANCOVA" section (with categorical feature as dependent variable). Add PLS and sPLS for multigroup analysis.
+## **V. 1.10**
+:spiral_calendar: 2022.04.30
+### Fixed
+Updated to R 4.1.2.
+### Changed
+* "3. Imputation": Class-specific NRMSE calculation is moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
+### Added
+* "2. Integration": cpc for filtering low quality peaks, Paramounter optimization algorithm and “groupFeatures” function from xcms were added.
+* "3. Imputation": tWLSA multivariate MVI algorithm.
+* "4. Correction": SERRF, TIGERr, QC-LOESS and QC-RF (in subtraction mode) algorithms were added.
+* "9. Statistics": Nested feature selection and Boruta ("Multiple statistical filtration" section), Nested cross-validation ("Classification Machine Learning task" and "Regression Machine Learning task" sections), and DBSCAN, HDBSCAN, Spectral Clustering, UMAP, MCLUST, MDS, LLE, IsoMap, Laplacian Score, Diffusion Maps, kernel PCA, sparse PCA, ICA, FA, NMF, PAM, CLARA, Fuzzy Clustering ("Unsupervised Data Projection" section) were added.  
