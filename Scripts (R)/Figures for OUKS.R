@@ -10,21 +10,21 @@ library(fmsb)
 
 scores <- data.frame(
   "1.Randomization"  = c(191),
-  "2.Integration" = c(631),
-  "3.Imputation" = c(387),
-  "4.Correction" = c(2103),
-  "5.Annotation" = c(635),
-  "6.Filtering" = c(437),
-  "7.Normalization" = c(747),
+  "2.Integration" = c(747),
+  "3.Imputation" = c(329),
+  "4.Correction" = c(2372),
+  "5.Annotation" = c(638),
+  "6.Filtering" = c(417),
+  "7.Normalization" = c(764),
   "8.Grouping" = c(150),
-  "9.Statistics" = c(2759)
+  "9.Statistics" = c(3354)
 )
 
 
 max_min <- data.frame(
-  "1.Randomization" = c(2759, 0), "2.Integration" = c(2759, 0), "3.Imputation" = c(2759, 0),
-  "4.Correction" = c(2759, 0), "5.Annotation" = c(2759, 0), "6.Filtering" = c(2759, 0),
-  "7.Normalization" = c(2759, 0), "8.Grouping" = c(2759, 0), "9.Statistics" = c(2759, 0)
+  "1.Randomization" = c(3354, 0), "2.Integration" = c(3354, 0), "3.Imputation" = c(3354, 0),
+  "4.Correction" = c(3354, 0), "5.Annotation" = c(3354, 0), "6.Filtering" = c(3354, 0),
+  "7.Normalization" = c(3354, 0), "8.Grouping" = c(3354, 0), "9.Statistics" = c(3354, 0)
 )
 
 rownames(max_min) <- c("Max", "Min")
@@ -80,14 +80,14 @@ library(ggsci)
 
 scores <- data.frame(
   "1.Randomization"  = c(191),
-  "2.Integration" = c(631),
-  "3.Imputation" = c(387),
-  "4.Correction" = c(2103),
-  "5.Annotation" = c(635),
-  "6.Filtering" = c(437),
-  "7.Normalization" = c(747),
+  "2.Integration" = c(747),
+  "3.Imputation" = c(329),
+  "4.Correction" = c(2372),
+  "5.Annotation" = c(638),
+  "6.Filtering" = c(417),
+  "7.Normalization" = c(764),
   "8.Grouping" = c(150),
-  "9.Statistics" = c(2759)
+  "9.Statistics" = c(3354)
 )
 
 slices <- round(scores/max(scores)*100, 0)
