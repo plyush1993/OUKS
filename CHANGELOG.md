@@ -65,13 +65,16 @@
 ### Added
 * "9. Statistics": LM, LMM, GLM, GLMM and correlation analysis (MWASTools, 1.12.0, BC; glmmsr, 0.2.3, CRAN) are added in "MWAS/ANCOVA" section (with categorical feature as dependent variable). Add PLS and sPLS for multigroup analysis.
 ## **V. 1.10**
-:spiral_calendar: 2022.04.30
+:spiral_calendar: 2022.05.05
 ### Fixed
 Updated to R 4.1.2.
 ### Changed
 * "3. Imputation": Class-specific NRMSE calculation is moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
+* "6. Filtering": Minor changes to reduce dependencies.
+* "4. Correction": Script was rewritten to reduce dependencies. 
 ### Added
 * "2. Integration": cpc for filtering low quality peaks, Paramounter optimization algorithm and “groupFeatures” function from xcms were added.
 * "3. Imputation": tWLSA multivariate MVI algorithm.
-* "4. Correction": SERRF, TIGERr, QC-LOESS and QC-RF (in subtraction mode) algorithms were added.
-* "9. Statistics": Nested feature selection and Boruta ("Multiple statistical filtration" section), Nested cross-validation ("Classification Machine Learning task" and "Regression Machine Learning task" sections), and DBSCAN, HDBSCAN, Spectral Clustering, UMAP, MCLUST, MDS, LLE, IsoMap, Laplacian Score, Diffusion Maps, kernel PCA, sparse PCA, ICA, FA, NMF, PAM, CLARA, Fuzzy Clustering ("Unsupervised Data Projection" section) were added.  
+* "4. Correction": SERRF, TIGERr, QC-LOESS and QC-RF (in subtraction mode) algorithms were added. Manual ANOVA version.
+* "7. Normalization": Manual LM modeling version.
+* "9. Statistics": Nested feature selection and Boruta ("Multiple statistical filtration" section), Nested cross-validation ("Classification Machine Learning task" and "Regression Machine Learning task" sections), and DBSCAN, HDBSCAN, Spectral Clustering, UMAP, MCLUST, MDS, LLE, IsoMap, Laplacian Score, Diffusion Maps, kernel PCA, sparse PCA, ICA, FA, NMF, PAM, CLARA, Fuzzy Clustering ("Unsupervised Data Projection" section) were added. Manual LM modeling and ANOVA versions.
