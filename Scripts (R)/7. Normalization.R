@@ -583,8 +583,8 @@ lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coef
 lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5][2], method = "BH")) # adjust to your data # select method
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # adjust to your data # select method
 dat2 <- cbind(meta, ds)
-rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:5)] # adjust to your data
-colnames(lmm_fit_pval_all_df)[2:4] <- c("Class", "Sex", "Age") # adjust to your data
+rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)] # adjust to your data
+colnames(lmm_fit_pval_all_df)[-1] <- c("Class", "Sex", "Age") # adjust to your data
 
 # features
 class_un <- sum(lmm_fit_pval_all_df[,"Age"]>0.05 & lmm_fit_pval_all_df[,"Sex"]>0.05 & lmm_fit_pval_all_df[,"Class"]<0.05) # adjust to your data
