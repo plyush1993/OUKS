@@ -274,7 +274,14 @@ min_frac_man <- min(round(n_gr/length(vec_gr), 1)) # calculate min_frac manually
 # download files
 raw_data <- readMSData(files = files_all, pdata = new("NAnnotatedDataFrame", n_gr_t), mode = "onDisk") # or use pd only as: pdata = new("NAnnotatedDataFrame", pd) or pdata = new("NAnnotatedDataFrame", n_gr_t)
 raw_data <- filterRt(raw_data, c(0,2500)) # time range in sec for unified rt range, use also filterMz, filterPolarity, filterMsLevel
+# use also filterMz, filterPolarity, filterMsLevel
+               
+# data smoothing   
+# raw_data <- MSnbase::smooth(raw_data, method = "SavitzkyGolay", halfWindowSize = 4L) # see ?smooth for edit parameters            
 
+# refinement of the centroid’s m/z values  
+# raw_data <- MSnbase::pickPeaks(raw_data, refineMz = "descendPeak") # see ?pickPeaks for edit parameters               
+               
 # parallel processing
 cores = detectCores()-1
 register(bpstart(SnowParam(cores)))
@@ -741,7 +748,7 @@ ncol(ds_pt) # or nrow
 # 3. Pang, Zhiqiang, et al. "MetaboAnalystR 3.0: Toward an optimized workflow for global metabolomics." Metabolites 10.5 (2020): 186.
 # 4. Guo, Jian, Sam Shen, and Tao Huan. "Paramounter: Direct Measurement of Universal Parameters To Process Metabolomics Data in a "White Box"." Analytical Chemistry (2022).
 # 5. Libiseller, Gunnar, et al. "IPO: a tool for automated optimization of XCMS parameters." BMC bioinformatics 16.1 (2015): 118.
-# 6. Fernández-Ochoa, Álvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
+# 6. FernÃ¡ndez-Ochoa, Ãlvaro, et al. "A Case Report of Switching from Specific Vendor-Based to R-Based Pipelines for Untargeted LC-MS Metabolomics." Metabolites 10.1 (2020): 28.
 # 7. Mahieu, Nathaniel G., Jonathan L. Spalding, and Gary J. Patti. "Warpgroup: increased precision of metabolomic data processing by consensus integration bound analysis." Bioinformatics 32.2 (2016): 268-275.
 # 8. Wu, Chiung-Ting, et al. "Targeted realignment of LC-MS profiles by neighbor-wise compound-specific graphical time warping with misalignment detection." Bioinformatics 36.9 (2020): 2862-2871.
-# 9. Pirttil�, Kristian, et al. "Comprehensive Peak Characterization (CPC) in Untargeted LC-MS Analysis." Metabolites 12.2 (2022): 137.
+# 9. Pirttilä, Kristian, et al. "Comprehensive Peak Characterization (CPC) in Untargeted LC-MS Analysis." Metabolites 12.2 (2022): 137.
