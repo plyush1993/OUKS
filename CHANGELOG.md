@@ -65,7 +65,7 @@
 ### Added
 * "9. Statistics": LM, LMM, GLM, GLMM and correlation analysis (MWASTools, 1.12.0, BC; glmmsr, 0.2.3, CRAN) are added in "MWAS/ANCOVA" section (with categorical feature as dependent variable). Add PLS and sPLS for multigroup analysis.
 ## **V. 1.10**
-:spiral_calendar: 2022.05.05
+:spiral_calendar: 2022.10.05
 ### Fixed
 Updated to R 4.1.2.
 ### Changed
