@@ -73,7 +73,7 @@ Updated to R 4.1.2.
 * "6. Filtering": Minor changes to reduce dependencies.
 * "4. Correction": Script was rewritten to reduce dependencies. 
 ### Added
-* "2. Integration": cpc for filtering low quality peaks, Paramounter optimization algorithm and “groupFeatures” function from xcms were added.
+* "2. Integration": cpc for filtering low quality peaks, Paramounter optimization algorithm, “groupFeatures” function from xcms, data smoothing and refinement of the centroid’s m/z values (by MSnbase package) were added. 
 * "3. Imputation": tWLSA multivariate MVI algorithm.
 * "4. Correction": SERRF, TIGERr, QC-LOESS and QC-RF (in subtraction mode) algorithms were added. Manual ANOVA version.
 * "7. Normalization": Manual LM modeling version.
