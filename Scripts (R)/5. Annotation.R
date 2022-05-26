@@ -226,7 +226,7 @@ an_t_rcr$`RAMClustR adduct`[ind_rcr] <- annot_rcr_match$X2
 an_t_rcr <- an_t_rcr[order(an_t_rcr$index, decreasing = F),]
 
 # save
-save(RC1, file = "all RumClust.RData")
+save(RC1, file = "all RamClust.RData")
 fwrite(an_t_rcr, "xcms RAMClust.csv", row.names = T)
 
 ##############################################################################################################################################################
