@@ -173,7 +173,7 @@ res_sr <- cbind(par,nClust,nSing,sizeMax,sizeMean,sizeMed) # nClust+nSing value 
 res_sr$nclust_nSing <- res_sr$nClust + res_sr$nSing
 res_sr
 sr_val <- subset(res_sr, nClust == max(res_sr$nClust))$sr
-save(res_sr, file = "optimiz sr RumClustR.RData")
+save(res_sr, file = "optimiz sr RamClustR.RData")
 
 # perform
 expDes=defineExperiment(force.skip = T)
