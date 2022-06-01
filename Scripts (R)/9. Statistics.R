@@ -2657,6 +2657,11 @@ res_dr1 <- f1$fitres
 res_dr1
 plot(f1)
 
+# Try also parallel version of "drcfit":
+# library(parallel)
+# library(doParallel)
+# f <- drcfit(s_quad, progressbar = T, parallel = "snow", ncpus = 3)  # adjust ncores (ncpus) to your PV            
+               
 ######################### Calculation of BMD
 r <- bmdcalc(f, z = 1, x = 10)
 r$res
