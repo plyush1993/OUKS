@@ -279,7 +279,7 @@ raw_data <- filterRt(raw_data, c(0,2500)) # time range in sec for unified rt ran
 # data smoothing   
 # raw_data <- MSnbase::smooth(raw_data, method = "SavitzkyGolay", halfWindowSize = 4L) # see ?smooth for edit parameters            
 
-# refinement of the centroid’s m/z values  
+# refinement of the centroided m/z values  
 # raw_data <- MSnbase::pickPeaks(raw_data, refineMz = "descendPeak") # see ?pickPeaks for edit parameters               
                
 # parallel processing
