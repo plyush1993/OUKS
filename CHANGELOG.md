@@ -83,7 +83,7 @@ Updated to R 4.1.2.
 ### Added
 CompDb.Hsapiens.HMDB.5.0 (from [jorainer/MetaboAnnotationTutorials](https://github.com/jorainer/MetaboAnnotationTutorials/releases/tag/2021-11-02))
 ## **V. 1.11**
-:spiral_calendar: 2022.07.15
+:spiral_calendar: 2022.07.12
 ### Fixed
 Some packages were updated.
 ### Changed
