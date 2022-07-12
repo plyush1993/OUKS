@@ -205,7 +205,7 @@ In the next section, effect size (Cohen's d and Hedges'g) and power analysis wit
 
 ## Conclusion
 The distribution of the number of strings in script file could be used for visualization of the relative contribution of each of nine processing steps into the overall workflow (Fig. 1). 
-![Fig. 1](/vignette/Fig. 1.png)
+![Fig. 1](/vignette/Fig.%201.png)
 **Fig. 1.** Pie (A) and spider (B) charts for visualization of relative contribution of each of nine processing steps into overall workflow.
 
 ## Notes
