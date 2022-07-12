@@ -112,3 +112,78 @@ pr_gr <- round(unlist(n_r)/s_n_r,2)
 library(imputeR)
 NRMSE_gr <- lapply(1:length(l_ds_miss), function(y) Rmse(imp = l_ds_mvi_rf2[[y]], mis = l_ds_miss[[y]], true = l_ds_true[[y]], norm = T))
 NRMSE_gr_w_mean <- round(weighted.mean(unlist(NRMSE_gr), pr_gr), 2)
+
+############################################### GBMM MODELLING OF BIOLOGICAL FACTORS
+
+# data
+dat <- cbind(meta, ds_norm)
+n_meta <- 5 # set non numeric columns, adjust to your data
+colnames(dat)[-c(1:n_meta)] <- paste0("X", c(1:ncol(dat))) # adjust to your data
+dat$Batch <- as.numeric(stringr::str_remove(dat$Batch, "b")) # as.factor(dat$Batch) or as.numeric(stringr::str_remove(dat$Batch, "b")) or as.numeric(dat$Batch)
+dat$Age <- as.integer(dat$Age)
+dat$Sex <- as.integer(dat$Sex)
+dat$Class <- as.numeric(as.factor(dat$Class))
+dat[,-c(1:n_meta)] <- sapply(dat[,-c(1:n_meta)], as.numeric)
+
+library(pbapply)
+library(gpboost)
+
+# perform
+n_start <- 6 # adjust to your data
+dss <- lapply(n_start:ncol(dat), function(y) as.data.frame(dat[, c(y, 4, 5, 1, 2)])) # adjust to your data
+dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y" 
+return(dss[[y]])}) # adjust to your data
+gbmm_mod <- pblapply(1:length(dss), function(x) GPModel(group_data = dss[[x]][,5])) # adjust to your data
+gbmm_fit <- pblapply(1:length(dss), function(y) gpboost(data = as.matrix(dss[[y]][,c(2,3,4)]), label = as.matrix(dss[[y]][,1]), # adjust to your data
+                                                        gp_model = gbmm_mod[[y]],
+                                                        nrounds = 16,
+                                                        learning_rate = 0.05,
+                                                        max_depth = 6,
+                                                        min_data_in_leaf = 5,
+                                                        objective = "regression_l2",
+                                                        verbose = -1)) # use 1 / -1
+
+gbmm_pred <- as.data.frame(pbsapply(1:length(gbmm_fit), function(x) predict(gbmm_fit[[x]], data = as.matrix(dss[[x]][,c(2,3,4)]), group_data_pred = dss[[x]][,5], predict_var= TRUE)))
+gbmm_adj <- as.data.frame(pbsapply(1:length(gbmm_fit), function(x) gbmm_pred[[x]]$fixed_effect))
+colnames(gbmm_adj) <- colnames(dsr)
+rownames(gbmm_adj) <- rownames(dsr)
+
+# save adjusted dataset
+ds_gbmm_fit <- data.frame(cbind(Class = meta$Class, data.frame(gbmm_adj)))
+fwrite(ds_gbmm_fit, "QC-XGB after dual filt GBMM adj.csv", row.names = T)
+
+############################################### GBM MODELLING OF BIOLOGICAL FACTORS
+
+# data
+dat <- cbind(meta, ds_norm)
+n_meta <- 5 # set non numeric columns, adjust to your data
+colnames(dat)[-c(1:n_meta)] <- paste0("X", c(1:ncol(dat))) # adjust to your data
+dat$Batch <- as.numeric(stringr::str_remove(dat$Batch, "b")) # as.factor(dat$Batch) or as.numeric(stringr::str_remove(dat$Batch, "b")) or as.numeric(dat$Batch)
+dat$Age <- as.integer(dat$Age)
+dat$Sex <- as.integer(dat$Sex)
+dat$Class <- as.numeric(as.factor(dat$Class))
+dat[,-c(1:n_meta)] <- sapply(dat[,-c(1:n_meta)], as.numeric)
+
+library(pbapply)
+library(gpboost)
+
+# perform
+n_start <- 6 # adjust to your data
+dss <- lapply(n_start:ncol(dat), function(y) as.data.frame(dat[, c(y, 4, 5, 1, 2)])) # adjust to your data
+dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y" 
+return(dss[[y]])}) # adjust to your data
+gbm_fit <- pblapply(1:length(dss), function(y) gpboost(data = as.matrix(dss[[y]][,c(2,3,4)]), label = as.matrix(dss[[y]][,1]), # adjust to your data
+                                                        nrounds = 16,
+                                                        learning_rate = 0.05,
+                                                        max_depth = 6,
+                                                        min_data_in_leaf = 5,
+                                                        objective = "regression_l2",
+                                                        verbose = -1)) # use 1 / -1
+
+gbm_adj <- as.data.frame(pbsapply(1:length(gbm_fit), function(x) predict(gbm_fit[[x]], data = as.matrix(dss[[x]][,c(2,3,4)]))))
+colnames(gbm_adj) <- colnames(dsr)
+rownames(gbm_adj) <- rownames(dsr)
+
+# save adjusted dataset
+ds_gbm_fit <- data.frame(cbind(Class = meta$Class, data.frame(gbm_adj)))
+fwrite(ds_gbm_fit, "QC-XGB after dual filt GBM adj.csv", row.names = T)
