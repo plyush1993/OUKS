@@ -84,5 +84,8 @@ Updated to R 4.1.2.
 CompDb.Hsapiens.HMDB.5.0 (from [jorainer/MetaboAnnotationTutorials](https://github.com/jorainer/MetaboAnnotationTutorials/releases/tag/2021-11-02))
 ## **V. 1.11**
 :spiral_calendar: 2022.07.15
+### Fixed
+Some packages were updated.
 ### Changed
 "7. Normalization": GBM, GBMM modeling were moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
+### Added
