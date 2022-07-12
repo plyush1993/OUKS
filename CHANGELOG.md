@@ -90,9 +90,9 @@ Some packages were updated.
 "7. Normalization": GBM, GBMM modeling were moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
 ### Added
 * "2. Integration": Target peak integration in EIC chromatograms was implemented.
-* "3. Imputation": 
-* "4. Correction": 
-* "5. Annotation":
-* "6. Filtering": 
-* "7. Normalization": 
-* "9. Statistics": Some minor changes.
+* "3. Imputation": Automatic missingness type determination and imputation were implemented by MAI package.
+* "4. Correction": D-Ratio metric, RLA-plot, correlogram, 2-factors PCA are added.
+* "5. Annotation": MetaboAnnotation for database-based annotation was added.
+* "6. Filtering": D-Ratio filtering was added.
+* "7. Normalization": Adaptive Box-Cox Transformation normalization was implemented.
+* "9. Statistics": Hotelling Ellipse with T-squared statistic and DModX metric were added for outlier detection. polyPK for pharmacokinetic analysis was implemented. Some minor changes.
