@@ -89,3 +89,10 @@ Some packages were updated.
 ### Changed
 "7. Normalization": GBM, GBMM modeling were moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
 ### Added
+* "2. Integration": Target peak integration in EIC chromatograms was implemented.
+* "3. Imputation": 
+* "4. Correction": 
+* "5. Annotation":
+* "6. Filtering": 
+* "7. Normalization": 
+* "9. Statistics": Some minor changes.
