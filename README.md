@@ -55,7 +55,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 •	[`Changelog`](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md) file is provided and is constantly updated. See also [releases](https://github.com/plyush1993/OUKS/releases) page.
 
-• [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software was performed.
+• [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software.
 
 • [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) is for storing packages archives with strong version dependency.
 
