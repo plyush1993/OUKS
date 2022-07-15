@@ -81,7 +81,7 @@
 ## **V. 1.10.1**
 :spiral_calendar: 2022.06.29
 ### Added
-CompDb.Hsapiens.HMDB.5.0 (from [jorainer/MetaboAnnotationTutorials](https://github.com/jorainer/MetaboAnnotationTutorials/releases/tag/2021-11-02))
+* CompDb.Hsapiens.HMDB.5.0 (from [jorainer/MetaboAnnotationTutorials](https://github.com/jorainer/MetaboAnnotationTutorials/releases/tag/2021-11-02))
 ## **V. 1.11**
 :spiral_calendar: 2022.07.12
 ### Fixed
