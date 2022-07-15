@@ -96,3 +96,7 @@
 * "6. Filtering": D-Ratio filtering was added.
 * "7. Normalization": Adaptive Box-Cox Transformation normalization was implemented.
 * "9. Statistics": Hotelling Ellipse with T-squared statistic and DModX metric were added for outlier detection. polyPK for pharmacokinetic analysis was implemented. Some minor changes.
+## **V. 1.12**
+:spiral_calendar: 2022.07.15
+### Changed
+* "6. Filtering": Script was rewritten to reduce dependencies. 
