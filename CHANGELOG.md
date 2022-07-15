@@ -67,7 +67,7 @@
 ## **V. 1.10**
 :spiral_calendar: 2022.05.10
 ### Fixed
-Updated to R 4.1.2.
+* Updated to R 4.1.2.
 ### Changed
 * "3. Imputation": Class-specific NRMSE calculation is moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
 * "6. Filtering": Minor changes to reduce dependencies.
@@ -85,9 +85,9 @@ CompDb.Hsapiens.HMDB.5.0 (from [jorainer/MetaboAnnotationTutorials](https://gith
 ## **V. 1.11**
 :spiral_calendar: 2022.07.12
 ### Fixed
-Some packages were updated.
+* Some packages were updated.
 ### Changed
-"7. Normalization": GBM, GBMM modeling were moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
+* "7. Normalization": GBM, GBMM modeling were moved to [“Deprecated functionality.R”](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Deprecated%20functionality.R)).
 ### Added
 * "2. Integration": Target peak integration in EIC chromatograms was implemented.
 * "3. Imputation": Automatic missingness type determination and imputation were implemented by MAI package.
