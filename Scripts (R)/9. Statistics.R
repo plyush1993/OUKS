@@ -3028,6 +3028,7 @@ pca <- fviz_pca_ind(pca.ds1,
                     col.ind = grp1, # color by groups
                     palette = palette_pca, # color "jco" gray JGRAY(length(unique(grp1)))
                     addEllipses = T, # Concentration ellipses
+                    ellipse.level = 0.95, # size of the ellipse in Normal probability
                     legend.title = "Groups")
 pca # add: "+scale_shape_manual(values=rep(0:length(unique(grp1))))" if shape palette error 
 
