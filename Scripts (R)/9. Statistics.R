@@ -412,7 +412,7 @@ colnames(vip)[2] <- "VIP"
 vip <- vip[order(vip$VIP, decreasing = T),]
 th_vip <- 1.0 # set value for filtration
 vip_th <- subset(vip, vip$VIP > th_vip)
-vip_pls<- rownames(vip_th) # features
+vip_pls <- rownames(vip_th) # features
 
 ###############################################
 ############################################### RF PERMUTATION
