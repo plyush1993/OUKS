@@ -1096,7 +1096,7 @@ library(caret)
 library(pROC)
 
 # Confusion Matrix
-confusionMatrix(redicted.classes, dsValid$Label) # confusionMatrix(as.factor(predicted.classes), as.factor(dsValid$Label)) or confusionMatrix(predicted.classes, dsValid$Label)
+confusionMatrix(predicted.classes, dsValid$Label) # confusionMatrix(as.factor(predicted.classes), as.factor(dsValid$Label)) or confusionMatrix(predicted.classes, dsValid$Label)
 
 # ROC curve
 res.roc <- roc(as.numeric(predicted.classes), as.numeric(dsValid$Label)) # roc(as.numeric(predicted.classes), as.numeric(dsValid$Label)) or roc(as.numeric(as.factor(predicted.classes)), as.numeric(dsValid$Label))
