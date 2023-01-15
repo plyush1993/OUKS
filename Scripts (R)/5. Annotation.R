@@ -673,6 +673,18 @@ ft_inf <- featureDefinitions(pk_fil) # features info
 ft_inf <- as.data.frame(ft_inf)
 ft_inf <- as.data.frame(cbind(peak_id = paste(ft_inf$mzmed, ft_inf$rtmed, sep = " / "), ft_inf))
 colnames(ft_inf)[2] <- "mz"
+                         
+# Alternative way
+cn <- colnames(ds)
+cn <- str_remove(cn, "X")
+cn0 <- colnames(ds)
+cn0 <- str_remove(cn0, "X")
+cn <- gsub(pattern = "...", replacement = "_", x = cn, fixed = T)
+cn2 <- t(data.frame(cn))
+colnames(cn2) <- cn
+peakIn <- peakInfo(PT = cn2, sep = "_", start = 1)
+peakIn <- as.data.frame(cbind(name = cn0, peakIn))
+peakIn$mz <- as.numeric(peakIn$mz)
 
 # Set parameters for the m/z-based annotation
 load("IPO_optimiz_xcms_CDF_7QC.RData")
@@ -682,7 +694,7 @@ param <- Mass2MzParam(adducts = c("[M+H]+", "[M+Na]+"), # adjust to your data
                       tolerance = mz_diff, ppm = ppm_diff)
 
 # perform
-pks_match <- matchMz(ft_inf,compounds(cdb, c("compound_id", "exactmass", "formula", "name")), param = param)
+pks_match <- matchMz(query = peakIn, compounds(cdb, c("compound_id", "exactmass", "formula", "name")), param = param) # query = ft_inf or query = peakIn
 pks_match
 metan <- as.data.frame(matchedData(pks_match))
 
