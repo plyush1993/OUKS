@@ -684,7 +684,7 @@ param <- Mass2MzParam(adducts = c("[M+H]+", "[M+Na]+"), # adjust to your data
 # perform
 pks_match <- matchMz(ft_inf,compounds(cdb, c("compound_id", "exactmass", "formula", "name")), param = param)
 pks_match
-metan <- as.data.frame(as_tibble(matchedData(pks_match, c("peak_id", "target_name", "target_formula", "adduct"))))
+metan <- as.data.frame(matchedData(pks_match))
 
 # save
 fwrite(metan, "xcms MetaboAnnotation.csv", row.names = T)
