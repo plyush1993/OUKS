@@ -643,6 +643,8 @@ fwrite(table, "for metID/metID MS1 Orbitrap.csv", row.names = T)
 
 library(MetaboAnnotation)
 library(xcms)
+library(stringr)
+library(batchCorr)
 
 # load library
 library(curl)
