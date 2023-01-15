@@ -551,9 +551,9 @@ log_data2 <- LogTransform(featuredata = ds[,-1])$featuredata
 ######################
 
 ds <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T)) # first column with all metadata
-ds <- ds[-c(1:8),]
+ds <- ds[-c(1:12),]
 rownames(ds) <- ds[,5]
-ds <- ds[,-c(1,3:5)]
+ds <- ds[,-c(1:5)]
 ds[,-1] <- sapply(ds[,-1], as.numeric)
 ds$Label <- as.factor(ds$Label)
 log_data3 <- LogTransform(featuredata = ds[,-1])$featuredata
@@ -720,9 +720,9 @@ d <-ggplot(results$values, aes(x=results$values[,2])) +
 setwd("D:/...")
 ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", header=T))
 setwd("D:/...")
-ds <- ds[-c(1:8),]
+ds <- ds[-c(1:12),]
 rownames(ds) <- ds[,5]
-ds <- ds[,-c(1,3:5)]
+ds <- ds[,-c(1:5)]
 ds[,-1] <- sapply(ds[,-1], as.numeric)
 ds$Label <- as.factor(ds$Label)
 
