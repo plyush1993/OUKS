@@ -289,21 +289,21 @@ register(bpstart(SnowParam(cores)))
 BiocParallel::register(BiocParallel::SerialParam())
 
 # feature detection
-cwp <- xcms::CentWaveParam(ppm = resultPeakpicking$best_settings$parameters$ppm, 
-                     peakwidth = c(resultPeakpicking$best_settings$parameters$min_peakwidth, resultPeakpicking$best_settings$parameters$max_peakwidth),
-                     snthresh = resultPeakpicking$best_settings$parameters$snthresh,
-                     prefilter = c(resultPeakpicking$best_settings$parameters$prefilter, resultPeakpicking$best_settings$parameters$value_of_prefilter),
+cwp <- xcms::CentWaveParam(ppm = resultPeakpicking$best_settings$parameters$ppm, # 	maximal tolerated m/z deviation in consecutive scans, in ppm
+                     peakwidth = c(resultPeakpicking$best_settings$parameters$min_peakwidth, resultPeakpicking$best_settings$parameters$max_peakwidth), #	min/max chromatographic peak width
+                     snthresh = resultPeakpicking$best_settings$parameters$snthresh, # Signal/Noise threshold
+                     prefilter = c(resultPeakpicking$best_settings$parameters$prefilter, resultPeakpicking$best_settings$parameters$value_of_prefilter), # Prefilter step for the first phase. Mass traces are only retained if they contain at least [prefilter peaks] peaks with intensity >= [prefilter intensity]
                      mzCenterFun = resultPeakpicking$best_settings$parameters$mzCenterFun,
-                     integrate = resultPeakpicking$best_settings$parameters$integrate,
-                     mzdiff = resultPeakpicking$best_settings$parameters$mzdiff,
+                     integrate = resultPeakpicking$best_settings$parameters$integrate, # 	Integration method
+                     mzdiff = resultPeakpicking$best_settings$parameters$mzdiff, # 	minimum difference in m/z for peaks with overlapping retention times, can be negative to allow overlap
                      fitgauss = resultPeakpicking$best_settings$parameters$fitgauss,
-                     noise = resultPeakpicking$best_settings$parameters$noise)
+                     noise = resultPeakpicking$best_settings$parameters$noise) # 	optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity < noise are omitted from ROI detection
 
 feat_det <- xcms::findChromPeaks(raw_data, param = cwp)
 
 # retention time correction
 BiocParallel::register(BiocParallel::SerialParam())
-app <- xcms::ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep,
+app <- xcms::ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep, # step size (in m/z) to use for profile generation from the raw data files
                     center = resultRetcorGroup$best_settings$center, # or use 1st sample
                     response = resultRetcorGroup$best_settings$response,
                     distFun = resultRetcorGroup$best_settings$distFunc,
@@ -317,11 +317,11 @@ ret_cor <- xcms::adjustRtime(feat_det, param = app)
 
 # peak grouping
 pgp <- xcms::PeakDensityParam(sampleGroups = as.numeric(as.factor(n_gr_t$n_gr_t)), # rep(1, length(fileNames(feat_det))) or as.numeric(as.factor(n_gr_t))
-                        bw = resultRetcorGroup$best_settings$bw,
-                        minFraction =  min_frac_man, # or resultRetcorGroup$best_settings$minfrac
-                        minSamples = resultRetcorGroup$best_settings$minsamp, 
-                        binSize = resultRetcorGroup$best_settings$mzwid,
-                        maxFeatures = resultRetcorGroup$best_settings$max) 
+                        bw = resultRetcorGroup$best_settings$bw, # 	Allowable retention time deviations, in seconds. In more detail: bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram
+                        minFraction =  min_frac_man, # or resultRetcorGroup$best_settings$minfrac , minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group
+                        minSamples = resultRetcorGroup$best_settings$minsamp, # minimum number of samples necessary in at least one of the sample groups for it to be a valid group
+                        binSize = resultRetcorGroup$best_settings$mzwid, # width of overlapping m/z slices to use for creating peak density chromatograms and grouping peaks across samples
+                        maxFeatures = resultRetcorGroup$best_settings$max) # maximum number of groups to identify in a single m/z slice
 
 pk_gr <- xcms::groupChromPeaks(ret_cor, param = pgp)
 
