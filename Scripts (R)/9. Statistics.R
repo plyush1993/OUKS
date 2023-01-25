@@ -664,7 +664,7 @@ fc <- rownames(subset(fc_res, foldchange > fc_t | foldchange < -fc_t))
 
 ################################################### Multigroup Fold Change
 
-FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "/"(x,y)}){
+FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)}){
   x <- log2(x)
   f <- as.factor(f)
   i <- split(1:nrow(x), f)
@@ -1800,7 +1800,7 @@ as.data.frame(tableTop$logFC, row.names = rownames(tableTop))
 
 ################################################### Multigroup Fold Change
 
-FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "/"(x,y)}){
+FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)}){
   x <- log2(x)
   f <- as.factor(f)
   i <- split(1:nrow(x), f)
