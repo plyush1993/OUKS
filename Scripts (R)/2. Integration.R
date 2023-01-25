@@ -477,6 +477,9 @@ sample_gr <- unique(as.numeric(as.factor(n_gr_t$n_gr_t)))
 n_gr <- sapply(1:length(sample_gr), function(y) length(vec_gr[vec_gr == y]))
 min_frac_man <- min(round(n_gr/length(vec_gr), 1)) # calculate min_frac manually
 
+# Remove previous alignment results
+feat_det <- dropAdjustedRtime(feat_det)
+               
 # Define the experimental layout
 feat_det$sample_type <- "study"
 feat_det$sample_type <- n_gr_t[,1]
@@ -485,6 +488,7 @@ feat_det$sample_type <- n_gr_t[,1]
 pdp_subs <- PeakDensityParam(sampleGroups = feat_det$sample_type,
                              minFraction = min_frac_man) # adjust to your data
 xdata <- groupChromPeaks(feat_det, param = pdp_subs)
+               
 # Identify overlapping features
 overlappingFeatures(xdata)
 
