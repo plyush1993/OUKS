@@ -7,7 +7,7 @@
 # MetaboAnalystR for XCMS params optimization
 # Paramounter for XCMS params optimization
 # IPO for XCMS params optimization
-# XCMS with the best params (from IPO) and other options of processing
+# XCMS with the best params (from IPO)
 # Old version of XCMS
 # XCMS for improve integration and alignment
 # Warpgroup for increase precision
@@ -234,7 +234,7 @@ funs_params <- capture.output(writeRScript(resultPeakpicking$best_settings$param
 #save(funs_params,file = 'funs params IPO CDF 7QC.RData')
 
 ##############################################################################################################################################################
-# XCMS with the best params (from IPO) and other options of processing
+# XCMS with the best params (from IPO)
 ##############################################################################################################################################################
 
 library(xcms)
