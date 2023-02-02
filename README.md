@@ -57,9 +57,11 @@ work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993
 
 ## Contact :memo:
 Please send any comment, suggestion or question you may have to the author (:man_scientist: Dr. Ivan Plyushchenko): 
-
-[:octocat:](https://github.com/plyush1993)
-[<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png">](https://orcid.org/0000-0003-3883-4695)
-[<img src = https://upload.wikimedia.org/wikipedia/commons/5/5e/ResearchGate_icon_SVG.svg height="15" width="15">](https://www.researchgate.net/profile/Ivan-Plyushchenko-2)
-<a href="https://scholar.google.com/citations?user=Mz4nxtwAAAAJ&hl=ru&oi=ao"><img alt="Google Scholar" src="https://img.shields.io/badge/Scholar%20-%23F6F6F6.svg?&style=flat-square&logoColor=white&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjNDI4NWY0IiBkPSJNMjU2IDQxMS4xMkwwIDIwMi42NjcgMjU2IDB6Ii8+PHBhdGggZmlsbD0iIzM1NmFjMyIgZD0iTTI1NiA0MTEuMTJsMjU2LTIwOC40NTNMMjU2IDB6Ii8+PGNpcmNsZSBmaWxsPSIjYTBjM2ZmIiBjeD0iMjU2IiBjeT0iMzYyLjY2NyIgcj0iMTQ5LjMzMyIvPjxwYXRoIGZpbGw9IiM3NmE3ZmEiIGQ9Ik0xMjEuMDM3IDI5OC42NjdjMjMuOTY4LTUwLjQ1MyA3NS4zOTItODUuMzM0IDEzNC45NjMtODUuMzM0czExMC45OTUgMzQuODgxIDEzNC45NjMgODUuMzM0SDEyMS4wMzd6Ii8+PC9zdmc+"></a>
-![](https://img.shields.io/badge/plyushchenko.ivan-@gmail.com-cyan.svg)
+<div> 
+  <a href="mailto:plyushchenko.ivan-@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" height="28" alt="Email" /></a>
+  <a href="https://github.com/plyush1993"><img src="https://img.shields.io/static/v1?style=for-the-badge&message=GitHub&color=181717&logo=GitHub&logoColor=FFFFFF&label=" height="28" alt="GH" /></a>
+  <a href="https://scholar.google.com/citations?user=Mz4nxtwAAAAJ&hl=en&oi=ao"><img src="https://img.shields.io/badge/-Google%20Scholar-4285F4?logo=google-scholar&logoColor=white&style=for-the-badge&logoWidth=20" height="28" alt="Google Scholar" /></a>
+  <a href="https://orcid.org/0000-0003-3883-4695"><img src="https://img.shields.io/badge/-ORCID-A6CE39?style=for-the-badge&logo=ORCID&logoColor=white" height="28" alt="ORCID" /></a>
+  <a href="https://www.researchgate.net/profile/Ivan-Plyushchenko-2"><img src="https://img.shields.io/static/v1?style=for-the-badge&message=ResearchGate&color=222222&logo=ResearchGate&logoColor=00CCBB&label=" height="28" alt="RG" /></a>
+    <a href="https://www.linkedin.com/in/ivan-plyushchenko-3861781a1/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a>   
+</div>
