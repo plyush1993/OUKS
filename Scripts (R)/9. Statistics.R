@@ -2918,9 +2918,9 @@ cn <- gsub(pattern = " / ", replacement = "_", x = cn, fixed = T)
 cn2 <- t(data.frame(cn))
 colnames(cn2) <- cn
 peakIn <- peakInfo(PT = cn2, sep = "_", start = 1)
-data_pk <- as.data.frame(t(ds))
-group <- as.numeric(str_remove(meta$Batch, "b")) # adjust to your data, just toy example
-group <- group-1 # adjust to your data, just toy example
+data_pk <- as.data.frame(t(ds)) # 0 values confused algorithm, replace by smth
+group <- as.numeric(str_remove(meta$Batch, "b")) # adjust to your data, just toy example, should be from 0 to N in order (0,1,2,...N)
+group <- group-1 # adjust to your data, just toy example, should be from 0 to N in order (0,1,2,...N)
 rownames(data_pk)[1] <- "timepoints(h)" # adjust to your data, just toy example
 data_pk[1,] <- group # adjust to your data, just toy example
 gender <- meta$Sex # adjust to your data, just toy example
