@@ -2934,7 +2934,7 @@ Name <- rownames(data_pk)
 data_pk <- cbind(Name=Name, data_pk)
 
 # perform
-pks <- PKs(data_pk[,-c(125:128)], d.point="mean", d.ebar="SE", filepath=getwd(), design=FALSE)
+pks <- PKs(data_pk, d.point="mean", d.ebar="SE", filepath=getwd(), design=FALSE)
 pk_res <- paste0(getwd(), "/PKresults/PKresults(all)/PK-parameters.xlsx")
 pk_res_df <- read.xlsx(pk_res, sheet = 1, skipEmptyRows = F, colNames = T)
 pk_res_df
