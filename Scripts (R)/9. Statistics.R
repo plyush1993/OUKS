@@ -3196,7 +3196,7 @@ legend(-20, 20, unique(grp1), col = rainbow(length(unique(grp1))), # or use "hcl
 ########################################### other type
 
 tsne <- do.tsne(as.matrix(mtrx1), ndim=2, perplexity=5) 
-plot(tsne$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red"), main="t-SNE", xlab = "", ylab = "") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(tsne$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="t-SNE", xlab = "", ylab = "") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ###############################################
 ############################################### OTHER TYPES OF CLUSTERING
@@ -3230,8 +3230,8 @@ fviz_cluster(list(data = mtrx1, cluster = sc$partition), repel = T,
 
 ########################################### UMAP
 
-plot.umap = function(x, labels, main="", colors=rainbow(length(unique(labels))),
-                     pad=0.1, cex=0.6, pch=19, add=FALSE, legend.suffix="", cex.main=1, cex.legend=0.85) {
+plot.umap = function(x, labels, main="UMAP", colors=hcl.colors(length(unique(labels)), "Fall"),
+                     pad=0.1, cex=0.95, pch=19, add= F, legend.suffix="", cex.main=1.5, cex.legend=1) {
   
   layout = x
   if (is(x, "umap")) {
@@ -3241,9 +3241,9 @@ plot.umap = function(x, labels, main="", colors=rainbow(length(unique(labels))),
   xylim = range(layout)
   xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
   if (!add) {
-    par(mar=c(0.2,0.7,1.2,0.7), ps=10)
-    plot(xylim, xylim, type="n", axes=F, frame=F)
-    rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.25)  
+    #par(mar=c(0.2,0.7,1.2,0.7), ps=10)
+    plot(xylim, xylim, type="n", xlab = "", ylab = "")
+    #rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.25)  
   }
   points(layout[,1], layout[,2], col=colors[as.integer(labels)],
          cex=cex, pch=pch)
@@ -3302,39 +3302,39 @@ plot(mod1dr, what = "scatterplot")
 
 ########################################### MDS
 mds <- do.mds(as.matrix(mtrx1), ndim=2)
-plot(mds$Y, pch=19, col=as.factor(grp1), main="MDS") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(mds$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="MDS") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### LLE
 lle <- do.lle(as.matrix(mtrx1),ndim=2,type=c("proportion",0.20))
-plot(lle$Y, pch=19, col=as.factor(grp1), main="LLE") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(lle$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="LLE") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### IsoMap
 isomap <- do.isomap(as.matrix(mtrx1),ndim=2,type=c("proportion",0.25),weight=FALSE)
-plot(isomap$Y, pch=19, col=as.factor(grp1), main="IsoMap") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(isomap$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="IsoMap") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### Laplacian Score
 ls <- do.lscore(as.matrix(mtrx1), t=0.1)
-plot(ls$Y, pch=19, col=as.factor(grp1), main="Laplacian Score") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(ls$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="Laplacian Score") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### Diffusion Maps
 dm <- do.dm(as.matrix(mtrx1), bandwidth=10)
-plot(dm$Y, pch=19, col=as.factor(grp1), main="Diffusion Maps") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(dm$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="Diffusion Maps") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### kernel PCA
 kpca <- do.kpca(as.matrix(mtrx1),ndim = 2)
-plot(kpca$Y, pch=19, col=as.factor(grp1), main="kernel PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(kpca$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="kernel PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### sparse PCA
 spca <- do.spca(as.matrix(mtrx1),ndim = 2)
-plot(spca$Y, pch=19, col=as.factor(grp1), main="sparse PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(spca$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="sparse PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### ICA
 ica <- do.ica(as.matrix(mtrx1),ndim=2,type="poly")
-plot(ica$Y, pch=19, col=as.factor(grp1), main="ICA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(ica$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="ICA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### FA
 fa <- do.fa(as.matrix(mtrx1),ndim=2)
-plot(fa$Y, pch=19, col=as.factor(grp1), main="FA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(fa$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="FA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### NMF
 
@@ -3343,7 +3343,7 @@ data_set@meta <- as.data.frame(grp1, meta.prefix = "meta.", data.prefix = "")
 labels_v <- as.factor(grp1)
 
 nmf <- embed(data_set, "NNMF")
-plot(nmf@data@data, col=rainbow(length(unique(labels_v)))[as.integer(labels_v)]) # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+plot(nmf@data@data, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))]) # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### PAM
 
@@ -3368,7 +3368,6 @@ fc <- fanny(mtrx1, k, metric = "euclidean", stand = FALSE)
 fviz_cluster(list(data = mtrx1, cluster = fc$clustering), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
              palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
-
 
 ###############################################
 ############################################### VALIDATION CLUSTERING
