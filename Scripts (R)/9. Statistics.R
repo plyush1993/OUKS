@@ -3028,7 +3028,7 @@ pca <- fviz_pca_ind(pca.ds1,
                     title = "",
                     geom.ind = "point", # show points only 
                     col.ind = grp1, # color by groups
-                    palette = palette_pca, # color "jco" gray JGRAY(length(unique(grp1)))
+                    palette = palette_pca, # color "jco" , "lancet", gray JGRAY(length(unique(grp1)))
                     addEllipses = T, # Concentration ellipses
                     ellipse.level = 0.95, # size of the ellipse in Normal probability
                     legend.title = "Groups")
@@ -3053,7 +3053,7 @@ k <- length(unique(grp1)) # groups in HC
 
 # color
 Cols = function(vec, ord){
-  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec)))
+  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec))) # or other palette from ggsci
   return(cols[as.fumeric(vec)[ord]])}
 
 # grey
@@ -3088,7 +3088,7 @@ k <- length(unique(grp1)) # groups in HC
 
 # color
 Cols = function(vec, ord){
-  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec)))
+  cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec))) # or other palette from ggsci
   return(cols[as.fumeric(vec)[ord]])}
 
 # grey
@@ -3119,11 +3119,11 @@ km.res1 <- kmeans(mtrx1, centers = k, nstart = 25)
 km.res1$cluster # cluster membership
 fviz_cluster(list(data = mtrx1, cluster = km.res1$cluster), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 # Hierarchical K-Means Clustering
 res.hk <- hkmeans(mtrx1, k)
-fviz_dend(res.hk, cex = 0.6, palette = "jco",
+fviz_dend(res.hk, cex = 0.6, palette = "jco", # or other palette from ggsci
           rect = TRUE, rect_border = "jco", rect_fill = TRUE)
 hkmeans_tree(res.hk, cex = 0.6)
 
@@ -3137,7 +3137,7 @@ res.hcpc <- HCPC(res.pca, nb.clust = k, graph = F)
 
 fviz_dend(res.hcpc,
           cex = 0.7, # Label size
-          palette = "jco", # Color palette see ?ggpubr::ggpar
+          palette = "jco", # Color palette see ?ggpubr::ggpar or other palette from ggsci
           rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
           rect_border = "jco", # Rectangle color
           labels_track_height = 0.8 # Augment the room for labels
@@ -3146,7 +3146,7 @@ fviz_dend(res.hcpc,
 fviz_cluster(res.hcpc,
              repel = TRUE, # Avoid label overlapping
              show.clust.cent = TRUE, # Show cluster centers
-             palette = "jco", # Color palette see ?ggpubr::ggpar
+             palette = "jco", # Color palette see ?ggpubr::ggpar or other palette from ggsci
              ggtheme = theme_minimal(),
              main = "PCA")
 
@@ -3187,16 +3187,16 @@ set.seed(1234)
 ds_ul_tsne <- as.matrix(unique(mtrx1))
 tsne_out <- Rtsne(ds_ul_tsne, pca = T, perplexity = 10)
 Cols = function(vec){
-  cols = rainbow(length(unique(vec)))
+  cols = rainbow(length(unique(vec))) # or use "hcl.colors" function with different "palette" argument from hcl.pals()
   return(cols[as.numeric(as.factor(vec))])}
 plot(tsne_out$Y, col = Cols(grp1),pch = 19, xlab = "", ylab = "", main = "")
-legend(-20, 20, unique(grp1), col = rainbow(length(unique(grp1))),
+legend(-20, 20, unique(grp1), col = rainbow(length(unique(grp1))), # or use "hcl.colors" function with different "palette" argument from hcl.pals()
        text.col = "black", pch = c(19), bty = "Y", merge = F, bg = "white")
 
 ########################################### other type
 
-tsne <- do.tsne(as.matrix(mtrx1), ndim=2, perplexity=5)
-plot(tsne$Y, pch=19, col=as.factor(grp1), main="t-SNE")
+tsne <- do.tsne(as.matrix(mtrx1), ndim=2, perplexity=5) 
+plot(tsne$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red"), main="t-SNE", xlab = "", ylab = "") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ###############################################
 ############################################### OTHER TYPES OF CLUSTERING
@@ -3213,12 +3213,12 @@ k <- length(unique(grp1)) # groups in clustering
 res <- dbscan::dbscan(mtrx1, eps = 0.7, minPts = 5)
 fviz_cluster(list(data = mtrx1, cluster = res$cluster), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 res <- dbscan::hdbscan(mtrx1, minPts = 5)
 fviz_cluster(list(data = mtrx1, cluster = res$cluster), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 ########################################### Spectral Clustering
 
@@ -3226,7 +3226,7 @@ k <- length(unique(grp1)) # groups in clustering
 sc <- speccCBI(mtrx1, k = k)
 fviz_cluster(list(data = mtrx1, cluster = sc$partition), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 ########################################### UMAP
 
@@ -3275,7 +3275,7 @@ fviz_mclust(mod1, "classification", geom = "point", pointsize = 1.5, palette = "
 fviz_mclust(mod1, "uncertainty", palette = "jco")
 fviz_cluster(list(data = mtrx1, cluster = mod1$classification), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 # other type
 mod2 <- Mclust(mtrx1)
@@ -3284,7 +3284,7 @@ fviz_mclust(mod2, "classification", geom = "point", pointsize = 1.5, palette = "
 fviz_mclust(mod2, "uncertainty", palette = "jco")
 fviz_cluster(list(data = mtrx1, cluster = mod2$classification), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 # other type
 mod3 <- densityMclust(mtrx1, plot = F)
@@ -3293,7 +3293,7 @@ fviz_mclust(mod3, "classification", geom = "point", pointsize = 1.5, palette = "
 fviz_mclust(mod3, "uncertainty", palette = "jco")
 fviz_cluster(list(data = mtrx1, cluster = mod3$classification), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 # other type
 mod1dr <- MclustDR(mod1) # try mod1,mod2,mod3
@@ -3302,39 +3302,39 @@ plot(mod1dr, what = "scatterplot")
 
 ########################################### MDS
 mds <- do.mds(as.matrix(mtrx1), ndim=2)
-plot(mds$Y, pch=19, col=as.factor(grp1), main="MDS")
+plot(mds$Y, pch=19, col=as.factor(grp1), main="MDS") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### LLE
 lle <- do.lle(as.matrix(mtrx1),ndim=2,type=c("proportion",0.20))
-plot(lle$Y, pch=19, col=as.factor(grp1), main="LLE")
+plot(lle$Y, pch=19, col=as.factor(grp1), main="LLE") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### IsoMap
 isomap <- do.isomap(as.matrix(mtrx1),ndim=2,type=c("proportion",0.25),weight=FALSE)
-plot(isomap$Y, pch=19, col=as.factor(grp1), main="IsoMap")
+plot(isomap$Y, pch=19, col=as.factor(grp1), main="IsoMap") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### Laplacian Score
 ls <- do.lscore(as.matrix(mtrx1), t=0.1)
-plot(ls$Y, pch=19, col=as.factor(grp1), main="Laplacian Score")
+plot(ls$Y, pch=19, col=as.factor(grp1), main="Laplacian Score") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### Diffusion Maps
 dm <- do.dm(as.matrix(mtrx1), bandwidth=10)
-plot(dm$Y, pch=19, col=as.factor(grp1), main="Diffusion Maps")
+plot(dm$Y, pch=19, col=as.factor(grp1), main="Diffusion Maps") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### kernel PCA
 kpca <- do.kpca(as.matrix(mtrx1),ndim = 2)
-plot(kpca$Y, pch=19, col=as.factor(grp1), main="kernel PCA")
+plot(kpca$Y, pch=19, col=as.factor(grp1), main="kernel PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### sparse PCA
 spca <- do.spca(as.matrix(mtrx1),ndim = 2)
-plot(spca$Y, pch=19, col=as.factor(grp1), main="sparse PCA")
+plot(spca$Y, pch=19, col=as.factor(grp1), main="sparse PCA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### ICA
 ica <- do.ica(as.matrix(mtrx1),ndim=2,type="poly")
-plot(ica$Y, pch=19, col=as.factor(grp1), main="ICA")
+plot(ica$Y, pch=19, col=as.factor(grp1), main="ICA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### FA
 fa <- do.fa(as.matrix(mtrx1),ndim=2)
-plot(fa$Y, pch=19, col=as.factor(grp1), main="FA")
+plot(fa$Y, pch=19, col=as.factor(grp1), main="FA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### NMF
 
@@ -3343,7 +3343,7 @@ data_set@meta <- as.data.frame(grp1, meta.prefix = "meta.", data.prefix = "")
 labels_v <- as.factor(grp1)
 
 nmf <- embed(data_set, "NNMF")
-plot(nmf@data@data, col=rainbow(length(unique(labels_v)))[as.integer(labels_v)])
+plot(nmf@data@data, col=rainbow(length(unique(labels_v)))[as.integer(labels_v)]) # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
 ########################################### PAM
 
@@ -3351,7 +3351,7 @@ k <- length(unique(grp1)) # groups in clustering
 pam <- pam(mtrx1, k, metric = "euclidean", stand = FALSE)
 fviz_cluster(list(data = mtrx1, cluster = pam$clustering), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 ########################################### CLARA
 
@@ -3359,7 +3359,7 @@ k <- length(unique(grp1)) # groups in clustering
 clara <- clara(mtrx1, k, metric = "euclidean", stand = FALSE, pamLike = FALSE)
 fviz_cluster(list(data = mtrx1, cluster = clara$clustering), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 ########################################### Fuzzy Clustering
 
@@ -3367,7 +3367,7 @@ k <- length(unique(grp1)) # groups in clustering
 fc <- fanny(mtrx1, k, metric = "euclidean", stand = FALSE)
 fviz_cluster(list(data = mtrx1, cluster = fc$clustering), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
-             palette = "jco", ggtheme = theme_classic())
+             palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
 
 ###############################################
