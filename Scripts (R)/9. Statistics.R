@@ -3110,6 +3110,23 @@ plot(dend1)
 dend1 <- rect.dendrogram(dend1, k=k, border = 1, lty = 1, lwd = 1, col=rgb(0.1, 0.2, 0.4, 0.1))
 legend("topright", legend = unique(grp1), fill = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(grp1))))
 
+
+########################################### other HCA
+
+# number of groups
+k <- length(unique(grp1)) # groups in HCA
+
+grp1_1 <- as.numeric(as.factor(grp1))
+dend1 <- as.dendrogram(res.hc1, hang =70)
+k_1 <- cutree(dend1, k = k, order_clusters_as_data = F)
+bars <- cbind(grp1_1, k_1)
+bars <- as.data.frame(cbind(hcl.colors(k, palette = "ag_Sunset")[grp1_1], hcl.colors(k, palette = "ag_Sunset")[k_1])) # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+colnames(bars) <- c("Label", "HCA")
+
+dend1 %>% set("labels", "") %>% plot
+colored_bars(colors = bars, dend = dend1, sort_by_labels_order = F,
+             y_shift = -0.5, y_scale = 2.5, text_shift = -0.1, cex = 1.2)
+               
 ###############################################
 ############################################### k-MEANS CLUSTERING
 ############################################### 
@@ -3336,6 +3353,10 @@ plot(ica$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[a
 fa <- do.fa(as.matrix(mtrx1),ndim=2)
 plot(fa$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="FA") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
 
+########################################### tSNE
+tsne <- do.tsne(as.matrix(mtrx1), ndim=2, perplexity=40)
+plot(tsne$Y, pch=19, col=hcl.colors(length(unique(grp1)), palette = "Blue-Red")[as.integer(as.factor(grp1))], main="t-SNE", xlab = "", ylab = "") # or use "hcl.colors" function with different "palette" argument from hcl.pals()
+ 
 ########################################### NMF
 
 data_set <- as(mtrx1, "dimRedData")
