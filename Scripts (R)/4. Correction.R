@@ -574,7 +574,7 @@ ds_rfc <- ds_rfc[,-c(1:2)]
 rownames(ds_rfc) <- rownames(ds)
 fwrite(ds_rfc, "xcms after IPO MVI QC-RF d.csv", row.names = T)
 
-######################### perform QC-LOESS in single subtraction mode
+######################### perform QC-RF in single subtraction mode
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
