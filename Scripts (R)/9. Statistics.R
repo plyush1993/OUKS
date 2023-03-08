@@ -189,7 +189,7 @@ hot_res[hot_res > thr_out]
 ###############################
 
 # It is critically important to test feature selection (filtering) on independent dataset!
-# For this purpose use "Data sampling" from "Classification Machine Learning task" section or "Nested Cross-Validation for Feature Selection" from current section.
+# For this purpose use "Data sampling" from "Classification Machine Learning task" section or "Consensus Nested Cross-Validation for Feature Selection" from current section.
 
 ###############################################
 ############################################### MULTIPLE ML WITH SFE AND RFS
