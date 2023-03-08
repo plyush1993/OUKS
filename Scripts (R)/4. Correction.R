@@ -523,7 +523,7 @@ ds_rlc <- ds_rlc[,-c(1:2)]
 rownames(ds_rlc) <- rownames(ds)
 cf <- as.data.frame(ds*1000/as.matrix(ds_rlc))
 dsrr <- ds
-ds_rlc <- as.data.frame(sapply(1:ncol(dsrr), function(y) dsrr[,y]-cf[,y]+mean(dsrr[,y], na.rm = T)))
+ds_rlc <- as.data.frame(sapply(1:ncol(dsrr), function(y) dsrr[,y]-cf[,y]+mean(dsrr[qc_id,y], na.rm = T)))
 rownames(ds_rlc) <- rownames(dsrr)
 colnames(ds_rlc) <- colnames(dsrr)
 fwrite(ds_rlc, "xcms after IPO MVI QC-LOESS s.csv", row.names = T)
@@ -586,7 +586,7 @@ ds_rfc <- ds_rfc[,-c(1:2)]
 rownames(ds_rfc) <- rownames(ds)
 cf <- as.data.frame(ds*1000/as.matrix(ds_rfc))
 dsrr <- ds
-ds_rfc <- as.data.frame(sapply(1:ncol(dsrr), function(y) dsrr[,y]-cf[,y]+mean(dsrr[,y], na.rm = T)))
+ds_rfc <- as.data.frame(sapply(1:ncol(dsrr), function(y) dsrr[,y]-cf[,y]+mean(dsrr[qc_id,y], na.rm = T)))
 rownames(ds_rfc) <- rownames(dsrr)
 colnames(ds_rfc) <- colnames(dsrr)
 fwrite(ds_rfc, "xcms after IPO MVI QC-RF s.csv", row.names = T)
