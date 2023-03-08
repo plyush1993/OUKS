@@ -410,8 +410,9 @@ fwrite(as.data.frame(t(ft)), "xcms old funs.csv", row.names = T)
 
 library(xcms)
 
-# load feature detection xcmsSet object
+# load xcmsSet objects
 load("xcms obj feat_det.RData") # filename and the same folder of raw data as in section "XCMS with the best params (from IPO)"
+load("xcms obj pk_gr.RData") # filename and the same folder of raw data as in section "XCMS with the best params (from IPO)"
                
 # parallel processing
 cores = detectCores()-1
@@ -530,7 +531,7 @@ memory.size(max = TRUE)
 invisible(utils::memory.limit(999999))
 
 # load peak table
-load("xcms obj pk_gr.RData") # filename and the same folder of raw data as in section 2
+load("xcms obj pk_gr.RData") # filename and the same folder of raw data as in section "XCMS with the best params (from IPO)"
 pk_gr <- as(pk_gr, "xcmsSet") # convert XCMSnExp to xcmsSet object
 
 # load optimal params from IPO
