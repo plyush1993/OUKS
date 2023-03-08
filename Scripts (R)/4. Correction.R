@@ -615,7 +615,7 @@ openxlsx::write.xlsx(dsr_srf, file = "for SERRF.xlsx", col.names = F, row.names 
 # perform
 workingdirectory = "D:/.../"
 filename = "for SERRF.xlsx"
-source(paste0(workingdirectory,"\\core_SERRF_only.R"))
+source(paste0(workingdirectory,"\\core_SERRF_only_reduced.R"))
 
 # save
 ds_srf <- fread(input = "normalized-data-sets/normalization-result-SERRF-normalization.csv", header = T)
