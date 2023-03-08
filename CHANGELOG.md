@@ -100,3 +100,11 @@
 :spiral_calendar: 2022.07.15
 ### Changed
 * "6. Filtering": Script was rewritten to reduce dependencies. 
+## **V. 1.13**
+:spiral_calendar: 2023.03.08
+### Changed
+* "4. Correction": Small changes in QC-RF, QC-LOESS substraction mode and in script for SERRF correction. 
+* "9. Statistics": ROC curve construction, Fold Change calculation, color options in Unsupervised Learning, implementations of UMAP and t-SNE are changed. 
+### Added
+* Some packages with strong version dependency were added in "Required packages" folder.
+* "9. Statistics": Cross Validation was added instead of bootstrap for Consensus Nested Cross-Validation and Nested Cross-Validation. New option for HCA was introduced.
