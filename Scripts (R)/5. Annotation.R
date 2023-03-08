@@ -294,7 +294,7 @@ xma <- KEGG.Annotation(dataA = data, max.mz.diff = ppm_diff, num_nodes = num_nod
 
 # save
 setwd("D:/...")
-save(xma, file = "xma KEGG ipo ppm.RData")
+save(xma, file = "xma DB search.RData")
 fwrite(xma, "xcms xMSannotator.csv", row.names = T)
 
 ########################################## ANNOTATION
