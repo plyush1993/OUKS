@@ -203,11 +203,10 @@ library(tuple)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # repeated cross validation
@@ -329,11 +328,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # wrapper function with feature selection methods (in this example: intersection of 2 algorithms (p-value in moderated t-test, Fold-Change, VIP in PLS))
@@ -1004,11 +1002,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # PLS (as example) see http://topepo.github.io/caret/train-models-by-tag.html for other classification algorithm
@@ -1117,11 +1114,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # Set parameters
@@ -1167,11 +1163,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # Set parameters
@@ -1350,11 +1345,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # LM (as example) see http://topepo.github.io/caret/train-models-by-tag.html for other regression algorithm
@@ -1414,11 +1408,10 @@ predictions <- valid.mat[, names(coefs)]%*%coefs
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # repeated cross validation
@@ -1507,11 +1500,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # Set parameters
@@ -1557,11 +1549,10 @@ library(doParallel)
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 # Set parameters
@@ -2737,7 +2728,7 @@ plot(f1)
 # Try also parallel version of "drcfit":
 # library(parallel)
 # library(doParallel)
-# f <- drcfit(s_mod, progressbar = T, parallel = "snow", ncpus = 3)  # adjust ncores (ncpus) to your PV            
+# f <- drcfit(s_mod, progressbar = T, parallel = "snow", ncpus = 3)  # adjust ncores (ncpus) to your PC            
                
 ######################### Calculation of BMD
 r <- bmdcalc(f, z = 1, x = 10)
@@ -3480,8 +3471,8 @@ misclass(pred_cl, grp1)
 # Computing P-value for HCA
 set.seed(1234)
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 # parallel version of pvclust
 res.pv <- parPvclust(cl, mtrx1, nboot=100)
@@ -3492,7 +3483,6 @@ clusters
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 ##############################################################################################################################################################
 # Correlation analysis
