@@ -20,7 +20,8 @@
 ### Brief Description :old_key:
 R based open-source collection of scripts called :red_circle:*OUKS*:large_blue_circle: (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox :toolbox:  
 
-#### **See [website](https://plyush1993.github.io/OUKS/)**
+See [website](https://plyush1993.github.io/OUKS/) :computer:
+
 ---
 
 Script | Purpose
