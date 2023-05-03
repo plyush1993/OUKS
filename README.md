@@ -19,7 +19,7 @@
   <img width="280" height="300" src="GH logo.gif">
 </p>
 
-### Brief Description
+## Brief Description
 R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox   
 
 ```diff
@@ -27,9 +27,9 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 ```
 
 ---
-#### **[Tutorial](./Tutorial.md)**    
-#### **[Vignette](./Vignette.md)**  
-#### **[Comparison](./Comparison.md)**  
+### **[Tutorial](./Tutorial.md)**    
+### **[Vignette](./Vignette.md)**  
+### **[Comparison](./Comparison.md)**  
 --- 
 
 **Script** | **Purpose**
@@ -44,9 +44,7 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 [`8. Grouping.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/8.%20Grouping.R) | peaks grouping and molecular features clustering
 [`9. Statistics.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/9.%20Statistics.R) | statistical analysis and hypothesis testing
 
-<details>
-  <summary><b>&nbsp;&nbsp;Table of Contents</b></summary>
-  <br/>
+## Table of Contents
   
 •	Instruction and introduction into the *OUKS* toolbox are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file and  [__Tutorial__](https://github.com/plyush1993/OUKS/blob/gh-pages/Tutorial.md) web page. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
 
@@ -66,12 +64,10 @@ R based open-source collection of scripts called *OUKS* (*Omics Untargeted Key S
 
 • Discussions, suggestions and error reports are [welcome](https://github.com/plyush1993/OUKS/issues).
 
-</details>
-
-### Requirements
+## Requirements
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.1.2).
 
-### Citation 
+## Citation 
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
 
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, and Igor A. Rodin
@@ -82,10 +78,10 @@ The only requirements are to be familiar with the basic syntax of the R language
  <a href="https://www.scimagojr.com/journalsearch.php?q=17625&amp;tip=sid&amp;exact=no" title="SCImago Journal &amp; Country Rank"><img border="0" src="https://www.scimagojr.com/journal_img.php?id=17625" alt="SCImago Journal &amp; Country Rank" width="150" height="150" /></a>
 </p>
 
-### Disclaimer
+## Disclaimer
 *OUKS* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
 
-### Contact
+## Contact
 Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko):  
 <div> 
   <a href="mailto:plyushchenko.ivan-@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" height="28" alt="Email" /></a>
