@@ -17,10 +17,10 @@
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo.gif" align="right" height="300" width="280"> 
-## Brief Description :old_key:
+### Brief Description :old_key:
 R based open-source collection of scripts called :red_circle:*OUKS*:large_blue_circle: (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox :toolbox:  
 
-### **See [website](https://plyush1993.github.io/OUKS/)**
+#### **See [website](https://plyush1993.github.io/OUKS/)**
 ---
 
 Script | Purpose
@@ -35,7 +35,10 @@ Script | Purpose
 [`8. Grouping.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/8.%20Grouping.R) | peaks grouping and molecular features clustering
 [`9. Statistics.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/9.%20Statistics.R) | statistical analysis and hypothesis testing
 
-## Table of Contents :clipboard:
+<details>
+  <summary><b>:clipboard:&nbsp;&nbsp;Table of Contents</b></summary>
+  <br/>
+  
 - Instruction and introduction into the :red_circle:*OUKS* toolbox:large_blue_circle: are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
 - [Scripts](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) with comments, notes and references are stored in Scripts folder at a previously defined order along with [code](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Figures%20for%20OUKS.R) for plotting figures associated with [article](https://doi.org/10.1021/acs.jproteome.1c00392).
 - [MS2 spectra](https://github.com/plyush1993/OUKS/tree/main/MS2%20spectra%20(mzXML)) for selected potential biomarkers of bladder cancer are stored in mzXML format at corresponding folder.
@@ -45,10 +48,12 @@ Script | Purpose
 - [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) is for storing packages archives with strong version dependency.
 - Discussions, suggestions and error reports are [welcome](https://github.com/plyush1993/OUKS/issues).
 
-## Requirements :building_construction:
+</details>
+
+### Requirements :building_construction:
 The only requirements are to be familiar with the basic syntax of the R language, PC with Internet connection and Windows OS (desirable), [RStudio](https://www.rstudio.com/products/rstudio/download/) and [R](https://cloud.r-project.org/) (≥ 4.1.2).
 
-## Citation :link:
+### Citation :link:
 *OUKS* has been published in the [Journal of Proteome Research](https://pubs.acs.org/journal/jprobs). If you use this software to analyze your own data, please cite it as below, thanks:
 
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, and Igor A. Rodin
@@ -62,7 +67,7 @@ The only requirements are to be familiar with the basic syntax of the R language
 *OUKS* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their
 work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
 
-## Contact :memo:
+### Contact :memo:
 Please send any comment, suggestion or question you may have to the author (:man_scientist: Dr. Ivan Plyushchenko): 
 <div> 
   <a href="mailto:plyushchenko.ivan-@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" height="28" alt="Email" /></a>
