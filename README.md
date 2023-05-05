@@ -73,11 +73,6 @@ The only requirements are to be familiar with the basic syntax of the R language
 > [Ivan V. Plyushchenko, Elizaveta S. Fedorova, Natalia V. Potoldykova, Konstantin A. Polyakovskiy, Alexander I. Glukhov, and Igor A. Rodin
 > Journal of Proteome Research 2022 21 (3), 833-847. DOI: 10.1021/acs.jproteome.1c00392](https://doi.org/10.1021/acs.jproteome.1c00392)
 
-<p align="center">
- <img width="300" height="150" src="qrcode1.png">
- <a href="https://www.scimagojr.com/journalsearch.php?q=17625&amp;tip=sid&amp;exact=no" title="SCImago Journal &amp; Country Rank"><img border="0" src="https://www.scimagojr.com/journal_img.php?id=17625" alt="SCImago Journal &amp; Country Rank" width="150" height="150" /></a>
-</p>
-
 ## Disclaimer
 *OUKS* builds on many open-source software tools and open data sources. Therefore, it is important to also cite their work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt).
 
