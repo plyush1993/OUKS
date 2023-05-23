@@ -2,18 +2,11 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![](https://img.shields.io/badge/R≥4.1.2-5fb9ed.svg?style=flat&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
-[![](https://img.shields.io/github/v/release/plyush1993/OUKS?include_prereleases&color=ff6500)](https://github.com/plyush1993/OUKS/releases)
-[![Report](https://img.shields.io/badge/see-Report-078a8a.svg?maxAge=2678400&style=flat)](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd))
-[![Changelog](https://img.shields.io/badge/keep-Changelog-d30b0b.svg?maxAge=2678400&style=flat)](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md)
-[![Issue](https://img.shields.io/badge/open-Issue-d30b0b.svg?maxAge=2678400&style=flat&color=peru)](https://github.com/plyush1993/OUKS/issues)
-[![](https://img.shields.io/badge/dependencies-R%20session-yellow.svg)](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
 [![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
-[![](https://img.shields.io/badge/web-site-ff69b4.svg)](https://plyush1993.github.io/OUKS/)
 ![](https://img.shields.io/github/release-date/plyush1993/OUKS)
 ![](https://img.shields.io/github/last-commit/plyush1993/OUKS?color=turquoise&logoColor=turquoise&style=flat)
-
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo.gif" align="right" height="300" width="280"> 
