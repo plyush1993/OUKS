@@ -138,8 +138,9 @@ df_rep_batch_df
 ##############################################################################################################################################################
 
 library(tuple)
-n <- 1 # number of repeats (biological repeats)
-t <- 1 # number of duplicates (technical repeats)
+library(stringr)
+n <- 2 # number of repeats (biological repeats)
+t <- 3 # number of duplicates (technical repeats)
 b <- 75 # number of samples per batch
 f_id <- 1 # first sample ID
 l_id <- 75 # last sample ID
@@ -148,12 +149,13 @@ seed <-  sample(x = 1:12345, size = n, replace = F)
 repeats <- list()
 for (i in 1:n) {
   set.seed(seed[i])
-  repeats[[i]] <- paste(sample(f_id:l_id, size = l_id, replace = F),i)
+  repeats[[i]] <- paste0(sample(f_id:l_id, size = l_id, replace = F),"_",i)
 }
 
 m <- matrix(unlist(repeats), nrow = b)
 cm <- c(m)
 cm[which(tuplicated(cm, 2), T)] <- NA
+cm <- as.data.frame(str_split(cm, "_"))[1,]
 m2 <- matrix(cm, nrow = b)
 mm <- replicate(t, m2)
 mm <- lapply(1:dim(mm)[3], function(y) as.matrix(mm[,,y]))
