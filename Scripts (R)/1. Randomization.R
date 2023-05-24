@@ -162,6 +162,7 @@ mm <- replicate(t, m2)
 mm <- lapply(1:dim(mm)[3], function(y) as.matrix(mm[,,y]))
 df_rep_batch_df <- do.call(rbind, mm)
 df_rep_batch_df <- as.data.frame(cbind(1:nrow(df_rep_batch_df), df_rep_batch_df))
+df_rep_batch_df <- data.frame(lapply(df_rep_batch_df, unlist))
 
 vn <- c()
 for (i in 1:(ncol(df_rep_batch_df)-1)) {
