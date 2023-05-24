@@ -8,6 +8,7 @@
 # Generate table for experiment for batches with random order, repeats and duplicates
 # Generate table for experiment for batches with random order, repeats and serial duplicates
 # Generate table for experiment for batches with random order, serial duplicates and repeats
+# Add specific sample type to table for experiment for batches
 # "randomizr" package
 # References
 
@@ -170,6 +171,27 @@ for (i in 1:(ncol(df_rep_batch_df)-1)) {
 vn <- c("id", vn)
 colnames(df_rep_batch_df) <- vn
 df_rep_batch_df
+
+##############################################################################################################################################################
+# Add specific sample type to table for experiment for batches
+##############################################################################################################################################################
+
+# Note:
+# it is possible to use it sequentially for several sample types (after each round just do: df_rep_batch_df <- df)
+
+type <- "QC" # name of sample type
+freq <- 10 # frequency of specific sample in table (every "freq" element)
+ind <- seq(1, nrow(df_rep_batch_df), freq)-1 # index for insert
+add_sample <- as.data.frame(paste0(type, "_", 1:length(ind)))
+add_s <- as.data.frame(cbind(ind, matrix(NA, nrow = nrow(add_sample), ncol = ncol(df_rep_batch_df)-1)))
+add_s[,-1] <- add_sample 
+colnames(add_s) <- colnames(df_rep_batch_df)
+
+df <- as.data.frame(rbind(df_rep_batch_df, add_s))
+df <- data.frame(lapply(df, unlist))
+df <- df[order(df$id, decreasing = F),]
+df$id <- c(1:nrow(df))
+df
 
 ##############################################################################################################################################################
 # "randomizr" package
