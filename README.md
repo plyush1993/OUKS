@@ -15,6 +15,10 @@ R based open-source collection of scripts called :red_circle:*OUKS*:large_blue_c
 
 See [website](https://plyush1993.github.io/OUKS/) :computer:
 
+```diff
++ Current version: 1.13
+```
+
 ---
 
 Script | Purpose
