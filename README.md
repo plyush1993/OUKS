@@ -34,7 +34,7 @@ Script | Purpose
 [`9. Statistics.R`](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/9.%20Statistics.R) | statistical analysis and hypothesis testing
 
 <details>
-  <summary><b>:clipboard:&nbsp;&nbsp;Table of Contents:clipboard:</b></summary>
+  <summary><b>Table of Contents:clipboard:&nbsp;&nbsp;</b></summary>
   <br/>
   
 - Instruction and introduction into the :red_circle:*OUKS* toolbox:large_blue_circle: are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
