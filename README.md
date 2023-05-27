@@ -21,9 +21,9 @@ R based open-source collection of scripts called 🔴*OUKS*🔵 (*Omics Untarget
 ```
 
 ---
-### **[Tutorial](./Tutorial.md)**    
-### **[Vignette](./Vignette.md)**  
-### **[Comparison](./Comparison.md)**  
+### **[Tutorial](./Tutorial.md)** 📖
+### **[Vignette](./Vignette.md)** 🖼️
+### **[Comparison](./Comparison.md)** 📊 
 --- 
 
 **Script** | **Purpose**
