@@ -108,3 +108,7 @@
 ### Added
 * Some packages with strong version dependency were added in "Required packages" folder.
 * "9. Statistics": Cross Validation was added instead of bootstrap for Consensus Nested Cross-Validation and Nested Cross-Validation. New option for HCA was introduced.
+## **V. 1.14**
+:spiral_calendar: 2023.05.27
+### Added
+* "1. Randomization": Some options for experimental design were added. 
