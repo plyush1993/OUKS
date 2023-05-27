@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="380" height="400" src="GH logo.gif">
+  <img width="220" height="250" src="GH logo.gif">
 </p>
 
 # Table of contents
