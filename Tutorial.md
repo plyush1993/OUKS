@@ -55,7 +55,7 @@ New features include:
 
 >5 QC-based correction methods (KNN, DT, BT, CTB, XGB) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/4.%20Correction.R#L740-L1272)
 
->2 biological adjusting methods (GAMM/GAM, GBMM/GBM) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/7.%20Normalization.R#L287-L416)
+>2 biological adjusting methods (GAMM/GAM, GBMM/GBM) [[code]](https://github.com/plyush1993/OUKS/blob/5140dd7af725e90abde166312d197409bb210239/Scripts%20(R)/7.%20Normalization.R#L287-L342)
 
 Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
   
