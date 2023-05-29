@@ -149,7 +149,7 @@ predicted.classes <- predict(fit.cl, newdata=dsValid)
 probabilities <- predict(fit.cl, newdata=dsValid, type = "prob")[,1]
 
 # ROC curve
-roc(dsValid$Label, probabilities, levels = levels(dsValid$Label))
+res.roc <- roc(dsValid$Label, probabilities, levels = levels(dsValid$Label))
 auroc <- round(as.numeric(auc(res.roc)),2)
 grob <- grobTree(textGrob(paste0("AUC = ", auroc), x=0.25,  y=0.75, hjust=0,
                           gp=gpar(col="firebrick2", fontsize=15, fontface=11)))
