@@ -672,7 +672,6 @@ b <- fviz_dend(res.hc1, k = k, # Cut in k groups
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
 fc <- as.numeric(detectCores(logical = T))
@@ -701,11 +700,10 @@ c <- ggroc(res.roc, alpha = 0.5, colour = "blue1", linetype = 1, size = 1.5) +th
 # stop parallel
 stopCluster(cl)
 stopImplicitCluster()
-registerDoSEQ()
 
 # start parallel processing
-fc <- as.numeric(detectCores(logical = F))
-cl <- makePSOCKcluster(fc+1)
+fc <- as.numeric(detectCores(logical = T))
+cl <- makePSOCKcluster(fc-1)
 registerDoParallel(cl)
 
 set.seed(1234)
