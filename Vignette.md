@@ -139,16 +139,17 @@ set.seed(1234)
 trainIndex <- createDataPartition(ds$Label, p = 0.8, list = F, times = 1)
 dsTrain <- ds[ trainIndex,]
 dsValid <- ds[-trainIndex,]
-trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = F) 
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = T) 
 metric <- "Accuracy" 
 
 # machine learning
 set.seed(1234)
 fit.cl <- train(Label~., data=dsTrain, method="svmRadial", metric=metric, trControl=trainControl, tuneLength = 10)
 predicted.classes <- predict(fit.cl, newdata=dsValid)
+probabilities <- predict(fit.cl, newdata=dsValid, type = "prob")[,1]
 
 # ROC curve
-res.roc <- roc(as.numeric(as.factor(predicted.classes)), as.numeric(dsValid$Label))
+roc(dsValid$Label, probabilities, levels = levels(dsValid$Label))
 auroc <- round(as.numeric(auc(res.roc)),2)
 grob <- grobTree(textGrob(paste0("AUC = ", auroc), x=0.25,  y=0.75, hjust=0,
                           gp=gpar(col="firebrick2", fontsize=15, fontface=11)))
