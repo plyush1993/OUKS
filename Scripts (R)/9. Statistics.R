@@ -984,11 +984,11 @@ dsValid <- ds[-trainIndex,]
 library(caret)
 
 # repeated cross validation, ROC metric (two class study)
-trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = T, summaryFunction = twoClassSummary) # or bootstrap: trainControl(method="boot", number=100);
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = T, summaryFunction = twoClassSummary) # or bootstrap: trainControl(method="boot", number=100); adjust to your data
 metric <- "ROC" 
 
 # repeated cross validation, Accuracy metric
-trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = F) # or bootstrap: trainControl(method="boot", number=100);
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10, classProbs = T) # or bootstrap: trainControl(method="boot", number=100); adjust to your data
 metric <- "Accuracy" 
 
 ###############################################
@@ -1097,7 +1097,7 @@ library(pROC)
 confusionMatrix(predicted.classes, dsValid$Label) # confusionMatrix(as.factor(predicted.classes), as.factor(dsValid$Label)) or confusionMatrix(predicted.classes, dsValid$Label)
 
 # ROC curve
-res.roc <- roc(dsValid$Label, probabilities) # roc(as.numeric(predicted.classes), as.numeric(dsValid$Label)) or roc(as.numeric(as.factor(predicted.classes)), as.numeric(dsValid$Label))
+res.roc <- roc(dsValid$Label, probabilities, levels = levels(dsValid$Label))
 plot.roc(res.roc, print.auc = TRUE) # for compute only AUC: auc(res.roc)
 
 ###############################################
@@ -1331,7 +1331,7 @@ dsValid <- ds[-trainIndex,]
 library(caret)
 
 # repeated cross validation
-trainControl <- trainControl(method="repeatedcv", number=10, repeats=10) # or bootstrap: trainControl(method="boot", number=100)
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=10) # or bootstrap: trainControl(method="boot", number=100); adjust to your data
 metric <- "RMSE" # RMSE or MAE or Rsquared
 
 ###############################################
