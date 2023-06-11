@@ -316,7 +316,7 @@ app <- xcms::ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep, # 
 ret_cor <- xcms::adjustRtime(feat_det, param = app)
 
 # peak grouping
-pgp <- xcms::PeakDensityParam(sampleGroups = as.numeric(as.factor(n_gr_t$n_gr_t)), # rep(1, length(fileNames(feat_det))) or as.numeric(as.factor(n_gr_t))
+pgp <- xcms::PeakDensityParam(sampleGroups = as.numeric(as.factor(n_gr_t$n_gr_t)), # rep(1, length(fileNames(feat_det))) or as.numeric(as.factor(n_gr_t$n_gr_t))
                         bw = resultRetcorGroup$best_settings$bw, # Allowable retention time deviations, in seconds. In more detail: bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram
                         minFraction =  min_frac_man, # or resultRetcorGroup$best_settings$minfrac , minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group
                         minSamples = resultRetcorGroup$best_settings$minsamp, # minimum number of samples necessary in at least one of the sample groups for it to be a valid group
