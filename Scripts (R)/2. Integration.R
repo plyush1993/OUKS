@@ -54,7 +54,7 @@ files_all <- files_all_df[,-2]
 library(Autotuner)
 
 # Raw data
-rawPaths <- "D:/..." # folder for raw data files
+rawPaths <- wd_2 # folder for raw data files
 files <- list.files(rawPaths, recursive = TRUE, full.names = TRUE, pattern = ".mzData") # adjust to your data format: ".CDF", ".mzXML", ".mzML", etc.
 
 # Generate metadata
@@ -113,7 +113,7 @@ best_param <- returnParams(eicParamEsts, Autotuner)
 library(MetaboAnalystR)
 
 # Raw data
-rawPaths <- "D:/..." # folder for raw data files
+rawPaths <- wd_2 # folder for raw data files
 
 # Inspect the MS data via a 3D image. "res" are used to specify the resolution for the MS data.
 PerformDataInspect(rawPaths,res = 1000, rt.range = c(1,800), mz.range = c(80,800), dimension = "3D") # if some error: specify one file and mzXML
@@ -142,7 +142,7 @@ library(dplyr)
 library(ggplot2)
 library(gridExtra)
 
-directory <- "D:/..." # folder with files for IPO optimization process
+directory <- wd_1 # folder with files for IPO optimization process
 
 # set parameters
 massSDrange <- 2 # adjust to your data
@@ -160,7 +160,7 @@ ppm2D <- as.data.frame(matrix(ncol = 3, nrow = 1)) # adjust to your data
 colnames(ppm2D) <- c("mz", "rt", "ppm") # adjust to your data
 
 # Perform Paramounter part1
-source(paste0("D:/.../","\\Paramounter_part1 (V2).R"))
+source(paste0("D:/.../","\\Paramounter_part1 (V2).R")) # adjust to folder with Paramounter scripts
 
 Software <- "XCMS" # adjust to your data
 massSDrange <- 2 # adjust to your data
@@ -168,7 +168,7 @@ ppmCut <- 40 # select on Figure, adjust to your data by figure from part1
 smooth <- 0 # adjust to your data
 
 # Perform Paramounter part2
-source(paste0("D:/.../","\\Paramounter_part2 (V2).R"))
+source(paste0("D:/.../","\\Paramounter_part2 (V2).R")) # adjust to folder with Paramounter scripts
 
 # see parameters in Folders directory/"Parameters for XCMS" and/or directory/"Universal Parameters"
 
@@ -226,6 +226,7 @@ resultRetcorGroup$best_settings
 # save(resultRetcorGroup, file = "IPO_optimiz_ret_align_CDF_7QC.RData")
 
 # Get final results
+# NOTE!!! It is better to optimize bw and minfrac manually to your final peak table after applying IPO optimized parameters
 writeRScript(resultPeakpicking$best_settings$parameters, resultRetcorGroup$best_settings)
 param <- c(resultPeakpicking$best_settings$parameters, resultRetcorGroup$best_settings)
 #save(param,file = 'all params IPO CDF 7QC.RData')
@@ -316,6 +317,7 @@ app <- xcms::ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep, # 
 ret_cor <- xcms::adjustRtime(feat_det, param = app)
 
 # peak grouping
+# NOTE!!! It is better to optimize bw and minfrac manually to your final peak table after applying IPO optimized parameters
 pgp <- xcms::PeakDensityParam(sampleGroups = as.numeric(as.factor(n_gr_t$n_gr_t)), # rep(1, length(fileNames(feat_det))) or as.numeric(as.factor(n_gr_t$n_gr_t))
                         bw = resultRetcorGroup$best_settings$bw, # Allowable retention time deviations, in seconds. In more detail: bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram
                         minFraction =  min_frac_man, # or resultRetcorGroup$best_settings$minfrac , minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group
