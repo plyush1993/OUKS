@@ -41,7 +41,7 @@ dsr <- dsr[order(dsr$ro_id, decreasing = F),] # order by ro col
 dsr <- dsr[,-1]
 
 # prepare for mvi and artifacts removal
-ds_mvi <- dsr # remove all column with non-numeric values
+ds_mvi <- dsr # remove all column with non-numeric values, use for mvi and artifacts removal
 colnames(ds_mvi) <- paste0("V", c(1:ncol(ds_mvi))) # simplify colnames
 
 ##############################################################################################################################################################
@@ -253,12 +253,12 @@ pr_mv <- round(mv_c/tn*100,0)
 colna <- apply(ds_mvi,2,function(x) any(is.na(x)))
 dsr_no_NA <- ds_mvi[,colna==F]
 
-# generate datasets
+# generate datasets for testing MVI
 library(imputeR)
 library(dplyr)
 ds_true <- dsr_no_NA
 ds_miss <- SimIm(ds_true, p = pr_mv/100) # perform NA randomly in percent as amount NA in data. Also use missMethods package (delete_... functions)
-ds_mvi <- ds_miss
+ds_mvi <- ds_miss # use it for testing mvi
 
 ##########################################
 ########################################## NRMSE
