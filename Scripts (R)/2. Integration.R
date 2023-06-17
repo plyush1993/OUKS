@@ -44,7 +44,7 @@ rname <- str_remove(rname, ".CDF") # remove some pattern from vendor-specific fo
 all_id <- lapply(1:length(rname), function(y) unlist(str_split(rname[y], " ")), simplify = F) # split info from rownames
 ro_id <- as.numeric(unlist(lapply(all_id, function(y) unlist(y[1])))) # obtain run order ID (every [1] element)
 files_all_df <- as.data.frame(cbind(files_all, ro = as.numeric(ro_id)))
-files_all_df <- files_all_df[order(as.numeric(files_all_df$ro), decreasing = F),]
+files_all_df <- files_all_df[order(as.numeric(files_all_df$ro), decreasing = F),] # sort by run order
 files_all <- files_all_df[,-2]
 
 ##############################################################################################################################################################
