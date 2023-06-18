@@ -433,13 +433,12 @@ QC <- as.character(meta$n_gr_t)
 Injection_order <- as.numeric(meta$ro_id)
 qc_id <- which(QC == "QC") # adjust to your QC label
 QC[-qc_id] <- "Sample"
-dsr_ntm <- rbind(Group, QC, Injection_order, Name = rname, dsr2)
-dsr_ntm <- cbind(rownames(dsr_ntm), dsr_ntm)
+dsr_ntm <- rbind(Group, QC, Injection_order, Name = rownames(ds), dsr2)
 nas <- as.data.frame(replicate(3, rep(NA, 4), simplify = F))
 colnames(nas) <- colnames(peakIn)
 add <- rbind(nas,peakIn)
 dsr_ntm <- cbind(add, dsr_ntm)
-dsr_ntm[1:4,4] <- c("Group", "QC", "Injection_order", "Name")
+dsr_ntm[1:3,3] <- c("Group", "QC", "Injection_order")
 dsr_ntm[4,1:3] <- colnames(dsr_ntm)[1:3]
 openxlsx::write.xlsx(dsr_ntm, file = "for notame.xlsx", col.names = F, row.names = F)
 
@@ -606,7 +605,7 @@ Injection_order <- as.numeric(meta$ro_id)
 qc_id <- which(QC == "QC") # adjust to your QC label
 QC[-qc_id] <- "Sample"
 Batch <- as.character(meta$b_id)
-dsr_srf <- rbind(batch = Batch, type = QC, time = Injection_order, label = rname, dsr2)
+dsr_srf <- rbind(batch = Batch, type = QC, time = Injection_order, label = rownames(ds), dsr2)
 col_srf <- c(NA, NA, NA, "No", 1:nrow(dsr2))
 col_srf2 <- rownames(dsr_srf)
 dsr_srf <- cbind(col_srf, col_srf2, dsr_srf)
