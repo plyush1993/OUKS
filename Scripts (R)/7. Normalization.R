@@ -569,6 +569,9 @@ identical(rownames(ds), rownames(meta))
 # dataset for evaluation
 ds_ra <- cbind(Class = meta$Class, ds) # use Class or Batch
 
+######################################## PCA plot
+# see in subsection "Evaluation of biological variation adjustment" 
+                                              
 ######################################## PLOT RLA
 
 library(NormalizeMets) # try also enviGCMS package (function: plotridges)
