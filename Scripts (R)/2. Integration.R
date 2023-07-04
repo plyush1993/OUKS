@@ -142,7 +142,7 @@ library(dplyr)
 library(ggplot2)
 library(gridExtra)
 
-directory <- wd_1 # folder with files for IPO optimization process
+directory <- wd_1 # folder with QC files for IPO optimization process
 
 # set parameters
 massSDrange <- 2 # adjust to your data
@@ -160,7 +160,7 @@ ppm2D <- as.data.frame(matrix(ncol = 3, nrow = 1)) # adjust to your data
 colnames(ppm2D) <- c("mz", "rt", "ppm") # adjust to your data
 
 # Perform Paramounter part1
-source(paste0("D:/.../","\\Paramounter_part1 (V2).R")) # adjust to folder with Paramounter scripts
+source(paste0("D:/.../","\\Paramounter_part1 (V2).R")) # adjust to folder with Paramounter scripts (from Auxiliary files (RData) folder)
 
 Software <- "XCMS" # adjust to your data
 massSDrange <- 2 # adjust to your data
@@ -168,7 +168,7 @@ ppmCut <- 40 # select on Figure, adjust to your data by figure from part1
 smooth <- 0 # adjust to your data
 
 # Perform Paramounter part2
-source(paste0("D:/.../","\\Paramounter_part2 (V2).R")) # adjust to folder with Paramounter scripts
+source(paste0("D:/.../","\\Paramounter_part2 (V2).R")) # adjust to folder with Paramounter scripts (from Auxiliary files (RData) folder)
 
 # see parameters in Folders directory/"Parameters for XCMS" and/or directory/"Universal Parameters"
 
