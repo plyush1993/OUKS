@@ -243,19 +243,6 @@ library(stringr)
 library(dplyr)
 library(data.table)
 
-################
-# BEFORE USE:
-################
-
-# for package version kuppal2/xMSannotator
-# load into environment R script (Ctrl+O): "fix for R 4.0 get_peak_blocks_modulesvhclust.R" (fix fun by yufree repo in GH: https://github.com/yufree/xMSannotator)
-# load function (get_peak_blocks_modulesvhclust2) from script "fix for R 4.0 get_peak_blocks_modulesvhclust.R" into environment
-# or:
-# source("fix for R 4.0 get_peak_blocks_modulesvhclust.R")
-# then run script:
-# environment(get_peak_blocks_modulesvhclust2) <- asNamespace('xMSannotator')
-# assignInNamespace("get_peak_blocks_modulesvhclust", get_peak_blocks_modulesvhclust2, ns = "xMSannotator")
-
 # load optimal params from IPO
 load("IPO_optimiz_xcms_CDF_7QC.RData")
 ppm_diff <- resultPeakpicking[["best_settings"]][["parameters"]][["ppm"]] # adjust to your data
