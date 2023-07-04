@@ -47,6 +47,7 @@ load(file = "CROP.RData")
 load(file = "mltpl_depict.RData")
 load(file = "mltpl_detect.RData")
 load(file = "mltpl_remove.RData")
+# NOTE: place CROP.RData, mltpl_depict.RData, mltpl_detect.RData, mltpl_remove.RData (all from Auxiliary files (RData) folder) to wd
 
 library(gplots)
 library(tidyverse)
@@ -144,7 +145,7 @@ plot(ceb, net,vertex.label=NA,)
 # References
 ##############################################################################################################################################################
 
-# 1. Kouril, Step·n, et al. "CROP: Correlation-based reduction of feature multiplicities in untargeted metabolomic data." Bioinformatics 36.9 (2020): 2941-2942.
-# 2. KlÂvus, Anton, et al. ""Notame": Workflow for Non-Targeted LC-MS Metabolic Profiling." Metabolites 10.4 (2020): 135.
+# 1. Kouril, Step√°n, et al. "CROP: Correlation-based reduction of feature multiplicities in untargeted metabolomic data." Bioinformatics 36.9 (2020): 2941-2942.
+# 2. Kl√•vus, Anton, et al. ""Notame": Workflow for Non-Targeted LC-MS Metabolic Profiling." Metabolites 10.4 (2020): 135.
 # 3. Yu, Miao, Mariola Olkowicz, and Janusz Pawliszyn. "Structure/reaction directed analysis for LC-MS based untargeted analysis." Analytica chimica acta 1050 (2019): 16-24.
 # 4. Yu, Miao, and Lauren Petrick. "Untargeted high-resolution paired mass distance data mining for retrieving general chemical relationships." Communications Chemistry 3.1 (2020): 1-6.
