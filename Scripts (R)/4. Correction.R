@@ -614,6 +614,7 @@ openxlsx::write.xlsx(dsr_srf, file = "for SERRF.xlsx", col.names = F, row.names 
 # perform
 workingdirectory = "D:/.../"
 filename = "for SERRF.xlsx"
+# NOTE: place "for SERRF.xlsx", core_SERRF_only_reduced.R, evaluationMethods.R, utils.R, normalizations.R (last 4 from Auxiliary files (RData) folder) to "workingdirectory"
 source(paste0(workingdirectory,"\\core_SERRF_only_reduced.R"))
 
 # save
