@@ -1820,7 +1820,7 @@ fdr_mean <- apply(abs(fdr),1, mean, na.rm=T)
 data_l <- lapply(1:length(unique(ds$Label)), function(y) subset(ds, Label==unique(ds$Label)[y])[,-1])
 data_l <- lapply(1:length(data_l), function(y) sapply(data_l[[y]], as.numeric))
 # perform
-res.t.test <- lapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # t-test
+res.t.test <- lapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])) # t-test # Try also pairwise.t.test
 res.t.test.pval <- sapply(1:ncol(data_l[[1]]), function(y) t.test(x = data_l[[1]][,y], y = data_l[[2]][,y])$p.value)
 p_adj <-p.adjust(res.t.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
 p_adj
