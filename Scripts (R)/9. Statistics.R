@@ -1882,7 +1882,14 @@ uva <- function(x, p.adjust = "BH"){
     return(as.data.frame(cbind(norm.test, homog.test)))}
   
   res_tests <- norm_homog_tests(x)
-  
+
+  pa <- function(x, t, f) {
+      t[[x]]$p.value <- as.data.frame(t[[x]]$p.value)
+      t[[x]]$p.value_no_adj <- t[[x]]$p.value
+      t[[x]]$p.value <- p.adjust(unlist(t[[x]]$p.value), method = p.adjust, n = ncol(f))  
+      names(t[[x]]$p.value) <- paste0(rep(colnames(t[[x]]$p.value_no_adj), each = nrow(t[[x]]$p.value_no_adj)),"_", rownames((t[[x]]$p.value_no_adj)))
+  return(t[[x]])
+    }                      
   
   wilcox_test <- function(x,y) {
     xx <- x[,-1]
@@ -1890,6 +1897,7 @@ uva <- function(x, p.adjust = "BH"){
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
     wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    wilcox_test <- lapply(1:length(wilcox_test), function(y) pa(x=y, t= wilcox_test, f = xx))
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
@@ -1902,6 +1910,7 @@ uva <- function(x, p.adjust = "BH"){
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
     welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    welch_test <- lapply(1:length(welch_test), function(y) pa(x=y, t= welch_test, f = xx))
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
@@ -1914,6 +1923,7 @@ uva <- function(x, p.adjust = "BH"){
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
     student_test <- lapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    student_test <- lapply(1:length(student_test), function(y) pa(x=y, t= student_test, f = xx))
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
   
