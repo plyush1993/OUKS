@@ -525,37 +525,34 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
   
   res_tests <- norm_homog_tests(x)
   
-  
-  wilcox_test <- function(x,y) {
+   wilcox_test <- function(x,y) {
     xx <- x[,-1]
     wx.t <- as.vector(which(y[,1] < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) as.numeric(as.vector(pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)$p.value)))
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]), function(t) as.numeric(p.adjust(pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)$p.value, method = p.adjust, n = ncol(xx))))
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
   wx.t.res <- wilcox_test(x, res_tests)
-  
   
   welch_test <- function(x,y) {
     xx <- x[,-1]
     wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
-    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(as.vector(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)$p.value)))
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)$p.value, method = p.adjust, n = ncol(xx))))
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
   wl.t.res <- welch_test(x, res_tests)
-  
   
   student_test <- function(x,y) {
     xx <- x[,-1]
     st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(as.vector(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)$p.value)))
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)$p.value, method = p.adjust, n = ncol(xx))))
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
   
