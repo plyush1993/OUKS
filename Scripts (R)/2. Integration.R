@@ -781,7 +781,7 @@ files %>%
 # Peak detection
 cwp <- CentWaveParam(peakwidth = c(5, 30), noise = 200, ppm = 80, prefilter = c(3, 400), snthresh = 10) # adjust to your data
 
-xchr <- findChromPeaks(chr, param = cwp) # or use "manualChromPeaks" function
+xchr <- findChromPeaks(chr, param = cwp) # or use "manualChromPeaks" function or "peaksWithCentWave" function
 chromPeaks(xchr) # peak table
 
 plot(xchr, col = group_colors, peakBg = group_colors[chromPeaks(xchr)[, "column"]]) # plot results
