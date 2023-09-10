@@ -639,32 +639,27 @@ pval_kw <- rownames(subset(pval.kw, pval.kw$pval <= th_kw))
 
 library(dplyr)
 
-# transform data into log2 base
-ds_log <- as.data.frame(log2(ds[,-1]))
-ds_log <- cbind(Label = ds[,1], ds_log)
-
-#calculate the mean of each feature per group
 FOLD.CHANGE <- function(data) {
-ds_log_subsets <- lapply(1:length(unique(data[,1])), function(y) dplyr::filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
-mean_r_l <- lapply(1:length(ds_log_subsets), function(y) apply(ds_log_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
-foldchange <- (mean_r_l[[1]] - mean_r_l[[2]])
-fc_res <- as.data.frame(foldchange)
-return(fc_res)
+  ds_subsets <- lapply(1:length(unique(data[,1])), function(y) dplyr::filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
+  mean_r_l <- lapply(1:length(ds_subsets), function(y) apply(ds_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
+  foldchange <- log2((mean_r_l[[1]] / mean_r_l[[2]]))
+  fc_res <- as.data.frame(foldchange)
+  return(fc_res)
 }
 
 fc_t <- 1.0 # set threshold
-fc_res <- FOLD.CHANGE(ds_log)
+fc_res <- FOLD.CHANGE(ds)
 fc_res$foldchange <- as.numeric(fc_res$foldchange)
 fc <- rownames(subset(fc_res, foldchange > fc_t | foldchange < -fc_t))
 
 ################################################### Multigroup Fold Change
 
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)}){
-  x <- log2(x)
   f <- as.factor(f)
   i <- split(1:nrow(x), f)
   x <- sapply(i, function(i){ aggr_FUN(x[i,])})
   x <- t(x)
+  x <- log2(x)
   j <- combn(levels(f), 2)
   ret <- combi_FUN(x[j[1,],], x[j[2,],])
   rownames(ret) <- paste(j[1,], j[2,], sep = '/')
@@ -1765,20 +1760,15 @@ tableTop
 
 library(dplyr)
 
-# transform data into log2 base
-ds_log <- as.data.frame(log2(ds[,-1]))
-ds_log <- cbind(Label = ds[,1], ds_log)
-
-#calculate the mean of each feature per group
 FOLD.CHANGE <- function(data) {
-  ds_log_subsets <- lapply(1:length(unique(data[,1])), function(y) dplyr::filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
-  mean_r_l <- lapply(1:length(ds_log_subsets), function(y) apply(ds_log_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
-  foldchange <- (mean_r_l[[1]] - mean_r_l[[2]])
+  ds_subsets <- lapply(1:length(unique(data[,1])), function(y) dplyr::filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
+  mean_r_l <- lapply(1:length(ds_subsets), function(y) apply(ds_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
+  foldchange <- log2((mean_r_l[[1]] / mean_r_l[[2]]))
   fc_res <- as.data.frame(foldchange)
   return(fc_res)
 }
 
-fc_res <- FOLD.CHANGE(ds_log)
+fc_res <- FOLD.CHANGE(ds)
 fc_res
 
 # canonical limma implementation
@@ -1791,11 +1781,11 @@ as.data.frame(tableTop$logFC, row.names = rownames(tableTop))
 ################################################### Multigroup Fold Change
 
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)}){
-  x <- log2(x)
   f <- as.factor(f)
   i <- split(1:nrow(x), f)
   x <- sapply(i, function(i){ aggr_FUN(x[i,])})
   x <- t(x)
+  x <- log2(x)
   j <- combn(levels(f), 2)
   ret <- combi_FUN(x[j[1,],], x[j[2,],])
   rownames(ret) <- paste(j[1,], j[2,], sep = '/')
