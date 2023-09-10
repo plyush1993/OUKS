@@ -1771,13 +1771,6 @@ FOLD.CHANGE <- function(data) {
 fc_res <- FOLD.CHANGE(ds)
 fc_res
 
-# canonical limma implementation
-mdl_mtrx <- model.matrix(~Label, ds_log) # adjust to your data
-lmf <- lmFit(t(ds_log[,-1]), method = "ls", design = mdl_mtrx, maxit = 1000) 
-efit <- eBayes(lmf)
-tableTop <- topTable(efit, coef = 2, adjust = "BH", p.value = 10, number = ncol(ds_log), sort.by = "none") # select method
-as.data.frame(tableTop$logFC, row.names = rownames(tableTop))
-
 ################################################### Multigroup Fold Change
 
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)}){
