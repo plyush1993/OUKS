@@ -147,7 +147,7 @@ sd <- as.numeric(quantile(1:noise)[2]) # set sd value for random value generatio
 set.seed(1234)
 ds_mvi[is.na(ds_mvi)] <- 0 # convert NA into 0
 NAidx <- ds_mvi == 0 # NA index
-imp.rand <- abs(rnorm(sum(NAidx), mean = noise, sd = sd)) # generate random values
+imp.rand <- abs(rnorm(sum(NAidx), mean = noise, sd = sd)) # generate random values. other option: runif(sum(NAidx), noise-sd, noise+sd)
 ds_mvi[NAidx] <- imp.rand
 
 ########################################## Simple MVI by column
