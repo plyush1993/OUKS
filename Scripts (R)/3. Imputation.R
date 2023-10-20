@@ -230,7 +230,7 @@ ds_mvi_pca <- as.data.frame(completeObs(pc))
 
 ########################################## QRILC MVI
 library(imputeLCMD)
-ds_mvi_qrilc <- as.data.frame(impute.QRILC(ds_mvi)[[1]])
+ds_mvi_qrilc <- as.data.frame(t(impute.QRILC(t(ds_mvi))[[1]]))
 
 ########################################## tWLSA MVI
 library(tWLSA)
