@@ -257,7 +257,7 @@ dsr_no_NA <- ds_mvi[,colna==F]
 library(imputeR)
 library(dplyr)
 ds_true <- dsr_no_NA
-ds_miss <- SimIm(ds_true, p = pr_mv/100) # perform NA randomly in percent as amount NA in data. Also use missMethods package (delete_... functions)
+ds_miss <- SimIm(ds_true, p = pr_mv/100) # perform NA randomly in percent as amount NA in data. Also use missMethods package (delete_... functions) or imputeLCMD (insertMVs function)
 ds_mvi <- ds_miss # use it for testing mvi
 
 ##########################################
