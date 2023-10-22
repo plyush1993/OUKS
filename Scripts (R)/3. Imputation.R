@@ -131,6 +131,8 @@ identical(rownames(dsr), rownames(ds_mai)) # check rownames
 
 fwrite(ds_mai, "xcms after IPO MAI.csv", row.names = T)
 
+# Alternatively you can use "model.Selector" & "impute.MAR.MNAR" functions from imputeLCMD package               
+               
 ##############################################################################################################################################################
 # Univariate MVI 
 ##############################################################################################################################################################
