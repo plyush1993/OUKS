@@ -64,6 +64,16 @@ ds_mvi[ds_mvi == 0] <- NA
 ########################################## check NA status
 length(which(is.na(ds_mvi)))
 
+########################################## filter by MVI % by column (feature)
+sel_id <- grep(pattern = "QC", x = rownames(ds_mvi)) # select only biological or QC samples by pattern in row names
+dsr_subset <- ds_mvi[sel_id,] # select only observations by pattern from peak table
+dsr_subset <- ds_mvi # or select all observations
+mv_f <- data.frame(apply(dsr_subset, 2, function(y) round(sum(is.na(y))/length(y)*100, 0)))
+colnames(mv_f) <- "mv"
+cutoff <- 50 # set cut-off for filtering
+mv_f_n <- rownames(dplyr::filter(mv_f, mv < cutoff))
+dsr_MVF <- ds_mvi[,mv_f_n] # filter
+               
 ##############################################################################################################################################################
 # Artifacts Removal
 ##############################################################################################################################################################
