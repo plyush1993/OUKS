@@ -179,6 +179,9 @@ for (i in 1:ncol(ds_mvi)) {
 for (i in 1:ncol(ds_mvi)) {
   ds_mvi[,i][is.na(ds_mvi[,i])] <- (min(ds_mvi[,i], na.rm = T))/2 }
 
+########################################## left-censored data MVI
+# alternatively you can use "impute.MinDet" & "impute.MinProb" functions from imputeLCMD package for for left-censored values or QRILC MVI (see below)
+                         
 ########################################## apply version example for half minimum
 HM_apply <- function(data) {
   result <- as.data.frame(sapply(1:ncol(data), function(y) replace(data[,y],which(is.na(data[,y])), min(data[,y], na.rm = T)/2)))
