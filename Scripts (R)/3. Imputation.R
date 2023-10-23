@@ -55,7 +55,7 @@ pr_mv <- round(mv_c/tn*100,0)
 pr_mv
 
 ########################################## remove all column with NA
-colna <- apply(ds_mvi,2,function(x) any(is.na(x)))
+colna <- apply(ds_mvi,2,function(x) any(is.na(x))) # or na.omit()
 dsr_no_NA <- ds_mvi[,colna==F]
 
 ########################################## convert 0 into NA
@@ -72,7 +72,7 @@ mv_f <- data.frame(apply(dsr_subset, 2, function(y) round(sum(is.na(y))/length(y
 colnames(mv_f) <- "mv"
 cutoff <- 50 # set cut-off for filtering
 mv_f_n <- rownames(dplyr::filter(mv_f, mv < cutoff))
-dsr_MVF <- ds_mvi[,mv_f_n] # filter
+ds_mvi <- ds_mvi[,mv_f_n] # filter
                
 ##############################################################################################################################################################
 # Artifacts Removal
