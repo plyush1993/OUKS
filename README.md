@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
-[![](https://img.shields.io/badge/article-JPR.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
+[![](https://img.shields.io/badge/article-jpr.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
 ![](https://img.shields.io/github/release-date/plyush1993/OUKS)
 ![](https://img.shields.io/github/last-commit/plyush1993/OUKS?color=turquoise&logoColor=turquoise&style=flat)
 <!-- badges: end -->
