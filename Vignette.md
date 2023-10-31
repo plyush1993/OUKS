@@ -3,10 +3,16 @@
 This R Markdown document was provided as an example to reproduce the _OUKS_ code script. Fig. 4 from [article](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00392) can be reproduced with the following code. 
 Preliminarily download _"xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv"_ and _"8 peaks.csv"_ files into your working directory (for example: "D:/OUKS/").
 
+For quick access to files:
+```r
+ds <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/8%20peaks.csv"))
+ds2 <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/xcms%20after%20IPO%20MVI%20QC-XGB%20filter%20repeats%20annot%2Bfiltr%20LMM%20adj%20KEGG.csv"))
+```
+
 ## Prepare environment
 First, set the folder for the working directory and load the packages.
 
-```{r}
+```r
 setwd("D:/OUKS/")
 
 library(data.table)
@@ -27,7 +33,7 @@ library(ggsci)
 ```
 
 ## Load datasets
-```{r}
+```r
 ds <- as.data.frame(fread(input = "8 peaks.csv", header=T))
 rownames(ds) <- ds[,1]
 ds <- ds[,-1]
@@ -44,7 +50,7 @@ ds2$Label <- as.factor(ds2$Label)
 ```
 
 ## Plot volcano plot
-```{r}
+```r
 ds_log <- as.data.frame(log2(ds2[,-1]))
 ds_log <- cbind(Label = ds2[,1], ds_log)
 
@@ -74,7 +80,7 @@ f
 
 ## HCA plot
 
-```{r}
+```r
 base1 <- ds 
 mtrx1 <- ds[,-1] 
 grp1 <- as.character(base1[,1]) 
@@ -107,7 +113,7 @@ b
 
 ## PCA plot
 
-```{r}
+```r
 base1 <- ds 
 mtrx1 <- ds[,-1] 
 grp1 <- as.character(base1[,1]) 
@@ -128,7 +134,7 @@ a
 
 ## ROC curve
 
-```{r}
+```r
 # start parallel processing
 fc <- as.numeric(detectCores(logical = T))
 cl <- makePSOCKcluster(fc-1)
@@ -162,7 +168,7 @@ c
 
 ## bootstrap histogram
 
-```{r}
+```r
 # start parallel processing
 fc <- as.numeric(detectCores(logical = T))
 cl <- makePSOCKcluster(fc-1)
