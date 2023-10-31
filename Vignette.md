@@ -4,7 +4,7 @@ This R Markdown document was provided as an example to reproduce the _OUKS_ code
 Preliminarily download _"xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv"_ and _"8 peaks.csv"_ files into your working directory (for example: "D:/OUKS/").
 
 For quick access to files:
-```r
+``` r
 ds <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/8%20peaks.csv"))
 ds2 <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/xcms%20after%20IPO%20MVI%20QC-XGB%20filter%20repeats%20annot%2Bfiltr%20LMM%20adj%20KEGG.csv"))
 ```
@@ -12,7 +12,7 @@ ds2 <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/ma
 ## Prepare environment
 First, set the folder for the working directory and load the packages.
 
-```r
+``` r
 setwd("D:/OUKS/")
 
 library(data.table)
