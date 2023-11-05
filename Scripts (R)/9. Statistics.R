@@ -530,7 +530,7 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wx.t <- as.vector(which(y[,1] < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- lapply(as.data.frame(xx[,wx.t]), function(t) as.numeric(pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)$p.value))
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]), function(t) as.numeric(p.adjust(pairwise.wilcox.test(x = t, g =  x[,1], paired=F)$p.value, method = p.adjust, n = ncol(xx))))
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
@@ -541,7 +541,7 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
-    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)$p.value))
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], pool.sd = F)$p.value, method = p.adjust, n = ncol(xx))))
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
@@ -552,7 +552,7 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)$p.value))
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], pool.sd = T)$p.value, method = p.adjust, n = ncol(xx))))
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
   
