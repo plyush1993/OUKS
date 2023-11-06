@@ -1879,33 +1879,31 @@ uva <- function(x, p.adjust = "BH"){
     wx.t <- as.vector(which(y[,1] < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], p.adjust.method =p.adjust, paired=F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], paired=F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
     wilcox_test <- lapply(1:length(wilcox_test), function(y) pa(x=y, t= wilcox_test, f = xx))
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
   wx.t.res <- wilcox_test(x, res_tests)
-  
-  
+    
   welch_test <- function(x,y) {
     xx <- x[,-1]
     wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
-    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
     welch_test <- lapply(1:length(welch_test), function(y) pa(x=y, t= welch_test, f = xx))
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
   wl.t.res <- welch_test(x, res_tests)
   
-  
   student_test <- function(x,y) {
     xx <- x[,-1]
     st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], p.adjust.method = p.adjust, pool.sd = T)) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = T)) # or as.numeric(as,vector(...)))$p.value))) or ...))
     student_test <- lapply(1:length(student_test), function(y) pa(x=y, t= student_test, f = xx))
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
