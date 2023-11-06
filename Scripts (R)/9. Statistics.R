@@ -1869,6 +1869,7 @@ uva <- function(x, p.adjust = "BH"){
   pa <- function(x, t, f) {
       t[[x]]$p.value <- as.data.frame(t[[x]]$p.value)
       t[[x]]$p.value_no_adj <- t[[x]]$p.value
+      t[[x]]$p.adjust.method <- p.adjust
       t[[x]]$p.value <- p.adjust(unlist(t[[x]]$p.value), method = p.adjust, n = ncol(f))  
       names(t[[x]]$p.value) <- paste0(rep(colnames(t[[x]]$p.value_no_adj), each = nrow(t[[x]]$p.value_no_adj)),"_", rownames((t[[x]]$p.value_no_adj)))
   return(t[[x]])
