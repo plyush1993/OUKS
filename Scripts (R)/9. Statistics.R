@@ -340,7 +340,7 @@ perform_tests <- function(inner_indecies,dataframe, cutoff_tt = 0.05, cutoff_fc 
   
   # Moderated t-test
   mdl_mtrx <- model.matrix(~Label, ds) # adjust to your data
-  lmf <- lmFit(t(ds[,-1]), method = "ls", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
+  lmf <- lmFit(t(log2(ds[,-1])), method = "ls", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
   efit <- eBayes(lmf)
   tableTop <- topTable(efit, coef = 2, adjust = "BH", number = ncol(ds), sort.by = "none") # select method
   lim_pval <- rownames(dplyr::filter(tableTop, as.numeric(adj.P.Val) <= cutoff_tt))
@@ -686,7 +686,7 @@ library(limma)
 library(dplyr)
 
 mdl_mtrx <- model.matrix(~Label, ds) # adjust to your data
-lmf <- lmFit(t(ds[,-1]), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
+lmf <- lmFit(t(log2(ds[,-1])), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
 efit <- eBayes(lmf)
 tableTop <- topTable(efit, coef = 2, adjust = "BH", number = ncol(ds), sort.by = "none") # select method
 cutoff <- 0.05 # set cutoff
@@ -1749,7 +1749,7 @@ res.perman.ph
 library(limma)
 
 mdl_mtrx <- model.matrix(~Label, ds) # adjust to your data
-lmf <- lmFit(t(ds[,-1]), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
+lmf <- lmFit(t(log2(ds[,-1])), method = "robust", design = mdl_mtrx, maxit = 1000) # "robust" or "ls"
 efit <- eBayes(lmf)
 tableTop <- topTable(efit, coef = 2, adjust = "BH", p.value = 0.05, number = ncol(ds)) # select method
 tableTop
