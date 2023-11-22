@@ -356,7 +356,7 @@ perform_tests <- function(inner_indecies,dataframe, cutoff_tt = 0.05, cutoff_fc 
   fc <- rownames(dplyr::filter(tableTop_log, abs(as.numeric(logFC)) >= cutoff_fc))
 
   # VIP value from PLS
-  pls <- opls(ds[,-1], ds[,1], orthoI = 0, predI = NA, crossvalI = 10, permI = 100, fig.pdfC = "none", info.txtC = "none") # orthoI -> 0/1 PLS/OPLS, predI -> No of components, crossvalI -> cross-validation, permI -> No of permutations
+  pls <- opls(ds[,-1], ds[,1], orthoI = 0, predI = NA, crossvalI = 10, permI = 100, fig.pdfC = "none", info.txtC = "none") # orthoI -> 0/NA PLS/OPLS, predI -> No of components, crossvalI -> cross-validation, permI -> No of permutations
   vip <- as.data.frame(getVipVn(pls))
   vip <- cbind(name = rownames(vip), VIP = vip)
   colnames(vip)[2] <- "VIP"
@@ -402,7 +402,7 @@ plot(results$acc_test)
 
 library(ropls)
 
-pls <- opls(ds[,-1], ds[,1], orthoI = 0, predI = NA, crossvalI = 10, permI = 100) # orthoI -> 0/1 PLS/OPLS, predI -> No of components, crossvalI -> cross-validation, permI -> No of permutations
+pls <- opls(ds[,-1], ds[,1], orthoI = 0, predI = NA, crossvalI = 10, permI = 100) # orthoI -> 0/NA PLS/OPLS, predI -> No of components, crossvalI -> cross-validation, permI -> No of permutations
 # plot(pls)
 vip <- as.data.frame(getVipVn(pls))
 vip <- cbind(name = rownames(vip), VIP = vip) 
