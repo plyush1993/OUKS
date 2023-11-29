@@ -25,13 +25,30 @@ R based open-source collection of scripts called 🔴*OUKS*🔵 (*Omics Untarget
 ### **[Vignette](./Vignette.md)** 🖼️
 ### **[Comparison](./Comparison.md)** 📊 
 --- 
-### Table of contents :clipboard:
+
+## Table of contents 📋
 
 <details>
   <summary><b>Click to expand&nbsp;&nbsp;</b></summary>
   <br/>
   
-test on site
+•	Instruction and introduction into the *OUKS* toolbox are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file and  [__Tutorial__](https://github.com/plyush1993/OUKS/blob/gh-pages/Tutorial.md) web page. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
+
+•	[Scripts](https://github.com/plyush1993/OUKS/tree/main/Scripts%20(R)) with comments, notes and references are stored in Scripts folder at a previously defined order along with [code](https://github.com/plyush1993/OUKS/blob/main/Scripts%20(R)/Figures%20for%20OUKS.R) for plotting figures associated with [article](https://doi.org/10.1021/acs.jproteome.1c00392).
+
+•	[MS2 spectra](https://github.com/plyush1993/OUKS/tree/main/MS2%20spectra%20(mzXML)) for selected potential biomarkers of bladder cancer are stored in mzXML format at corresponding folder.
+
+•	[Datasets](https://github.com/plyush1993/OUKS/tree/main/Datasets%20(csv)) in .csv and [other files](https://github.com/plyush1993/OUKS/tree/main/Auxiliary%20files%20(RData)) (.RData, .R) are available for reproducibility from corresponding folders. Files descriptions are provived by [`Roadmap`](https://github.com/plyush1993/OUKS/blob/main/Roadmap.pdf) file. Raw data (.CDF format) are available from [Metabolomics Workbench Repository](https://www.metabolomicsworkbench.org/), study ID: [ST001682](http://doi.org/10.21228/M8ZT4C). [`Metadata`](https://github.com/plyush1993/OUKS/blob/main/Datasets%20(csv)/metadata.csv) table is also provided.
+
+•	[Report](https://github.com/plyush1993/OUKS/tree/main/Report%20(Rmd)) in [`.Rmd`](https://github.com/plyush1993/OUKS/blob/main/Report%20(Rmd)/Report%20example%20OUKS.Rmd), [`.pdf`](https://github.com/plyush1993/OUKS/blob/main/Report%20(Rmd)/Report-example-OUKS.pdf) and [`.docx`](https://github.com/plyush1993/OUKS/blob/main/Report%20(Rmd)/Report-example-OUKS.docx) formats and [__Vignette__](https://github.com/plyush1993/OUKS/blob/gh-pages/Vignette.md) were provided as an example to reproduce the *OUKS* code script.
+
+•	[`Changelog`](https://github.com/plyush1993/OUKS/blob/main/CHANGELOG.md) file is provided and is constantly updated. See also [releases](https://github.com/plyush1993/OUKS/releases) page.
+
+• [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software.
+
+• [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) is for storing packages archives with strong version dependency.
+
+• Discussions, suggestions and error reports are [welcome](https://github.com/plyush1993/OUKS/issues).
 
 </details>
 
