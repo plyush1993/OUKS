@@ -20,8 +20,10 @@ See [website](https://plyush1993.github.io/OUKS/) :computer:
 ```
 
 ---
+### Table of contents :clipboard:
+
 <details>
-  <summary><b>Table of Contents:clipboard:&nbsp;&nbsp;</b></summary>
+  <summary><b>Click to expand&nbsp;&nbsp;</b></summary>
   <br/>
   
 - Instruction and introduction into the :red_circle:*OUKS* toolbox:large_blue_circle: are provided by [`Basic tutorial`](https://github.com/plyush1993/OUKS/blob/main/Basic%20tutorial.pdf) file. [`Session info`](https://github.com/plyush1993/OUKS/blob/main/Session%20Info.txt) and [`Used packages`](https://github.com/plyush1993/OUKS/blob/main/Used%20packages.pdf) are listed in corresponding files.
