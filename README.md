@@ -1,5 +1,5 @@
 <!-- badges: starts -->
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: Inactive – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#active)
 [![](https://img.shields.io/badge/R≥4.1.2-5fb9ed.svg?style=flat&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![License](https://img.shields.io/badge/license-GPLv3-2186f8.svg?style=flat&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
