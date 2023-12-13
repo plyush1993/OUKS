@@ -17,7 +17,7 @@ See [website](https://plyush1993.github.io/OUKS/) :computer:
 
 ```diff
 + Current version: 1.14
-- Small changes aren't considered 
+- Active updates will have been terminated
 ```
 
 ---
