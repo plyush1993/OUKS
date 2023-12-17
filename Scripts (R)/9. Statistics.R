@@ -3375,7 +3375,7 @@ fviz_cluster(list(data = mtrx1, cluster = fc$clustering), repel = T,
 ###############################################
 
 # "fviz_nbclust" function
-c <- fviz_nbclust(mtrx1, hcut, linecolor = "red", method = "gap_stat", nboot = 100)+ # "silhouette" or "wss" or "gap_stat"
+c <- fviz_nbclust(mtrx1, hcut, linecolor = "red", method = "gap_stat", nboot = 100)+ # method: "silhouette" or "wss" or "gap_stat" FUNcluster: "means", "cluster::pam", "cluster::clara", "cluster::fanny", "hcut"
   labs(subtitle = "")
 c
 
