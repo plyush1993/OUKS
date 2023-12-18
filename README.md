@@ -18,7 +18,7 @@ R based open-source collection of scripts called 🔴*OUKS*🔵 (*Omics Untarget
 
 ```diff
 + Current version: 1.14
-- Active updates will have been terminated
+- Global updates will have been terminated
 ```
 
 ---
