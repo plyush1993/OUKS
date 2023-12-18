@@ -245,7 +245,7 @@ ds_mvi_pca <- as.data.frame(completeObs(pc))
 
 ########################################## QRILC MVI
 library(imputeLCMD)
-ds_mvi_qrilc <- as.data.frame(t(impute.QRILC(t(ds_mvi))[[1]]))
+ds_mvi_qrilc <- as.data.frame(t(impute.QRILC(t(ds_mvi))[[1]])) # alternatively you can use "impute.MinDet" & "impute.MinProb" functions from imputeLCMD package for for left-censored values
 
 ########################################## tWLSA MVI
 library(tWLSA)
