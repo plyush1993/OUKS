@@ -180,8 +180,8 @@ save(res_sr, file = "optimiz sr RamClustR.RData")
 expDes=defineExperiment(force.skip = T)
 RC1 <- ramclustR(ms='xcms after IPO MVI.csv', # you can use also ms2 data with argument "idmsms"
                  featdelim = " / ",
-                 st = st_val,
-                 sr = sr_val,
+                 st = st_val, # you could also set it manually
+                 sr = sr_val, # you could also set it manually
                  ExpDes=expDes,
                  sampNameCol = 1, mspout = F)
 
