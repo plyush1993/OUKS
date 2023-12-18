@@ -289,6 +289,7 @@ cores = detectCores()-1
 register(bpstart(SnowParam(cores)))
 BiocParallel::register(BiocParallel::SerialParam())
 
+# NOTE!!! You could also set all parameters manually
 # feature detection
 cwp <- xcms::CentWaveParam(ppm = resultPeakpicking$best_settings$parameters$ppm, # maximal tolerated m/z deviation in consecutive scans, in ppm
                      peakwidth = c(resultPeakpicking$best_settings$parameters$min_peakwidth, resultPeakpicking$best_settings$parameters$max_peakwidth), # min/max chromatographic peak width
