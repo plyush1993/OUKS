@@ -17,11 +17,6 @@
 ## Brief Description 🗝️
 R based open-source collection of scripts called 🔴*OUKS*🔵 (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox 🧰
 
-```diff
-+ Current version: 1.14
-- Global updates will have been terminated
-```
-
 ---
 ### **[Tutorial](./Tutorial.md)** 📖
 ### **[Vignette](./Vignette.md)** 🖼️
