@@ -443,7 +443,7 @@ dsr_ntm[4,1:3] <- colnames(dsr_ntm)[1:3]
 openxlsx::write.xlsx(dsr_ntm, file = "for notame.xlsx", col.names = F, row.names = F)
 
 # perform preprocess
-ntm <- read_from_excel(file = "for notame.xlsx", sheet = 1, name = "ntm", skip_checks =F)
+ntm <- read_from_excel(file = "for notame.xlsx", sheet = 1, name = "ntm", skip_checks =F) # for updated versions check "mz_limits" and "rt_limits"
 ntm2 <- construct_metabosets(exprs = ntm$exprs, pheno_data = ntm$pheno_data, feature_data = ntm$feature_data, group_col = "Group")
 
 ######################### QC-SPLINE notame log=T
