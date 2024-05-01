@@ -624,7 +624,7 @@ pval_ttest <- rownames(subset(pval.ttest, pval.ttest$pval <= th_ttest))
 
 ################################################### Kruskal-Wallis test
 
-res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # Kruskal test # Try also wilcox.test or pairwise.wilcox.test (aka Mann-Whitney test)
+res.kw.test <- lapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])) # Kruskal test # Try also wilcox.test or pairwise.wilcox.test 
 res.kw.test.pval <- sapply(2:ncol(ds), function(y) kruskal.test(ds[,y] ~ ds[,1])$p.value)
 p_adj <-p.adjust(res.kw.test.pval, method = "BH") # Adjust P-values for Multiple Comparisons
 pval.kw <- as.data.frame(cbind(name = colnames(ds[,-1]), pval = as.numeric(p_adj))) 
