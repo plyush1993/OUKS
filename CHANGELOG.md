@@ -111,4 +111,8 @@
 ## **V. 1.14**
 :spiral_calendar: 2023.05.27
 ### Added
-* "1. Randomization": Some options for experimental design were added. 
+* "1. Randomization": Some options for experimental design were added.
+## **V. 1.14.1**
+:spiral_calendar: 2024.05.09
+### Changed
+* "4. Correction": Extensions in QC-NORM.
