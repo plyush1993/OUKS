@@ -1390,45 +1390,85 @@ class[-qc_id] <- "Subject"
 ds_bbc <- cbind(batch = meta$b_id, ds)
 ds_bbc$batch <- batch
 
-######################### Perform division-based QC-norm 
-QC.NORM <- function(data, qc_id){
+######################### Perform division-based QC-norm feature-wise
+QC.NORM.FW.D <- function(data, qc_id){
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
   b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) dplyr::filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches for all samples
   b_b_c_subsets_qc <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) dplyr::filter(ds_bbc_qc[,-1], ds_bbc_qc$batch == unique(ds_bbc_qc[,1])[y])) # list of subsets by batches for QC samples
-  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) sapply(1:ncol(b_b_c_subsets_qc[[1]]), function(z) median(b_b_c_subsets_qc[[y]][,z], na.rm = T)/median(ds_bbc_qc[,(z+1)], na.rm = T))) # calculate factor for every feature on QC samples
-  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) b_b_c_subsets[[y]][,z]/b_b_c_factor[[y]][z])) # results by batch
+  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) sapply(1:ncol(b_b_c_subsets_qc[[1]]), function(z) median(b_b_c_subsets_qc[[y]][,z], na.rm = T))) # calculate factor for every feature on QC samples
+  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) b_b_c_subsets[[y]][,z]/b_b_c_factor[[y]][z]*median(ds_bbc_qc[,(z+1)]))) # results by batch
   b_b_c_result <- data.frame(do.call("rbind",b_b_c_result_l)) # results in data frame
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
 }
 
-ds_qc_norm <- QC.NORM(data = ds_bbc, qc_id = qc_id)
+ds_qc_norm <- QC.NORM.FW.D(data = ds_bbc, qc_id = qc_id)
 
 # save
-fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM d.csv", row.names = T)
+fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM FW d.csv", row.names = T)
 
-######################### Perform subtraction-based QC-norm 
-QC.NORM <- function(data, qc_id){
+######################### Perform division-based QC-norm sample-wise
+QC.NORM.SW.D <- function(data, qc_id){
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
   b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) dplyr::filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches for all samples
   b_b_c_subsets_qc <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) dplyr::filter(ds_bbc_qc[,-1], ds_bbc_qc$batch == unique(ds_bbc_qc[,1])[y])) # list of subsets by batches for QC samples
-  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) sapply(1:ncol(b_b_c_subsets_qc[[1]]), function(z) median(b_b_c_subsets_qc[[y]][,z], na.rm = T)-median(ds_bbc_qc[,(z+1)], na.rm = T))) # calculate factor for every feature on QC samples
-  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) b_b_c_subsets[[y]][,z]-b_b_c_factor[[y]][z])) # results by batch
+  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) median(apply(b_b_c_subsets_qc[[y]], 1, median, na.rm = T), na.rm = T)) # calculate factor 
+  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) b_b_c_subsets[[y]]/b_b_c_factor[[y]]*median(apply(ds_bbc_qc[,-1], 1, median, na.rm = T), na.rm = T)) # results by batch
   b_b_c_result <- data.frame(do.call("rbind",b_b_c_result_l)) # results in data frame
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
 }
 
-ds_qc_norm <- QC.NORM(data = ds_bbc, qc_id = qc_id)
+ds_qc_norm <- QC.NORM.SW.D(data = ds_bbc, qc_id = qc_id)
 
 # save
-fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM s.csv", row.names = T)
+fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM SW d.csv", row.names = T)
+
+######################### Perform subtraction-based QC-norm feature-wise
+QC.NORM.FW.S <- function(data, qc_id){
+  library(dplyr)
+  ds_bbc <- data
+  ds_bbc_qc <- ds_bbc[qc_id,]
+  b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) dplyr::filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches for all samples
+  b_b_c_subsets_qc <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) dplyr::filter(ds_bbc_qc[,-1], ds_bbc_qc$batch == unique(ds_bbc_qc[,1])[y])) # list of subsets by batches for QC samples
+  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) sapply(1:ncol(b_b_c_subsets_qc[[1]]), function(z) median(b_b_c_subsets_qc[[y]][,z], na.rm = T))) # calculate factor for every feature on QC samples
+  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) sapply(1:ncol(b_b_c_subsets[[1]]), function(z) b_b_c_subsets[[y]][,z]-b_b_c_factor[[y]][z]+median(ds_bbc_qc[,(z+1)]))) # results by batch
+  b_b_c_result <- data.frame(do.call("rbind",b_b_c_result_l)) # results in data frame
+  rownames(b_b_c_result) <- rownames(ds_bbc)
+  colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
+  return(b_b_c_result)
+}
+
+ds_qc_norm <- QC.NORM.FW.S(data = ds_bbc, qc_id = qc_id)
+
+# save
+fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM FW s.csv", row.names = T)
+
+######################### Perform subtraction-based QC-norm sample-wise
+QC.NORM.SW.S <- function(data, qc_id){
+  library(dplyr)
+  ds_bbc <- data
+  ds_bbc_qc <- ds_bbc[qc_id,]
+  b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) dplyr::filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches for all samples
+  b_b_c_subsets_qc <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) dplyr::filter(ds_bbc_qc[,-1], ds_bbc_qc$batch == unique(ds_bbc_qc[,1])[y])) # list of subsets by batches for QC samples
+  b_b_c_factor <- lapply(1:length(unique(ds_bbc_qc[,1])), function(y) median(apply(b_b_c_subsets_qc[[y]], 1, median, na.rm = T), na.rm = T)) # calculate factor 
+  b_b_c_result_l <- lapply(1:length(unique(ds_bbc[,1])), function(y) b_b_c_subsets[[y]]-b_b_c_factor[[y]]+median(apply(ds_bbc_qc[,-1], 1, median, na.rm = T), na.rm = T)) # results by batch
+  b_b_c_result <- data.frame(do.call("rbind",b_b_c_result_l)) # results in data frame
+  rownames(b_b_c_result) <- rownames(ds_bbc)
+  colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
+  return(b_b_c_result)
+}
+
+ds_qc_norm <- QC.NORM.SW.S(data = ds_bbc, qc_id = qc_id)
+
+# save
+fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM SW s.csv", row.names = T)   
 
 ###############################################################################
 ########################################## RUVs metabolites based methods
