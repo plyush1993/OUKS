@@ -48,11 +48,15 @@ colnames(ds_mvi) <- paste0("V", c(1:ncol(ds_mvi))) # simplify colnames
 # Preprocessing
 ##############################################################################################################################################################
 
-########################################## amount of NA in %
+########################################## total amount of NA in %
 tn <- nrow(ds_mvi)*ncol(ds_mvi)
 mv_c <- sum(is.na(ds_mvi)) # or length(which(is.a(...)))
 pr_mv <- round(mv_c/tn*100,0)
 pr_mv
+
+########################################## amount of NA in % by feature
+mv_f <- data.frame(apply(ds_mvi, 2, function(y) round(sum(is.na(y))/length(y)*100, 0)))
+hist(mv_f, breaks=25)
 
 ########################################## remove all column with NA
 colna <- apply(ds_mvi,2,function(x) any(is.na(x))) # or na.omit()
