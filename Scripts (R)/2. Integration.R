@@ -41,7 +41,7 @@ files_all <- list.files(wd_2, recursive = TRUE, full.names = TRUE, pattern = ".C
 rname <- files_all # obtain all info from rownames
 rname <- str_remove(rname, wd_2) # remove folder name
 rname <- str_remove(rname, ".CDF") # remove some pattern from vendor-specific format
-all_id <- lapply(1:length(rname), function(y) unlist(str_split(rname[y], " ")), simplify = F) # split info from rownames
+all_id <- lapply(1:length(rname), function(y) unlist(str_split(rname[y], " "))) # split info from rownames
 ro_id <- as.numeric(unlist(lapply(all_id, function(y) unlist(y[1])))) # obtain run order ID (every [1] element)
 files_all_df <- as.data.frame(cbind(files_all, ro = as.numeric(ro_id)))
 files_all_df <- files_all_df[order(as.numeric(files_all_df$ro), decreasing = F),] # sort by run order
@@ -306,7 +306,7 @@ feat_det <- xcms::findChromPeaks(raw_data, param = cwp)
 # retention time correction
 BiocParallel::register(BiocParallel::SerialParam())
 app <- xcms::ObiwarpParam(binSize = resultRetcorGroup$best_settings$profStep, # step size (in m/z) to use for profile generation from the raw data files
-                    center = resultRetcorGroup$best_settings$center, # or use 1st sample , Sample as center sample
+                    center = which(str_remove(files_all, wd_2) == str_remove(files_QC[resultRetcorGroup$best_settings$center], wd_1)), # or use 1st sample , Sample as center sample
                     response = resultRetcorGroup$best_settings$response,
                     distFun = resultRetcorGroup$best_settings$distFunc,
                     gapInit = resultRetcorGroup$best_settings$gapInit,
@@ -379,7 +379,7 @@ rc <- retcor(fd,
              method = resultRetcorGroup$best_settings$retcorMethod,
              plottype = resultRetcorGroup$best_settings$plottype,
              profStep = resultRetcorGroup$best_settings$profStep,
-             center = resultRetcorGroup$best_settings$center,
+             center = which(str_remove(files_all, wd_2) == str_remove(files_QC[resultRetcorGroup$best_settings$center], wd_1)), # or use 1st sample , Sample as center sample
              response = resultRetcorGroup$best_settings$response,
              distFunc = resultRetcorGroup$best_settings$distFunc,
              gapInit = resultRetcorGroup$best_settings$gapInit,
@@ -499,7 +499,7 @@ overlappingFeatures(xdata)
 # Define subset-alignment options and perform the alignment
 align_subs <- ObiwarpParam(
   binSize = resultRetcorGroup$best_settings$profStep,
-  center = resultRetcorGroup$best_settings$center,
+  center = which(str_remove(files_all, wd_2) == str_remove(files_QC[resultRetcorGroup$best_settings$center], wd_1)), # or use other Sample as Center
   response = resultRetcorGroup$best_settings$response,
   distFun = resultRetcorGroup$best_settings$distFunc,
   gapInit = resultRetcorGroup$best_settings$gapInit,
@@ -602,7 +602,7 @@ files_all <- list.files(wd_2, recursive = TRUE, full.names = TRUE, pattern = ".C
 rname <- files_all # obtain all info from rownames
 rname <- str_remove(rname, wd_2) # remove folder name
 rname <- str_remove(rname, ".CDF") # remove some pattern from vendor-specific format
-all_id <- lapply(1:length(rname), function(y) unlist(str_split(rname[y], " ")), simplify = F) # split info from rownames
+all_id <- lapply(1:length(rname), function(y) unlist(str_split(rname[y], " "))) # split info from rownames
 ro_id <- as.numeric(unlist(lapply(all_id, function(y) unlist(y[1])))) # obtain run order ID (every [1] element)
 files_all_df <- as.data.frame(cbind(files_all, ro = as.numeric(ro_id)))
 files_all_df <- files_all_df[order(as.numeric(files_all_df$ro), decreasing = F),]
