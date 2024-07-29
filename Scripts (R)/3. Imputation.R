@@ -56,7 +56,7 @@ pr_mv
 
 ########################################## amount of NA in % by feature
 mv_f <- data.frame(apply(ds_mvi, 2, function(y) round(sum(is.na(y))/length(y)*100, 0)))
-hist(mv_f, breaks=25)
+hist(as.numeric(mv_f[,1]), breaks=25)
 
 ########################################## remove all column with NA
 colna <- apply(ds_mvi,2,function(x) any(is.na(x))) # or na.omit()
