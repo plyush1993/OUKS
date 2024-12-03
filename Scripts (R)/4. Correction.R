@@ -1046,7 +1046,7 @@ QC.TF <- function(int_data, order, batch, class, qc_label, model = "bt", mode = 
     fit_tf <- pblapply(3:ncol(int_data_ro_b_qc), function(t) bagging(int_data_ro_b_qc[,t] ~ order+batch, data = int_data_ro_b_qc, coob=T, nbagg = nbagg)) # Bagging tree
   }
   print("Done correction")
-  predict_tf <- pblapply(1:length(fit_tf), function(t) predict(fit_tf[[t]], data.frame(order))) 
+  predict_tf <- pblapply(1:length(fit_tf), function(t) predict(fit_tf[[t]], newdata = int_data_ro_b[, c("order", "batch")])) 
   
   if (mode == "division") {
     val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_tf[[t]])
