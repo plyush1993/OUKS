@@ -2392,7 +2392,34 @@ ggplot(cbind(pca_f$data,batch,class), # add 2 factors vectors
   scale_fill_manual(values = pal_jco("default")(length(unique(class)))) + 
   scale_color_manual(values = pal_jco("default")(length(unique(class)))) +
   stat_ellipse(aes(group=class,color=class),type = "norm", size=0.1,alpha=0.1,geom = "polygon")
-  
+
+# % variance explained
+pca_res <- prcomp(ds, scale. = T, center = T)
+summ <- summary(pca_res)
+importance <- summ$importance[2,]
+plot(importance) 
+plot(importance[1:5]) 
+
+res.pca <- PCA(ds, graph = F, scale.unit = T)
+fviz_eig(res.pca, addlabels = T)
+
+# score plot by PCs, run order and batch
+order <- as.numeric(meta$ro_id) # run order data
+batch <- as.numeric(str_remove(meta$b_id, "b")) # batch data
+pca_res <- prcomp(ds, scale. = T, center = T)
+data <- sapply(as.data.frame(pca_res$x), as.numeric)
+data <- as.data.frame(cbind(order, batch, data))
+
+ggplot(data, aes(x=as.numeric(order), y=as.numeric(PC1))) +
+  geom_segment( aes(x=as.numeric(order), xend=as.numeric(order), y=0, yend=as.numeric(PC1))) +
+  geom_point( size=5, color="black", aes(fill= batch), alpha=0.7, shape=21, stroke=2)+
+  scale_fill_viridis_c() + theme_classic() + xlab("Run Order") + ylab("PC1") + labs(fill = "Batch")
+
+ggplot(data, aes(x=as.numeric(order), y=as.numeric(PC2))) +
+  geom_segment( aes(x=as.numeric(order), xend=as.numeric(order), y=0, yend=as.numeric(PC2))) +
+  geom_point( size=5, color="black", aes(fill= batch), alpha=0.7, shape=21, stroke=2)+
+  scale_fill_viridis_c() + theme_classic() + xlab("Run Order") + ylab("PC2") + labs(fill = "Batch")
+                
 ###############################################
 ############################################### HIERARCHICAL CLUSTER ANALYSIS
 ###############################################
