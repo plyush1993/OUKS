@@ -2314,7 +2314,7 @@ pca  +scale_shape_manual(values=rep(0:length(unique(grp1)))) # number of groups
 
 # pca  +scale_shape_manual(values=rep(0:length(unique(grp1)))) or pca 
 
-fviz_pca_var(res.pca, col.var = "contrib", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"))                
+fviz_pca_var(pca.ds1, col.var = "contrib", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"))                
 
 fviz_pca_biplot(pca.ds1, 
                 col.ind = meta[,1], palette = "jco", 
