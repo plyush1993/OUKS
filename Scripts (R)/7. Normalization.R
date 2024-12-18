@@ -39,8 +39,8 @@ colnames(meta) <- c("Class", "Batch", "Creatinine", "Age", "Sex")
 identical(rownames(ds), rownames(meta))
 
 # save without normalization for evaluation
-# ds_no_norm <- as.data.frame(ds_norm)
-# fwrite(ds_no_norm, "xcms after IPO MVI QC-XGB filter repeats annot+filtr no norm.csv", row.names = T)
+ds_no_norm <- as.data.frame(ds_norm)
+fwrite(ds_no_norm, "xcms after IPO MVI QC-XGB filter repeats annot+filtr no norm.csv", row.names = T)
 
 ##############################################################################################################################################################
 # Normalization
@@ -222,6 +222,9 @@ fwrite(ds_norm_cs, "xcms after IPO MVI QC-XGB filter repeats annot+filtr cs.csv"
 
 library(data.table)
 
+# dataset after normalization (After processing by Sections "Normalization"/"Scaling"/"Wrapper function")
+#                                      OR
+# without normalization (See line "save without normalization for evaluation")
 ds <- as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot+filtr no norm.csv", header=T)) # dataset after normalization
 rownames(ds) <- ds[,1]
 ds <- ds[,-1]
@@ -378,7 +381,7 @@ library(data.table)
 setwd("D:/...")
 
 # load dataset
-ds <- as.data.frame(fread(input = "QC-XGB after dual filt GAM adj.csv", header=T))
+ds <- as.data.frame(fread(input = "QC-XGB after dual filt LMM adj.csv", header=T))
 rownames(ds) <- ds[,1]
 ds <- ds[,-1] # only numeric variables
 # ds <- sapply(ds, as.numeric)
@@ -528,8 +531,9 @@ dat$Class <- as.factor(dat$Class)
 n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Class + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
-lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5][2], method = "BH")) # adjust to your data # select method
+lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data 
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # adjust to your data # select method
+lmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lmm_fit_pval_all_df), function(x) p.adjust(lmm_fit_pval_all_df[,x], method = "BH"))) # adjust to your data # select method
 dat2 <- cbind(meta, ds)
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)] # adjust to your data
 colnames(lmm_fit_pval_all_df)[-1] <- c("Class", "Sex", "Age") # adjust to your data
