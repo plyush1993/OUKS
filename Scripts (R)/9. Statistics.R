@@ -503,6 +503,10 @@ roc <- rownames(Imp.ROC_sel)
 ############################################### UNIVARIATE FILTERING
 ############################################### 
 
+#----------------------------------
+# designed for 2 groups comparison
+#----------------------------------
+
 # if some error in Shapiro normality test:
 # use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
 # library(cwhmisc)
@@ -610,6 +614,10 @@ uvf <- colnames(ds_uvf)[-1]
 ############################################### 
 ############################################### # t-TEST / Kruskal-Wallis TEST
 ###############################################
+
+#----------------------------------
+# designed for 2 groups comparison
+#----------------------------------
 
 ################################################### t-test
 
@@ -1801,6 +1809,10 @@ fdr_mean <- apply(abs(fdr),1, mean, na.rm=T)
 ############################################### COMPARING MEANS 
 ###############################################
 
+#----------------------------------
+# designed for 2 groups comparison
+#----------------------------------
+
 #################################### t-test
 
 # prepare data
@@ -1853,6 +1865,10 @@ tukey <- lapply(1:length(res.anova), function(y) TukeyHSD(res.anova[[y]])) # adj
 tukey
 
 #################################### Sequential implementation of appropriate statistical test with automatic detection for normality and homogeneity, returns only adjusted p-value 
+
+#----------------------------------
+# designed for 2 groups comparison
+#----------------------------------
 
 # if some error in Shapiro normality test:
 # use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
@@ -2190,7 +2206,10 @@ res_ancova <- lapply(1:length(ancova), function(y) summary(glht(ancova[[y]]))) #
 res_ancova
 
 # adjusted p-value
-res_ancova <- lapply(1:length(ancova), function(y) p.adjust(summary(ancova[[y]])[[1]][,5], "BH")) # adjust to your data # select method
+res_ancova <- t(sapply(1:length(ancova), function(y) summary(ancova[[y]])[[1]][,5])) # adjust to your data 
+res_ancova <- apply(res_ancova, 2, function(x) p.adjust(x, "BH")) # select method
+colnames(res_ancova) <- rownames(summary(ancova[[1]])[[1]])
+rownames(res_ancova) <- colnames(ds_ancova[, c(n_start:ncol(ds_ancova))])
 res_ancova
 
 # perform other type
@@ -2199,7 +2218,10 @@ ancova <- lapply(n_start:ncol(ds_ancova), function(y) anova(lm(ds_ancova[,y]~ Ba
 ancova
 
 # adjusted p-value
-res_ancova <- lapply(1:length(ancova), function(y) p.adjust(ancova[[y]][,5], "BH")) # adjust to your data # select method
+res_ancova <- t(sapply(1:length(ancova), function(y) ancova[[y]][,5])) # adjust to your data 
+res_ancova <- apply(res_ancova, 2, function(x) p.adjust(x, "BH")) # select method
+colnames(res_ancova) <- rownames(ancova[[1]])
+rownames(res_ancova) <- colnames(ds_ancova[, c(n_start:ncol(ds_ancova))])
 res_ancova
 
 ############################################### 
@@ -2223,7 +2245,8 @@ dat[,-c(1:n_meta)] <- sapply(dat[,-c(1:n_meta)], as.numeric)
 n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Class + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
-lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # select method
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5]))) 
+lmm_fit_pval_all_df <- apply(lmm_fit_pval_all_df, 2, function(x) p.adjust(x, "BH")) # select method
 dat2 <- cbind(meta, ds[,-1])
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
 colnames(lmm_fit_pval_all_df) <- rownames(lmm_fit_coef[[1]]) # adjust to your data
@@ -2253,9 +2276,12 @@ dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y"
                              return(dss[[y]])}) # adjust to your data
 gam_fit <- pblapply(1:length(dss), function(x) mgcv::gam(Y~s(Age)+Class+Sex+Batch, data = dss[[x]])) # adjust to your data (if no s() or lo() etc. -> as lm)
 gam_res <- pblapply(1:length(gam_fit), function(x) summary(gam_fit[[x]]))
-gam_pval <- as.data.frame(sapply(1:length(gam_res), function(x) p.adjust(gam_res[[x]][["s.pv"]], method = "BH"))) # adjust to your data
+gam_pval <- sapply(1:length(gam_res), function(x) gam_res[[x]][["s.pv"]]) # adjust to your data
+gam_pval <- as.data.frame(p.adjust(gam_pval, "BH")) # select method
 rownames(gam_pval) <- colnames(ds[,-1])
-gam_pval2 <- as.data.frame(t(sapply(1:length(gam_res), function(x) p.adjust(gam_res[[x]][["p.pv"]], method = "BH")))) # adjust to your data
+colnames(gam_pval) <- names(gam_res[[1]][["chi.sq"]])
+gam_pval2 <- as.data.frame(t(sapply(1:length(gam_res), function(x) gam_res[[x]][["p.pv"]]))) # adjust to your data
+gam_pval2 <- apply(gam_pval2, 2, function(x) p.adjust(x, "BH")) # select method
 rownames(gam_pval2) <- colnames(ds[,-1])
 gam_pval
 gam_pval2
@@ -2284,9 +2310,12 @@ dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y"
                              return(dss[[y]])}) # adjust to your data
 gamm_fit <- pblapply(1:length(dss), function(x) gamm4(Y~s(Age)+Class+Sex, random=~(1|Batch), data = dss[[x]])) # adjust to your data (if no s() or lo() etc. -> as lm)
 gamm_res <- pblapply(1:length(gamm_fit), function(x) summary(gamm_fit[[x]]$gam))
-gamm_pval <- as.data.frame(sapply(1:length(gamm_res), function(x) p.adjust(gamm_res[[x]][["s.pv"]], method = "BH"))) # adjust to your data
+gamm_pval <- sapply(1:length(gamm_res), function(x) gamm_res[[x]][["s.pv"]]) # adjust to your data
+gamm_pval <- as.data.frame(p.adjust((gamm_pval), method = "BH")) # select method
 rownames(gamm_pval) <- colnames(ds[,-1])
-gamm_pval2 <- as.data.frame(t(sapply(1:length(gamm_res), function(x) p.adjust(gamm_res[[x]][["p.pv"]], method = "BH")))) # adjust to your data
+colnames(gamm_pval) <- names(gamm_res[[1]][["chi.sq"]])
+gamm_pval2 <- as.data.frame(t(sapply(1:length(gamm_res), function(x) gamm_res[[x]][["p.pv"]]))) # adjust to your data
+gamm_pval2 <- apply(gamm_pval2, 2, function(x) p.adjust(x, "BH")) # select method
 rownames(gamm_pval2) <- colnames(ds[,-1])
 gamm_pval
 gamm_pval2
@@ -2315,8 +2344,9 @@ dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y"
                              return(dss[[y]])}) # adjust to your data
 drm_fit <- pblapply(1:length(dss), function(x) drm(Y~Age+Class+Sex, data = dss[[x]], fct = LL.4())) # adjust to your data 
 drm_res <- pblapply(1:length(drm_fit), function(x) summary(drm_fit[[x]]))
-drm_pval <- as.data.frame(sapply(1:length(drm_res), function(x) p.adjust(drm_res[[x]][["coefficients"]][,4], method = "BH"))) # adjust to your data
-colnames(drm_pval) <- colnames(ds[,-1])
+drm_pval <- as.data.frame(t(sapply(1:length(drm_res), function(x) drm_res[[x]][["coefficients"]][,4]))) # adjust to your data
+drm_pval <- apply(drm_pval, 2, function(x) p.adjust(x, method = "BH")) # select method
+rownames(drm_pval) <- colnames(ds[,-1])
 drm_pval
 
 ############################################### 
@@ -2540,13 +2570,16 @@ id <- as.numeric(stringr::str_remove(ds_rep$Batch, "b")) # define repeats -> sam
 ds_rep <- as.data.frame(cbind(id = id, ds_rep))
 
 # perform
-n_start <- 8 # adjust to your data
+n_start <- 9 # adjust to your data
 rep_aov <- lapply(n_start:ncol(ds_rep), function(y) aov(ds_rep[,y]~ Class+Age+Sex+Error(id), ds_rep)) # adjust formula to your data, Error(id) -> for repeated measures
 sum_rep_aov <- lapply(1:length(rep_aov), function(y) summary(rep_aov[[y]]))
 sum_rep_aov
 
 # adjusted p-value
-pval_rep_aov <- lapply(1:length(rep_aov), function(y) p.adjust(summary(rep_aov[[y]])[["Error: Within"]][[1]][,5], "BH")) # adjust  to your data, select method
+pval_rep_aov <- t(sapply(1:length(rep_aov), function(y) summary(rep_aov[[y]])[["Error: Within"]][[1]][,5])) # adjust  to your data
+pval_rep_aov <- apply(pval_rep_aov, 2, function(x) p.adjust(x, "BH")) # select method
+rownames(pval_rep_aov) <- colnames(ds_rep[,c(n_start:ncol(ds_rep))])
+colnames(pval_rep_aov) <- rownames(summary(rep_aov[[1]])[["Error: Within"]][[1]])
 pval_rep_aov
 
 ############################################### 
