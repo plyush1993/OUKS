@@ -530,7 +530,8 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wx.t <- as.vector(which(y[,1] < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- lapply(as.data.frame(xx[,wx.t]), function(t) as.numeric(p.adjust(pairwise.wilcox.test(x = t, g =  x[,1], paired=F)$p.value, method = p.adjust, n = ncol(xx))))
+    wilcox_test <- lapply(as.data.frame(xx[,wx.t]), function(t) as.numeric(pairwise.wilcox.test(x = t, g =  x[,1], paired=F)$p.value))
+    wilcox_test <- as.list(p.adjust(unlist(wilcox_test), method = p.adjust))    
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
@@ -541,7 +542,8 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
-    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], pool.sd = F)$p.value, method = p.adjust, n = ncol(xx))))
+    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) as.numeric(pairwise.t.test(x = t, g = x[,1], pool.sd = F)$p.value))
+    welch_test <- as.list(p.adjust(unlist(welch_test), method = p.adjust))
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
@@ -552,7 +554,8 @@ uvf <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(p.adjust(pairwise.t.test(x = t, g = x[,1], pool.sd = T)$p.value, method = p.adjust, n = ncol(xx))))
+    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) as.numeric(pairwise.t.test(x = t, g = x[,1], pool.sd = T)$p.value))
+    student_test <- as.list(p.adjust(unlist(student_test), method = p.adjust))
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
   
@@ -742,11 +745,12 @@ dat$Label <- as.factor(dat$Label)
 n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
-lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5][2], method = "BH")) # adjust to your data # select method
-lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5],method = "BH")))) # select method
+lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5]))) # select method
+lmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lmm_fit_pval_all_df), function(x) p.adjust(lmm_fit_pval_all_df[,x], method = "BH"))) # adjust to your data # select method
 dat2 <- cbind(meta, ds)
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(lmm_fit_pval_all_df)[-1] <- c("Class", "Sex", "Age") # adjust to your data
+colnames(lmm_fit_pval_all_df) <- rownames(lmm_fit_coef[[1]]) # adjust to your data
 
 # features
 class_un <- sum(lmm_fit_pval_all_df[,"Age"]>0.05 & lmm_fit_pval_all_df[,"Sex"]>0.05 & lmm_fit_pval_all_df[,"Class"]<0.05)
@@ -1726,7 +1730,10 @@ res.man <- manova(mnv ~ Label, data = ds) # adjust to data
 summary(res.man)
 summary.aov(res.man)
 sum.manova <- summary.aov(res.man)
-pval_manova <- lapply(1:length(sum.manova), function(y) p.adjust(sum.manova[[y]][,5], method = "BH")) # adjust to data # select method 
+pval_manova <- lapply(1:length(sum.manova), function(y) sum.manova[[y]][,5]) # adjust to data 
+pval_manova <- as.data.frame(do.call(rbind, pval_manova))
+pval_manova <- as.data.frame(apply(pval_manova, 2, function(x) p.adjust(x, method = "BH")))
+colnames(pval_manova) <- rownames(sum.manova[[1]])
 pval_manova
 
 ###############################################
@@ -1833,7 +1840,10 @@ res.anova <- lapply(3:ncol(dat), function(y) aov(dat[,y] ~ sex*Label, data = dat
 res.anova
 res.anova.sum <- lapply(3:ncol(dat), function(y) summary(aov(dat[,y] ~ sex*Label, data = dat)))
 res.anova.sum
-p_adj <- lapply(1:length(res.anova.sum), function(y) p.adjust(res.anova.sum[[y]][[1]][,5], "BH")) # adjust to your data # select method
+p_adj <- lapply(1:length(res.anova.sum), function(y) res.anova.sum[[y]][[1]][,5]) # adjust to your data 
+p_adj <- do.call(rbind, p_adj)
+p_adj <- as.data.frame(apply(p_adj, 2, function(x) p.adjust(x, "BH"))) # Adjust P-values for Multiple Comparisons
+colnames(p_adj) <- rownames(res.anova.sum[[1]][[1]])
 p_adj
 
 library(multcomp)
@@ -1865,23 +1875,14 @@ uva <- function(x, p.adjust = "BH"){
     return(as.data.frame(cbind(norm.test, homog.test)))}
   
   res_tests <- norm_homog_tests(x)
-
-  pa <- function(x, t, f) {
-      t[[x]]$p.value <- as.data.frame(t[[x]]$p.value)
-      t[[x]]$p.value_no_adj <- t[[x]]$p.value
-      t[[x]]$p.adjust.method <- p.adjust
-      t[[x]]$p.value <- p.adjust(unlist(t[[x]]$p.value), method = p.adjust, n = ncol(f))  
-      names(t[[x]]$p.value) <- paste0(rep(colnames(t[[x]]$p.value_no_adj), each = nrow(t[[x]]$p.value_no_adj)),"_", rownames((t[[x]]$p.value_no_adj)))
-  return(t[[x]])
-    }                      
   
   wilcox_test <- function(x,y) {
     xx <- x[,-1]
     wx.t <- as.vector(which(y[,1] < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- lapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], paired=F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
-    wilcox_test <- lapply(1:length(wilcox_test), function(y) pa(x=y, t= wilcox_test, f = xx))
+    wilcox_test <- sapply(as.data.frame(xx[,wx.t]),  function(t) pairwise.wilcox.test(x = t, g =  x[,1], paired=F)$p.value) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    wilcox_test <- p.adjust(wilcox_test, method = p.adjust)
     names(wilcox_test) <- (colnames(x)[-1])[wx.t]
     return(as.list(wilcox_test))}
   
@@ -1892,8 +1893,8 @@ uva <- function(x, p.adjust = "BH"){
     wl.t <- as.vector(which(y[,1] > 0.05 & y[,2] < 0.05))
     welch_test <- list()
     ifelse(identical(wl.t, integer(0)), return (welch_test <- 1), wl.t)
-    welch_test <- lapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = F)) # or as.numeric(as,vector(...)))$p.value))) or ...))
-    welch_test <- lapply(1:length(welch_test), function(y) pa(x=y, t= welch_test, f = xx))
+    welch_test <- sapply(as.data.frame(xx[,wl.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = F)$p.value) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    welch_test <- p.adjust(welch_test, method = p.adjust)
     names(welch_test) <- (colnames(x)[-1])[wl.t]
     return(as.list(welch_test))}
   
@@ -1904,8 +1905,8 @@ uva <- function(x, p.adjust = "BH"){
     st.t <- as.vector(which(y[,1] > 0.05 & y[,2] > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- lapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = T)) # or as.numeric(as,vector(...)))$p.value))) or ...))
-    student_test <- lapply(1:length(student_test), function(y) pa(x=y, t= student_test, f = xx))
+    student_test <- sapply(as.data.frame(xx[,st.t]), function(t) pairwise.t.test(x = t, g = x[,1], pool.sd = T)$p.value) # or as.numeric(as,vector(...)))$p.value))) or ...))
+    student_test <- p.adjust(student_test, method = p.adjust)
     names(student_test) <- (colnames(x)[-1])[st.t]
     return(as.list(student_test))}
   
@@ -1977,7 +1978,9 @@ res_ancova <- lapply(1:length(ancova), function(y) summary(glht(ancova[[y]]))) #
 res_ancova
 
 # adjusted p-value
-res_ancova <- lapply(1:length(ancova), function(y) p.adjust(summary(ancova[[y]])[[1]][,5], "BH")) # adjust to your data # select method
+res_ancova <- as.data.frame(t(sapply(1:length(ancova), function(y) summary(ancova[[y]])[[1]][,5]))) # adjust to your data 
+res_ancova <- as.data.frame(apply(res_ancova, 2, function(x) p.adjust(x, "BH"))) # choose p.adjust method
+colnames(res_ancova) <- rownames(summary(ancova[[1]])[[1]])
 res_ancova
 
 # perform other type
@@ -1986,7 +1989,9 @@ ancova <- lapply(n_start:ncol(ds_ancova), function(y) anova(lm(ds_ancova[,y]~ Ba
 ancova
 
 # adjusted p-value
-res_ancova <- lapply(1:length(ancova), function(y) p.adjust(ancova[[y]][,5], "BH")) # adjust to your data # select method
+res_ancova <- as.data.frame(t(sapply(1:length(ancova), function(y) ancova[[y]][,5]))) # adjust to your data 
+res_ancova <- as.data.frame(apply(res_ancova, 2, function(x) p.adjust(x, "BH"))) # choose p.adjust method
+colnames(res_ancova) <- rownames(summary(ancova[[1]])[[1]])
 res_ancova
 
 ################################################### LMM modeling
@@ -2008,10 +2013,11 @@ dat[,-c(1:n_meta)] <- sapply(dat[,-c(1:n_meta)], as.numeric)
 n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Label + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
-lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # select method
-dat2 <- cbind(meta, ds)
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5])))
+lmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lmm_fit_pval_all_df), function(x) p.adjust(lmm_fit_pval_all_df[,x], method = "BH"))) # select method
+dat2 <- cbind(meta, ds) 
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(lmm_fit_pval_all_df)[-1] <- c("Class", "Sex", "Age") # adjust to your data
+colnames(lmm_fit_pval_all_df) <- rownames(lmm_fit_coef[[1]]) # adjust to your data
 lmm_fit_pval_all_df
 
 ############################################### 
@@ -2216,7 +2222,7 @@ lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coef
 lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # select method
 dat2 <- cbind(meta, ds[,-1])
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(lmm_fit_pval_all_df)[-1] <- c("Class", "Sex", "Age") # adjust to your data
+colnames(lmm_fit_pval_all_df) <- rownames(lmm_fit_coef[[1]]) # adjust to your data
 lmm_fit_pval_all_df
 
 ############################################### 
