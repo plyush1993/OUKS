@@ -532,7 +532,7 @@ n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(dat[,x] ~ Class + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
 lmm_fit_pval <- sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5][2]) # adjust to your data 
-lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # adjust to your data # select method
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5]))) # adjust to your data 
 lmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lmm_fit_pval_all_df), function(x) p.adjust(lmm_fit_pval_all_df[,x], method = "BH"))) # adjust to your data # select method
 dat2 <- cbind(meta, ds)
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)] # adjust to your data
