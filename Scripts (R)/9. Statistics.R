@@ -2060,10 +2060,11 @@ lm_model
 n_start <- 6 # adjust to your data
 lm_fit <- lapply(n_start:ncol(dat), function(x) lm(Label ~ dat[,x] + Sex + Age, dat)) # adjust to your data 
 lm_fit_coef <- lapply(1:length(lm_fit), function(x) summary(lm_fit[[x]])$coefficients)
-lm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lm_fit_coef), function(x) p.adjust(lm_fit_coef[[x]][,4], method = "BH")))) # select method
+lm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lm_fit_coef), function(x) lm_fit_coef[[x]][,4]))) 
+lm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lm_fit_pval_all_df), function(x) p.adjust(lm_fit_pval_all_df[,x], method = "BH"))) # select method
 dat2 <- cbind(meta, ds)
 rownames(lm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(lm_fit_pval_all_df)[-1] <- c("Metabolite", "Sex", "Age") # adjust to your data
+colnames(lm_fit_pval_all_df) <- rownames(summary(lm_fit[[1]])$coefficients)  # adjust to your data
 lm_fit_pval_all_df
 
 ################################################### GLM model
@@ -2078,10 +2079,11 @@ glm_model
 n_start <- 6 # adjust to your data
 glm_fit <- lapply(n_start:ncol(dat), function(x) glm(Label ~ dat[,x] + Sex + Age, dat, family=binomial())) # adjust to your data 
 glm_fit_coef <- lapply(1:length(glm_fit), function(x) summary(glm_fit[[x]])$coefficients)
-glm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(glm_fit_coef), function(x) p.adjust(glm_fit_coef[[x]][,4], method = "BH")))) # select method
+glm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(glm_fit_coef), function(x) glm_fit_coef[[x]][,4]))) 
+glm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(glm_fit_pval_all_df), function(x) p.adjust(glm_fit_pval_all_df[,x], method = "BH"))) # select method
 dat2 <- cbind(meta, ds)
 rownames(glm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(glm_fit_pval_all_df)[-1] <- c("Metabolite", "Sex", "Age") # adjust to your data
+colnames(glm_fit_pval_all_df) <- rownames(summary(glm_fit[[1]])$coefficients) # adjust to your data
 glm_fit_pval_all_df
 
 ################################################### LMM model
@@ -2092,10 +2094,11 @@ library(lmerTest)
 n_start <- 6 # adjust to your data
 lmm_fit <- lapply(n_start:ncol(dat), function(x) lmer(Label ~ dat[,x] + Sex + Age + (1|Batch), dat)) # adjust to your data # lmer from lmerTest package
 lmm_fit_coef <- lapply(1:length(lmm_fit), function(x) summary(lmm_fit[[x]])$coefficients)
-lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) p.adjust(lmm_fit_coef[[x]][,5], method = "BH")))) # select method
+lmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(lmm_fit_coef), function(x) lmm_fit_coef[[x]][,5]))) 
+lmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(lmm_fit_pval_all_df), function(x) p.adjust(lmm_fit_pval_all_df[,x], method = "BH"))) # select method
 dat2 <- cbind(meta, ds)
 rownames(lmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(lmm_fit_pval_all_df)[-1] <- c("Metabolite", "Sex", "Age") # adjust to your data
+colnames(lmm_fit_pval_all_df) <- rownames(summary(lmm_fit[[1]])$coefficients) # adjust to your data
 lmm_fit_pval_all_df
 
 ################################################### GLMM model
@@ -2108,10 +2111,11 @@ dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"X"
 return(dss[[y]])}) # adjust to your data
 glmm_fit <- lapply(1:length(dss), function(x) glmm(Label ~ X + Sex + Age + (1|Batch), data=dss[[x]], family=binomial, method = "Laplace")) # adjust to your data
 glmm_fit_coef <- lapply(1:length(glmm_fit), function(x) summary(glmm_fit[[x]])$p_value)
-glmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(glmm_fit_coef), function(x) p.adjust(glmm_fit_coef[[x]], method = "none")))) # select method
+glmm_fit_pval_all_df <- as.data.frame(t(sapply(1:length(glmm_fit_coef), function(x) glmm_fit_coef[[x]]))) # select method
+glmm_fit_pval_all_df <- as.data.frame(sapply(1:ncol(glmm_fit_pval_all_df), function(x) p.adjust(glmm_fit_pval_all_df[,x], method = "BH"))) # select method
 dat2 <- cbind(meta, ds)
 rownames(glmm_fit_pval_all_df) <- colnames(dat2)[-c(1:n_meta)]
-colnames(glmm_fit_pval_all_df)[-1] <- c("Intercept", "Metabolite", "Sex", "Age") # adjust to your data
+colnames(glmm_fit_pval_all_df) <- colnames(summary(glmm_fit[[1]])[["fit"]][["modfr"]][["fr"]]) # adjust to your data
 glmm_fit_pval_all_df
 
 ############################################### 
