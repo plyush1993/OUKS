@@ -117,6 +117,6 @@
 ### Changed
 * "4. Correction": Extensions in QC-NORM.
 * ## **V. 1.14.2**
-:spiral_calendar: 2024.12.18
+:spiral_calendar: 2024.12.19
 ### Fixed
 * Bugs related to the implementation of p.adjust() function has been fixed throughout 7.Normalization/4.Correction/9.Statistics scripts.
