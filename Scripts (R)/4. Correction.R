@@ -1686,7 +1686,7 @@ setwd("D:/...")
 
 ###################### generate feature table with metadata (as in first section)
 # load data
-dsr <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB s.csv", header=T)) # first column with all metadata
+dsr <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB.csv", header=T)) # first column with all metadata
 rownames(dsr) <- dsr[,1]
 dsr <- dsr[,-1]
 # metadata generating
@@ -2132,7 +2132,8 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wx.t <- as.vector(which(y < 0.05))
     wilcox_test <- list()
     ifelse(identical(wx.t, integer(0)), return (wilcox_test <- 1), wx.t)
-    wilcox_test <- apply(as.data.frame(xx[,wx.t]), 2, function(t) as.numeric(as.vector(p.adjust(wilcox.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value, p.adjust))))
+    wilcox_test <- apply(as.data.frame(xx[,wx.t]), 2, function(t) as.numeric(as.vector(wilcox.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value)))
+    wilcox_test <- p.adjust(wilcox_test, p.adjust)
     names(wilcox_test) <- (colnames(x))[wx.t]
     return(wilcox_test)}
   
@@ -2143,7 +2144,8 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     st.t <- as.vector(which(y > 0.05))
     student_test <- list()
     ifelse(identical(st.t, integer(0)), return (student_test <- 1), st.t)
-    student_test <- apply(as.data.frame(xx[,st.t]), 2, function(t) as.numeric(as.vector(p.adjust(t.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value, p.adjust))))
+    student_test <- apply(as.data.frame(xx[,st.t]), 2, function(t) as.numeric(as.vector(t.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value)))
+    student_test <- p.adjust(student_test, p.adjust)
     names(student_test) <- (colnames(x))[st.t]
     return(student_test)}
   
@@ -2178,7 +2180,7 @@ ds_ost <- as.data.frame(ost(ds_bd, p.val.sig = 0.05, p.adjust = "BH"))
 os_test <- round(ncol(ds_ost)/ncol(ds)*100, 0)
 os_test
 
-########################################## One-Sample Test only t.test
+########################################## One-Sample Test only wilcox.test
 
 # feature data
 ds_bd <- subset(ds, n_gr_t == "QC") # adjust to your QC label           
@@ -2189,7 +2191,8 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
   os_test <- function(x) {
     xx <- x
     os_test <- list()
-    os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(p.adjust(wilcox.test(xx[,t], mu = mean(xx[,t], na.rm = T), alternative = "two.sided")$p.value, p.adjust)))) # wilcox.test or t.test
+    os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(wilcox.test(xx[,t], mu = mean(xx[,t], na.rm = T), alternative = "two.sided")$p.value))) # wilcox.test or t.test
+    os_test <- p.adjust(os_test, p.adjust)
     names(os_test) <- (colnames(xx))
     return(os_test)}
   
@@ -2227,14 +2230,15 @@ ost <- function(x, y, p.val.sig = 0.05, p.adjust = "BH"){
     xx <- x
     yy <- y
     os_test <- list()
-    os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(p.adjust(t.test(xx[,t], mu = mean(yy[,t], na.rm = T), alternative = "two.sided")$p.value, p.adjust)))) # wilcox.test or t.test
+    os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(wilcox.test(xx[,t], mu = mean(yy[,t], na.rm = T), alternative = "two.sided")$p.value))) # wilcox.test or t.test
+    os_test <- p.adjust(os_test, p.adjust)
     names(os_test) <- (colnames(xx))
     return(os_test)}
   
   os.t.res <- os_test(x, y)
   
   l_s <- length(which(os.t.res <= p.val.sig))
-  return(round(l_s/ncol(x)*100, 0))
+  return(round(l_s/ncol(x)*100, 2))
 }
 
 # 1st argument -> list of datasets by batch with only numeric values, 2nd -> full dataset with only numeric values, 3rd -> p-value, 4th -> the method of adjustment for multiple comparisons.
