@@ -1,6 +1,10 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # Metadata generating
@@ -8,19 +12,19 @@
 # Evaluate correction
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
- 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # setup environment
 library(data.table)
 library(dplyr)
 library(stringr)
 setwd("D:/...")
 
-##############################################################################################################################################################
-# Metadata generating
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            Metadata generating                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # load peak table in csv
 # load in format: 1st column: 1. qc1(s78_1) b1 QC1(KMS 53).X --- ro. nameN(nameN_NREPEAT) BatchIndex QCN(Label N)
@@ -30,8 +34,7 @@ dsr <-as.data.frame(fread(input = "xcms after IPO MVI.csv", header=T)) # first c
 rownames(dsr) <- dsr[,1]
 dsr <- dsr[,-1]
 
-########################################## METADATA GENERATING
-
+#......................METADATA GENERATING.......................
 rname <- rownames(dsr) # obtain all info from rownames
 rname <- str_remove(rname, ".CDF") # remove some pattern from vendor-specific format
 # qc_id <- grep(pattern = "QC", x = rname) # find by pattern in info from rownames
@@ -70,12 +73,12 @@ n <- 7 # set non numeric columns, adjust to your data
 meta <- ds[,c(1:n)]
 ds <- ds[,-c(1:n)] 
 
-##############################################################################################################################################################
-# Perform correction
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             Perform correction                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Content:
-# WaveICA (WaveICA, WaveICA 2.0)
+# WaveICA
 # EigenMS
 # Ber`s and Combat`s (Ber-Bagging, Ber, NP Combat, P Combat)
 # RUVSeq`s (RUVs, RUVg, RUVr)
@@ -90,13 +93,14 @@ ds <- ds[,-c(1:n)]
 # QC-MCLUST
 # QC-BT/DT/KNN
 # QC-GBM (xgboost/catboost)
-# QC-norm
+# QC-GAM (MetCorR)
+# Median Between Batches (QC-norm)
 # RUVs`s (ruvrand, ruvrandclust)
 # ISs`s (SIS, NOMIS, CCMN, BMIS)
 
-###############################################################################
-########################################## WaveICA
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           WaveICA                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(WaveICA)
 library(WaveICA2.0)
@@ -109,7 +113,7 @@ batch <- as.numeric(batch)
 # generate run order data
 ro <- as.numeric(meta$ro_id)
 
-######################### Perform WaveICA
+#........................Perform WaveICA.........................
 # perform
 ds_WaveICA<-WaveICA(data=ds,wf="haar",batch=batch,group=NULL,K=20,t=0.05,t2=0.05,alpha=0) # adjust "batch", "group" arguments to your study
 ds_WaveICA <- data.frame(ds_WaveICA$data_wave)
@@ -117,7 +121,7 @@ ds_WaveICA <- data.frame(ds_WaveICA$data_wave)
 # save
 fwrite(ds_WaveICA, "xcms after IPO MVI WaveICA.csv", row.names = T)
 
-######################### Perform WaveICA 2.0
+#........................Perform WaveICA 2.......................
 # perform
 ds_WaveICA2<-WaveICA_2.0(data=ds,wf="haar",Injection_Order = ro,alpha=0, Cutoff=0.1, K=10) # adjust arguments to your study
 ds_WaveICA2 <- data.frame(ds_WaveICA2$data_wave)
@@ -125,9 +129,9 @@ ds_WaveICA2 <- data.frame(ds_WaveICA2$data_wave)
 # save
 fwrite(ds_WaveICA2, "xcms after IPO MVI WaveICA 2.0.csv", row.names = T)
 
-###############################################################################
-########################################## EigenMS
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           EigenMS                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(ProteoMM)
 
@@ -148,9 +152,9 @@ ds_EigenMS <- as.data.frame(t(m_ints_norm1$norm_m))
 # save
 fwrite(ds_EigenMS, "xcms after IPO MVI EigenMS.csv", row.names = T)
 
-###############################################################################
-########################################## Ber`s and Combat`s methods
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  Ber`s and Combat`s (Ber-Bagging, Ber, NP Combat, P Combat)  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(dbnorm)
 
@@ -162,7 +166,7 @@ batch <- as.factor(as.numeric(batch))
 # data
 dbn_d <- data.frame(batch,ds)
 
-######################### Perform Ber-Bagging correction
+#..........................Ber-Bagging...........................
 dbnormBagging(dbn_d)
 bagg <- paste(tempdir(),'mydata_ber_baggingCorrected.csv', sep='/')
 bagg <- as.data.frame(fread(input = bagg, header=T))
@@ -172,7 +176,7 @@ bagg <- bagg[,-c(1,2)]
 # save
 fwrite(bagg, "xcms after IPO MVI Ber-Bagging.csv", row.names = T)
 
-######################### Perform Ber correction
+#..............................Ber...............................
 dbnormBer(dbn_d)
 ber <- paste(tempdir(),'mydata_berCorrected.csv', sep='/')
 ber <- as.data.frame(fread(input = ber, header=T))
@@ -182,7 +186,7 @@ ber <- ber[,-c(1,2)]
 # save
 fwrite(ber, "xcms after IPO MVI Ber.csv", row.names = T)
 
-######################### Perform NP Combat correction
+#............................NP Combat...........................
 dbnormNPcom(dbn_d)
 npcomb <- paste(tempdir(),'mydata_nonparametricComBatCorrected.csv', sep='/')
 npcomb <- as.data.frame(fread(input = npcomb, header=T))
@@ -192,7 +196,7 @@ npcomb <- npcomb[,-c(1,2)]
 # save
 fwrite(npcomb, "xcms after IPO MVI NP Combat.csv", row.names = T)
 
-######################### Perform P Combat correction
+#............................P Combat............................
 dbnormPcom(dbn_d)
 pcomb <- paste(tempdir(),'mydata_parametricComBatCorrected.csv', sep='/')
 pcomb <- as.data.frame(fread(input = pcomb, header=T))
@@ -202,9 +206,9 @@ pcomb <- pcomb[,-c(1,2)]
 # save
 fwrite(pcomb, "xcms after IPO MVI P Combat.csv", row.names = T)
 
-###############################################################################
-########################################## RUVSeq`s based methods
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 RUVSeq`s (RUVs, RUVg, RUVr)                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(RUVSeq)
 library(FactoMineR)
@@ -219,11 +223,11 @@ replicates.ind[1,] <- idxQC
 replicates.ind[-1,1] <- (1:nrow(dat))[-idxQC]
 class <- as.factor(meta$n_gr_t) # for RUVr
 
-######################### Perform RUVs correction
+#..............................RUVs..............................
 
 NumOfComp <- 15 # Max number of components
 
-selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
+selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) ({
   sprintf("Doing Batch correction using %d number of components\n",
           NumOfComp)
   doRUV <- t(RUVs(x = t(dat),
@@ -254,7 +258,7 @@ selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
   m_b_d <- round(mean(batch.dist_b[col(batch.dist_b) > row(batch.dist_b)]), 2)
   
   return(m_b_d)
-})
+}))
 
 best_ncomp <- which.min(selectNcomp)
 
@@ -270,11 +274,11 @@ ruvs <- as.data.frame(t(RUVs$normalizedCounts))
 # save
 fwrite(ruvs, "xcms after IPO MVI RUVs.csv", row.names = T)
 
-######################### Perform RUVg correction
+#..............................RUVg..............................
 
 NumOfComp <- 15 # Max number of components
 
-selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
+selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) ({
   sprintf("Doing Batch correction using %d number of components\n",
           NumOfComp)
   doRUV <- t(RUVg(x = t(dat),
@@ -304,7 +308,7 @@ selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
   m_b_d <- round(mean(batch.dist_b[col(batch.dist_b) > row(batch.dist_b)]), 2)
   
   return(m_b_d)
-})
+}))
 
 best_ncomp <- which.min(selectNcomp)
 
@@ -320,7 +324,7 @@ ruvg <- as.data.frame(t(RUVg$normalizedCounts))
 # save
 fwrite(ruvg, "xcms after IPO MVI RUVg.csv", row.names = T)
 
-######################### Perform RUVr correction
+#..............................RUVr..............................
 
 NumOfComp <- 15 # Max number of components
 
@@ -333,7 +337,7 @@ y <- estimateGLMTagwiseDisp(y, design)
 fit <- glmFit(y, design)
 res <- residuals(fit, type="deviance")
 
-selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
+selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) ({
   sprintf("Doing Batch correction using %d number of components\n",
           NumOfComp)
   doRUV <- t(RUVr(x = t(dat),
@@ -364,7 +368,7 @@ selectNcomp <- sapply(1:NumOfComp, function(NumOfComp) {
   m_b_d <- round(mean(batch.dist_b[col(batch.dist_b) > row(batch.dist_b)]), 2)
   
   return(m_b_d)
-})
+}))
 
 best_ncomp <- which.min(selectNcomp)
 
@@ -380,9 +384,9 @@ ruvr <- as.data.frame(t(RUVr$normalizedCounts))
 # save
 fwrite(ruvr, "xcms after IPO MVI RUVr.csv", row.names = T)
 
-###############################################################################
-########################################## QC-SPLINE (pmp)
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       QC-SPLINE (pmp)                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(pmp)
 
@@ -405,9 +409,9 @@ ds_rsc <- data.frame(t(ds_rsc))
 # save
 fwrite(ds_rsc, "xcms after IPO MVI QC-SPLINE.csv", row.names = T)
 
-###############################################################################
-########################################## QC-SPLINE (notame)
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      QC-SPLINE (notame)                      ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(notame)
 library(batchCorr)
@@ -446,7 +450,7 @@ openxlsx::write.xlsx(dsr_ntm, file = "for notame.xlsx", col.names = F, row.names
 ntm <- read_from_excel(file = "for notame.xlsx", sheet = 1, name = "ntm", skip_checks =F) # for updated versions check "mz_limits" and "rt_limits", like: mz_limits = c(0,500000), rt_limits = c(0,500000)
 ntm2 <- construct_metabosets(exprs = ntm$exprs, pheno_data = ntm$pheno_data, feature_data = ntm$feature_data, group_col = "Group")
 
-######################### QC-SPLINE notame log=T
+#.....................QC-SPLINE notame log=T.....................
 dc_T <- dc_cubic_spline(ntm2$ntm, log_transform = T, spar = NULL, spar_lower = 0.5, spar_upper = 1.5)
 ntm_cs_T <- assayData(dc_T)
 ntm_cs_T <- as.data.frame(t(exprs(ntm_cs_T$object)))
@@ -455,7 +459,7 @@ colnames(ntm_cs_T) <- colnames(f_d)
 # save
 fwrite(ntm_cs_T, "xcms after IPO MVI QC-SPLINE log=T.csv", row.names = T)
 
-######################### QC-SPLINE notame log=F
+#.....................QC-SPLINE notame log=F.....................
 dc_F <- dc_cubic_spline(ntm2$ntm, log_transform = F, spar = NULL, spar_lower = 0.5, spar_upper = 1.5)
 ntm_cs_F <- assayData(dc_F)
 ntm_cs_F <- as.data.frame(t(exprs(ntm_cs_F$object)))
@@ -464,9 +468,9 @@ colnames(ntm_cs_F) <- colnames(f_d)
 # save
 fwrite(ntm_cs_F, "xcms after IPO MVI QC-SPLINE log=F.csv", row.names = T)
 
-###############################################################################
-########################################## QC-LOESS
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           QC-LOESS                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(statTarget)
 
@@ -498,7 +502,7 @@ colnames(f_d) <- c("name", paste(1:length(meta$n_gr_t), meta$n_gr_t))
 fwrite(s_d, "s_d.csv", row.names = F)
 fwrite(f_d, "f_d.csv", row.names = F)
 
-######################### perform QC-LOESS in single division mode
+#............perform QC-LOESS in single division mode............
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
@@ -507,10 +511,18 @@ shiftCor(samPeno,samFile, MLmethod = 'QCRLSC', QCspan = 0, degree = 2, imputeM =
 # save
 ds_rlc <- fread(input = "statTarget/shiftCor/After_shiftCor/shift_all_cor.csv", header = T)
 ds_rlc <- ds_rlc[,-c(1:2)]
+ds_rlc <- sweep(ds_rlc/1000, 2, sapply(ds[qc_id,], mean, na.rm = T), "*")
 rownames(ds_rlc) <- rownames(ds)
 fwrite(ds_rlc, "xcms after IPO MVI QC-LOESS d.csv", row.names = T)
 
-######################### perform QC-LOESS in single subtraction mode
+#..........perform QC-LOESS in single subtraction mode...........
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
@@ -527,9 +539,9 @@ rownames(ds_rlc) <- rownames(dsrr)
 colnames(ds_rlc) <- colnames(dsrr)
 fwrite(ds_rlc, "xcms after IPO MVI QC-LOESS s.csv", row.names = T)
 
-###############################################################################
-########################################## QC-RF
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            QC-RF                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(statTarget)
 
@@ -561,7 +573,7 @@ colnames(f_d) <- c("name", paste(1:length(meta$n_gr_t), meta$n_gr_t))
 fwrite(s_d, "s_d.csv", row.names = F)
 fwrite(f_d, "f_d.csv", row.names = F)
 
-######################### perform QC-RF in single division mode
+#..............perform QC-RF in single division mode.............
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
@@ -570,10 +582,18 @@ shiftCor(samPeno,samFile, MLmethod = 'QCRFSC', ntree = 500, imputeM = 'min', coC
 # save
 ds_rfc <- fread(input = "statTarget/shiftCor/After_shiftCor/shift_all_cor.csv", header = T)
 ds_rfc <- ds_rfc[,-c(1:2)]
+ds_rfc <- sweep(ds_rfc/1000, 2, sapply(ds[qc_id,], mean, na.rm = T), "*")
 rownames(ds_rfc) <- rownames(ds)
 fwrite(ds_rfc, "xcms after IPO MVI QC-RF d.csv", row.names = T)
 
-######################### perform QC-RF in single subtraction mode
+#............perform QC-RF in single subtraction mode............
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 datpath <- getwd()
 samPeno <- paste(datpath,'s_d.csv', sep='/')
 samFile <- paste(datpath,'f_d.csv', sep='/')
@@ -590,9 +610,9 @@ rownames(ds_rfc) <- rownames(dsrr)
 colnames(ds_rfc) <- colnames(dsrr)
 fwrite(ds_rfc, "xcms after IPO MVI QC-RF s.csv", row.names = T)
 
-###############################################################################
-########################################## SERRF
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            SERRF                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(openxlsx)
 
@@ -625,9 +645,9 @@ rownames(ds_srf) <- colnames(dsr2)
 colnames(ds_srf) <- rownames(dsr2)
 fwrite(ds_srf, "xcms after IPO MVI SERRF.csv", row.names = T)
 
-###############################################################################
-########################################## TIGERr
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            TIGERr                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(TIGERr)
 
@@ -652,9 +672,9 @@ tiger <- run_TIGER(test_samples = dsr2, # adjust other parameters to your data
 ds_tiger <- tiger[,-c(1:4)]
 fwrite(ds_tiger, "xcms after IPO MVI TIGER.csv", row.names = T)
 
-###############################################################################
-########################################## QC-SVR
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            QC-SVR                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetNormalizer)
 
@@ -689,7 +709,7 @@ file.copy(from = samPeno, to = "MetNormalizer/", overwrite = TRUE, recursive = T
 file.copy(from = samFile, to = "MetNormalizer/", overwrite = TRUE, recursive = TRUE)
 new.path <- paste(datpath,'MetNormalizer', sep='/')
 
-######################### perform QC-SVR
+#.........................perform QC-SVR.........................
 metNor(
   ms1.data.name = "feature_data.csv",
   sample.info.name = "sample_data.csv",
@@ -718,7 +738,7 @@ ds_svr <- ds_svr[order(ds_svr$ro, decreasing = F),] # order by run order
 ds_svr <- ds_svr[,-1]
 fwrite(ds_svr, "xcms after IPO MVI QC-SVR.csv", row.names = T)
 
-######################### perform QC-SVR top n correlated
+#................perform QC-SVR top n correlated.................
 metNor(
   ms1.data.name = "feature_data.csv",
   sample.info.name = "sample_data.csv",
@@ -747,9 +767,9 @@ ds_svr <- ds_svr[order(ds_svr$ro, decreasing = F),]
 ds_svr <- ds_svr[,-1]
 fwrite(ds_svr, "xcms after IPO MVI QC-SVR top 5.csv", row.names = T)
 
-###############################################################################
-########################################## QC-LM/RLM/TOBIT
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       QC-LM/RLM/TOBIT                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(BatchCorrMetabolomics)
 
@@ -769,7 +789,7 @@ injection.order <- as.numeric(meta$ro_id)
 # Feature data
 f_d <- as.matrix(ds)
 
-######################### perform QC-RLM
+#.........................perform QC-RLM.........................
 ref.idx <- which(class == "ref")
 ds_rlm <- doBC(f_d, ref.idx = ref.idx,
                batch.idx = batch, method = "rlm",
@@ -778,7 +798,7 @@ ds_rlm <- doBC(f_d, ref.idx = ref.idx,
 # save
 fwrite(data.frame(ds_rlm), "xcms after IPO MVI QC-RLM.csv", row.names = T)
 
-######################### perform QC-LM
+#..........................perform QC-LM.........................
 ref.idx <- which(class == "ref")
 ds_lm <- doBC(f_d, ref.idx = ref.idx,
                batch.idx = batch, method = "lm",
@@ -787,7 +807,7 @@ ds_lm <- doBC(f_d, ref.idx = ref.idx,
 # save
 fwrite(data.frame(ds_lm), "xcms after IPO MVI QC-LM.csv", row.names = T)
 
-######################### perform QC-TOBIT
+#........................perform QC-TOBIT........................
 ref.idx <- which(class == "ref")
 ds_tobit <- doBC(f_d, ref.idx = ref.idx,
                batch.idx = batch, method = "tobit",
@@ -796,9 +816,9 @@ ds_tobit <- doBC(f_d, ref.idx = ref.idx,
 # save
 fwrite(data.frame(ds_tobit), "xcms after IPO MVI QC-TOBIT.csv", row.names = T)
 
-###############################################################################
-########################################## QC-MCLUST
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          QC-MCLUST                          ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(batchCorr)
 
@@ -838,9 +858,9 @@ ds_mclust <- data.frame(normData$peakTable)
 rownames(ds_mclust) <- rownames(ds)
 fwrite(ds_mclust, "xcms after IPO MVI QC-MCLUST.csv", row.names = T)
 
-###############################################################################
-########################################## QC-BT/DT/KNN
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         QC-BT/DT/KNN                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # generate batch data
 batch <- meta$b_id
@@ -860,8 +880,8 @@ rownames(s_d) <- rownames(ds)
 # Feature data
 f_d <- data.frame(ds)
 
-################################################## Single mode
-QC.SM <- function(int_data, order, class, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) {
+#..........................Single mode...........................
+QC.SM <- function(int_data, order, class, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) ({
   
   library(pbapply)
   
@@ -884,11 +904,11 @@ QC.SM <- function(int_data, order, class, qc_label, model = "bt", mode = "divisi
   predict_sm <- pblapply(1:length(fit_sm), function(t) predict(fit_sm[[t]], data.frame(order)))
   
   if (mode == "division") {
-    val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_sm[[t]])
+    val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_sm[[t]]*mean(int_data[qc_id,t], na.rm = T))
     res_sm <- as.data.frame(t(do.call(rbind, val_sm)))
     rownames(res_sm) <- rownames(int_data)
     colnames(res_sm) <- colnames(int_data)
-    res_sm <- res_sm*1000
+    res_sm <- res_sm
   return(res_sm)
     } else { (mode == "subtraction")
     val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]-predict_sm[[t]]+mean(int_data[qc_id,t], na.rm = T))
@@ -898,7 +918,7 @@ QC.SM <- function(int_data, order, class, qc_label, model = "bt", mode = "divisi
     res_sm <- res_sm
   return(res_sm)
     }
-  }
+  })
 
 # Parameters of QC.SM function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, class -> sample group variable, 
@@ -923,6 +943,13 @@ qc_sm <- QC.SM(int_data = f_d, order = order, class = class, qc_label = "QC", mo
 fwrite(qc_sm, "xcms after IPO MVI QC-KNN d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform bagging tree in single mode
 qc_sm <- QC.SM(int_data = f_d, order = order, class = class, qc_label = "QC", model = "bt", mode = "subtraction", nbagg = 10, k = 2)
 # save
@@ -938,8 +965,8 @@ qc_sm <- QC.SM(int_data = f_d, order = order, class = class, qc_label = "QC", mo
 # save
 fwrite(qc_sm, "xcms after IPO MVI QC-KNN s.csv", row.names = T)
 
-################################################## Batchwise mode
-QC.BW <- function(int_data, order, class, batch, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) {
+#.........................Batchwise mode.........................
+QC.BW <- function(int_data, order, class, batch, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) ({
   
   library(pbapply)
   
@@ -969,10 +996,10 @@ QC.BW <- function(int_data, order, class, batch, qc_label, model = "bt", mode = 
   predict_wr_bw <- pblapply(1:length(fit_wr_bw), function(x) pblapply(1:length(fit_wr_bw[[1]]), function(t) predict(fit_wr_bw[[x]][[t]], data.frame(order = wr_batch_a[[x]]$order))))
   
   if (mode == "division") {
-    val_wr_bw <- pblapply(1:length(predict_wr_bw), function(x) pblapply(1:length(predict_wr_bw[[1]]), function(t) wr_batch_an[[x]][,t]/c(predict_wr_bw[[x]][[t]])))
+    val_wr_bw <- pblapply(1:length(predict_wr_bw), function(x) pblapply(1:length(predict_wr_bw[[1]]), function(t) wr_batch_an[[x]][,t]/c(predict_wr_bw[[x]][[t]])*mean(wr_batch_an[[x]][qc_id,t], na.rm = T)))
     res_wr_bw <- pblapply(1:length(val_wr_bw), function(x) as.data.frame(t(do.call(rbind, val_wr_bw[[x]]))))
     res_wr_bw <- as.data.frame(do.call(rbind, res_wr_bw))
-    res_wr_bw <- res_wr_bw*1000
+    res_wr_bw <- res_wr_bw
     rownames(res_wr_bw) <- rownames(f_d)
     colnames(res_wr_bw) <- colnames(f_d)
   return(res_wr_bw)
@@ -985,7 +1012,7 @@ QC.BW <- function(int_data, order, class, batch, qc_label, model = "bt", mode = 
     colnames(res_wr_bw) <- colnames(f_d)
   return(res_wr_bw) 
     }
-}
+})
 
 # Parameters of QC.BW function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, batch -> numeric vector of the batch,
@@ -1010,6 +1037,13 @@ qc_bw <- QC.BW(int_data = f_d, order = order, batch = batch, class = class, qc_l
 fwrite(qc_bw, "xcms after IPO MVI QC-KNN bw d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform bagging tree in batchwise mode
 qc_bw <- QC.BW(int_data = f_d, order = order, batch = batch, class = class, qc_label = "QC", model = "bt", mode = "subtraction", nbagg = 10, k = 2)
 # save
@@ -1025,8 +1059,8 @@ qc_bw <- QC.BW(int_data = f_d, order = order, batch = batch, class = class, qc_l
 # save
 fwrite(qc_bw, "xcms after IPO MVI QC-KNN bw s.csv", row.names = T)
 
-################################################## Two Features mode
-QC.TF <- function(int_data, order, batch, class, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) {
+#........................Two Features mode.......................
+QC.TF <- function(int_data, order, batch, class, qc_label, model = "bt", mode = "division", nbagg = 10, k = 2) ({
   
   library(pbapply)
   
@@ -1049,11 +1083,11 @@ QC.TF <- function(int_data, order, batch, class, qc_label, model = "bt", mode = 
   predict_tf <- pblapply(1:length(fit_tf), function(t) predict(fit_tf[[t]], newdata = int_data_ro_b[, c("order", "batch")])) 
   
   if (mode == "division") {
-    val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_tf[[t]])
+    val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_tf[[t]]*mean(int_data[qc_id,t], na.rm = T))
     res_tf <- as.data.frame(t(do.call(rbind, val_tf)))
     rownames(res_tf) <- rownames(int_data)
     colnames(res_tf) <- colnames(int_data)
-    res_tf <- res_tf*1000
+    res_tf <- res_tf
   return(res_tf)
     } else { (mode == "subtraction")
     val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]-predict_tf[[t]]+mean(int_data[qc_id,t], na.rm = T))
@@ -1063,7 +1097,7 @@ QC.TF <- function(int_data, order, batch, class, qc_label, model = "bt", mode = 
     res_tf <- res_tf
   return(res_tf)
     }
-}
+})
 
 # Parameters of QC.TF function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, batch -> numeric vector of the batch, 
@@ -1088,6 +1122,13 @@ qc_tf <- QC.TF(int_data = f_d, order = order, batch = batch, class = class, qc_l
 fwrite(qc_tf, "xcms after IPO MVI QC-KNN tf d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform bagging tree in two features mode
 qc_tf <- QC.TF(int_data = f_d, order = order, batch = batch, class = class, qc_label = "QC", model = "bt", mode = "subtraction", nbagg = 10, k = 2)
 # save
@@ -1103,9 +1144,9 @@ qc_tf <- QC.TF(int_data = f_d, order = order, batch = batch, class = class, qc_l
 # save
 fwrite(qc_tf, "xcms after IPO MVI QC-KNN tf s.csv", row.names = T)
 
-###############################################################################
-########################################## QC-GBM (xgboost/catboost)
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  QC-GBM (xgboost/catboost)                  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # generate batch data
 batch <- meta$b_id
@@ -1135,8 +1176,8 @@ fit_params <- list(
   l2_leaf_reg = 3.5,
   train_dir = 'train_dir')
 
-################################################## Single mode
-QC.SM.GB <- function(int_data, order, class, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) {
+#..........................Single mode...........................
+QC.SM.GB <- function(int_data, order, class, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) ({
   
   library(pbapply)
   
@@ -1165,11 +1206,11 @@ QC.SM.GB <- function(int_data, order, class, qc_label, model = "xgboost", mode =
   print("Done Correction")
   
   if (mode == "division") {
-    val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_gb[[t]])
+    val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_gb[[t]]*mean(int_data[qc_id,t], na.rm = T))
     res_sm <- as.data.frame(t(do.call(rbind, val_sm)))
     rownames(res_sm) <- rownames(int_data)
     colnames(res_sm) <- colnames(int_data)
-    res_sm <- res_sm*1000
+    res_sm <- res_sm
   return(res_sm)
   } else { (mode == "subtraction")
     val_sm <- pblapply(1:ncol(int_data), function(t) int_data[,t]-predict_gb[[t]]+mean(int_data[qc_id,t], na.rm = T))
@@ -1179,7 +1220,7 @@ QC.SM.GB <- function(int_data, order, class, qc_label, model = "xgboost", mode =
     res_sm <- res_sm
   return(res_sm)
   }
-}
+})
 
 # Parameters of QC.SM.GB function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, class -> sample group variable, 
@@ -1200,6 +1241,13 @@ qc_sm <- QC.SM.GB(int_data = f_d, order = order, class = class, qc_label = "QC",
 fwrite(qc_sm, "xcms after IPO MVI QC-CTB d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform xgboost in single mode
 qc_sm <- QC.SM.GB(int_data = f_d, order = order, class = class, qc_label = "QC", model = "xgboost", mode = "subtraction", max.depth = 2, nrounds = 100, params = fit_params)
 # save
@@ -1210,8 +1258,8 @@ qc_sm <- QC.SM.GB(int_data = f_d, order = order, class = class, qc_label = "QC",
 # save
 fwrite(qc_sm, "xcms after IPO MVI QC-CTB s.csv", row.names = T)
 
-################################################## Batchwise mode
-QC.BW.GB <- function(int_data, order, class, batch, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) {
+#.........................Batchwise mode.........................
+QC.BW.GB <- function(int_data, order, class, batch, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) ({
   
   library(pbapply)
   
@@ -1248,10 +1296,10 @@ QC.BW.GB <- function(int_data, order, class, batch, qc_label, model = "xgboost",
   print("Done Correction")
   
   if (mode == "division") {
-    val_wr_bw <- pblapply(1:length(predict_wr_bw), function(x) pblapply(1:length(predict_wr_bw[[1]]), function(t) wr_batch_an[[x]][,t]/c(predict_wr_bw[[x]][[t]])))
+    val_wr_bw <- pblapply(1:length(predict_wr_bw), function(x) pblapply(1:length(predict_wr_bw[[1]]), function(t) wr_batch_an[[x]][,t]/c(predict_wr_bw[[x]][[t]])*mean(wr_batch_an[[x]][qc_id,t], na.rm = T)))
     res_wr_bw <- pblapply(1:length(val_wr_bw), function(x) as.data.frame(t(do.call(rbind, val_wr_bw[[x]]))))
     res_wr_bw <- as.data.frame(do.call(rbind, res_wr_bw))
-    res_wr_bw <- res_wr_bw*1000
+    res_wr_bw <- res_wr_bw
     rownames(res_wr_bw) <- rownames(int_data)
     colnames(res_wr_bw) <- colnames(int_data)
   return(res_wr_bw)
@@ -1264,7 +1312,7 @@ QC.BW.GB <- function(int_data, order, class, batch, qc_label, model = "xgboost",
     colnames(res_wr_bw) <- colnames(int_data)
   return(res_wr_bw)
     }
-}
+})
 
 # Parameters of QC.BW.GB function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, class -> sample group variable, 
@@ -1285,6 +1333,13 @@ qc_bw <- QC.BW.GB(int_data = f_d, order = order, class = class, batch = batch, q
 fwrite(qc_bw, "xcms after IPO MVI QC-CTB bw d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform xgboost in batchwise mode
 qc_bw <- QC.BW.GB(int_data = f_d, order = order, class = class, batch = batch, qc_label = "QC", model = "xgboost", mode = "subtraction", max.depth = 2, nrounds = 100, params = fit_params)
 # save
@@ -1295,8 +1350,8 @@ qc_bw <- QC.BW.GB(int_data = f_d, order = order, class = class, batch = batch, q
 # save
 fwrite(qc_bw, "xcms after IPO MVI QC-CTB bw s.csv", row.names = T)
 
-################################################## Two Features mode
-QC.TF.GB <- function(int_data, order, batch, class, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) {
+#........................Two Features mode.......................
+QC.TF.GB <- function(int_data, order, batch, class, qc_label, model = "xgboost", mode = "division", max.depth = 2, nrounds = 100, params) ({
   
   library(pbapply)
   
@@ -1327,11 +1382,11 @@ QC.TF.GB <- function(int_data, order, batch, class, qc_label, model = "xgboost",
   print("Done Correction")
   
   if (mode == "division") {
-    val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_gb[[t]])
+    val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]/predict_gb[[t]]*mean(int_data[qc_id,t], na.rm = T))
     res_tf <- as.data.frame(t(do.call(rbind, val_tf)))
     rownames(res_tf) <- rownames(int_data)
     colnames(res_tf) <- colnames(int_data)
-    res_tf <- res_tf*1000
+    res_tf <- res_tf
   return(res_tf)
     } else { (mode == "subtraction")
     val_tf <- pblapply(1:ncol(int_data), function(t) int_data[,t]-predict_gb[[t]]+mean(int_data[qc_id,t], na.rm = T))
@@ -1341,7 +1396,7 @@ QC.TF.GB <- function(int_data, order, batch, class, qc_label, model = "xgboost",
     res_tf <- res_tf
   return(res_tf)
     }
-}
+})
 
 # Parameters of QC.TF.GB function:  
 # int_data -> numeric feature table, order -> numeric vector of the run order, batch -> numeric vector of the batch,
@@ -1362,6 +1417,13 @@ qc_tf <- QC.TF.GB(int_data = f_d, order = order, batch = batch, class = class, q
 fwrite(qc_tf, "xcms after IPO MVI QC-CTB tf d.csv", row.names = T)
 
 ######################### subtraction mode
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################### perform xgboost in two features mode
 qc_tf <- QC.TF.GB(int_data = f_d, order = order, batch = batch, class = class, qc_label = "QC", model = "xgboost", mode = "subtraction", max.depth = 2, nrounds = 100, params = fit_params)
 # save
@@ -1372,9 +1434,41 @@ qc_tf <- QC.TF.GB(int_data = f_d, order = order, batch = batch, class = class, q
 # save
 fwrite(qc_tf, "xcms after IPO MVI QC-CTB tf s.csv", row.names = T)
 
-###############################################################################
-########################################## Median Between Batches (QC-norm)
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       QC-GAM (MetCorR)                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# prepare data
+order = meta$ro_id
+batch = as.numeric(str_remove(meta$b_id, "b"))
+class = meta$n_gr_t
+qc_label = "QC"
+
+#......................................................
+# Parameters of "MetCorR" function:  
+
+# "method" -> can be 1 (1 feature mode, only run order) or 2 (2 features mode, run order & batch index)
+# "int_data" -> numeric feature table
+# "order" -> numeric vector of the run order
+# "class" -> sample group variable 
+# "batch" -> numeric vector of the batch index
+# "qc_label" -> label for QC samples in group 
+#......................................................
+
+# Run "MetCorR.R" script from Auxiliary files (RData) folder
+source("https://github.com/plyush1993/OUKS/raw/refs/heads/main/Auxiliary%20files%20(RData)/MetCorR.R")
+
+# 1 feature mode, only run order
+ds_gam1 <- MetCorR(method = 1, int_data = ds, order = order, class = class, qc_label = qc_label)
+fwrite(ds_gam1, "xcms after IPO MVI QC-GAM1.csv", row.names = T)
+
+# 2 features mode, run order & batch
+ds_gam2 <- MetCorR(method = 2, int_data = ds, order = order, class = class, batch = batch, qc_label = qc_label)
+fwrite(ds_gam2, "xcms after IPO MVI QC-GAM2.csv", row.names = T)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               Median Between Batches (QC-norm)               ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # generate batch data
 batch <- meta$b_id
@@ -1390,8 +1484,8 @@ class[-qc_id] <- "Subject"
 ds_bbc <- cbind(batch = meta$b_id, ds)
 ds_bbc$batch <- batch
 
-######################### Perform division-based QC-norm feature-wise
-QC.NORM.FW.D <- function(data, qc_id){
+#..........Perform division-based QC-norm feature-wise...........
+QC.NORM.FW.D <- function(data, qc_id)({
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
@@ -1403,15 +1497,15 @@ QC.NORM.FW.D <- function(data, qc_id){
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
-}
+})
 
 ds_qc_norm <- QC.NORM.FW.D(data = ds_bbc, qc_id = qc_id)
 
 # save
 fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM FW d.csv", row.names = T)
 
-######################### Perform division-based QC-norm sample-wise
-QC.NORM.SW.D <- function(data, qc_id){
+#...........Perform division-based QC-norm sample-wise...........
+QC.NORM.SW.D <- function(data, qc_id)({
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
@@ -1423,15 +1517,22 @@ QC.NORM.SW.D <- function(data, qc_id){
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
-}
+})
 
 ds_qc_norm <- QC.NORM.SW.D(data = ds_bbc, qc_id = qc_id)
 
 # save
 fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM SW d.csv", row.names = T)
 
-######################### Perform subtraction-based QC-norm feature-wise
-QC.NORM.FW.S <- function(data, qc_id){
+#.........Perform subtraction-based QC-norm feature-wise.........
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+QC.NORM.FW.S <- function(data, qc_id)({
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
@@ -1443,15 +1544,22 @@ QC.NORM.FW.S <- function(data, qc_id){
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
-}
+})
 
 ds_qc_norm <- QC.NORM.FW.S(data = ds_bbc, qc_id = qc_id)
 
 # save
 fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM FW s.csv", row.names = T)
 
-######################### Perform subtraction-based QC-norm sample-wise
-QC.NORM.SW.S <- function(data, qc_id){
+#..........Perform subtraction-based QC-norm sample-wise.........
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               IMPORTANT NOTE:               ~~
+##   Subtraction mode sometimes is performed   ~~
+##          for log-transformed data           ~~
+##  ds_log <- ds %>% mutate_all(~log2(.+1.1))  ~~
+##    ds <- ds_log %>% mutate_all( ~2^(.))     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+QC.NORM.SW.S <- function(data, qc_id)({
   library(dplyr)
   ds_bbc <- data
   ds_bbc_qc <- ds_bbc[qc_id,]
@@ -1463,16 +1571,16 @@ QC.NORM.SW.S <- function(data, qc_id){
   rownames(b_b_c_result) <- rownames(ds_bbc)
   colnames(b_b_c_result) <- colnames(ds_bbc[,-c(1)])
   return(b_b_c_result)
-}
+})
 
 ds_qc_norm <- QC.NORM.SW.S(data = ds_bbc, qc_id = qc_id)
 
 # save
 fwrite(ds_qc_norm, "xcms after IPO MVI QC-RF + QC-NORM SW s.csv", row.names = T)   
 
-###############################################################################
-########################################## RUVs metabolites based methods
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                RUVs`s (ruvrand, ruvrandclust)                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(NormalizeMets)
 library(stringr)
@@ -1492,7 +1600,7 @@ sampledata <- data.frame(type = as.factor(meta$n_gr_t), experiment = as.factor(m
 cn <- colnames(featuredata)
 is_ind <- which(str_detect(string = cn, pattern = "340.15")==T) # write in pattern m/z value of IS. If many ISs -> repeat this and save in 1 vector
 
-smart.corr.test <- function(x, is_idx){
+smart.corr.test <- function(x, is_idx)({
   b <- vector(mode="numeric")
   res <- apply(x, 2, shapiro.test)
   for (i in 1:ncol(x)) b[i] = res[[i]]$p.value
@@ -1503,7 +1611,7 @@ smart.corr.test <- function(x, is_idx){
     } else{
       b[i] <- (cor.test(x = x[, i], y = x[, is_idx], method = "pearson")$estimate)
     }
-  return(b) }
+  return(b) })
 
 corr <- smart.corr.test(featuredata, is_idx = is_ind) # detect other signals with correlation > corr_tr by IS (QC signals)
 corr_tr <- 0.95 
@@ -1511,7 +1619,7 @@ corr <- abs(corr)
 iss <- names(corr[corr > corr_tr]) # names(corr[corr > corr_tr]) or cn[is_ind] if multiple ISs
 qcmets <- sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y])) # which(colnames(featuredata) == iss) or sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y]))
 
-######################### Perform ruvrand correction
+#...................Perform ruvrand correction...................
 logdata <- LogTransform(featuredata) # Log transformation
 ruvrand <- NormQcmets(logdata$featuredata, method = "ruvrand", qcmets = qcmets, k = 1) # adjust k for your data manually (set high k and you can readjust)
 ruvrand <- as.data.frame(ruvrand$featuredata)
@@ -1519,7 +1627,7 @@ ruvrand <- as.data.frame(ruvrand$featuredata)
 # save
 fwrite(ruvrand, "xcms after IPO MVI ruvrand.csv", row.names = T)
 
-######################### Perform ruvrandclust correction
+#................Perform ruvrandclust correction.................
 logdata <- LogTransform(featuredata) # Log transformation
 ruvrandclust <- NormQcmets(logdata$featuredata, method = "ruvrandclust", qcmets = qcmets, k = 1, p = length(unique(sampledata$type))) # adjust k (you can readjust) for your data and also maxIter, nUpdate and p
 ruvrandclust <- as.data.frame(ruvrandclust$featuredata)
@@ -1527,9 +1635,9 @@ ruvrandclust <- as.data.frame(ruvrandclust$featuredata)
 # save
 fwrite(ruvrandclust, "xcms after IPO MVI ruvrandclust.csv", row.names = T)
 
-###############################################################################
-########################################## ISs metabolites based methods
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                ISs`s (SIS, NOMIS, CCMN, BMIS)                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(NormalizeMets)
 library(stringr)
@@ -1551,7 +1659,7 @@ cn <- colnames(featuredata)
 is_ind <- which(str_detect(string = cn, pattern = "340.15")==T) # write in pattern m/z value of IS. If many ISs -> repeat this and save in 1 vector
 isvec <- featuredata[,is_ind]
 
-smart.corr.test <- function(x, is_idx){
+smart.corr.test <- function(x, is_idx)({
   b <- vector(mode="numeric")
   res <- apply(x, 2, shapiro.test)
   for (i in 1:ncol(x)) b[i] = res[[i]]$p.value
@@ -1562,7 +1670,7 @@ smart.corr.test <- function(x, is_idx){
     } else{
       b[i] <- (cor.test(x = x[, i], y = x[, is_idx], method = "pearson")$estimate)
     }
-  return(b) }
+  return(b) })
 
 corr <- smart.corr.test(featuredata, is_idx = is_ind) # detect other signals with correlation > corr_tr by IS (QC signals)
 corr_tr <- 0.95 
@@ -1570,7 +1678,7 @@ corr <- abs(corr)
 iss <- names(corr[corr > corr_tr]) # names(corr[corr > corr_tr]) or cn[is_ind] if multiple ISs
 qcmets <- sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y])) # which(colnames(featuredata) == iss) or sapply(1:length(iss), function(y) which(colnames(featuredata) == iss[y]))
 
-######################### Perform SIS correction
+#.....................Perform SIS correction.....................
 logdata <- LogTransform(featuredata) # Log transformation
 sis <- NormQcmets(logdata$featuredata, method = "is", isvec=isvec) 
 sis <- as.data.frame(sis$featuredata)
@@ -1578,7 +1686,7 @@ sis <- as.data.frame(sis$featuredata)
 # save
 fwrite(sis, "xcms after IPO MVI SIS.csv", row.names = T)
 
-######################### Perform NOMIS correction
+#....................Perform NOMIS correction....................
 logdata <- LogTransform(featuredata) # Log transformation
 nomis <- NormQcmets(logdata$featuredata, method = "nomis", qcmets = qcmets) 
 nomis <- as.data.frame(nomis$featuredata)
@@ -1586,7 +1694,7 @@ nomis <- as.data.frame(nomis$featuredata)
 # save
 fwrite(nomis, "xcms after IPO MVI NOMIS.csv", row.names = T)
 
-######################### Perform CCMN correction
+#....................Perform CCMN correction.....................
 logdata <- LogTransform(featuredata) # Log transformation
 ccmn <- NormQcmets(logdata$featuredata, method = "ccmn", qcmets = qcmets, ncomp = 2, factors = sampledata$type) # adjust ncomp and factors = sampledata$type or sampledata$batch
 ccmn <- as.data.frame(ccmn$featuredata)
@@ -1594,7 +1702,7 @@ ccmn <- as.data.frame(ccmn$featuredata)
 # save
 fwrite(ccmn, "xcms after IPO MVI CCMN.csv", row.names = T)
 
-######################### Perform BMIS correction
+#....................Perform BMIS correction.....................
 #set columns that contain IS information. IS columns must be the first response value containing columns in the dataset. The value "0" has to be kept in the vector/dataframe as it represents non-normalization (use of raw data) for B-MIS.
 #here,e.g.: 0 stands for non-normalization, values 1-5 indicate 5 IS in the first 5 rows.
 ISvect<-as.vector(qcmets)
@@ -1653,9 +1761,9 @@ bmis <- as.data.frame(data.BMIS[,-1])
 # save
 fwrite(bmis, "xcms after IPO MVI BMIS.csv", row.names = T)
 
-##############################################################################################################################################################
-# Evaluate correction
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            Evaluate correction                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Content:
 # Generate data for evaluation
@@ -1671,12 +1779,13 @@ fwrite(bmis, "xcms after IPO MVI BMIS.csv", row.names = T)
 # PC-PR2
 # ANOVA
 # One-Sample Test
+# One-Sample Test by batch
 # all numeric metrics
 # Data Projection (PCA, HCA, scatter plot, box-plot, rla-plot, correlogram)
 
-###############################################################################
-########################################## Generate data for evaluation
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 Generate data for evaluation                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table) 
@@ -1721,9 +1830,9 @@ ds <- ds[,-c(1:n)]
 n_gr_t <- meta$n_gr_t
 b_id <- meta$b_id
 
-###############################################################################
-########################################## RSD calculation for QC
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                    RSD calculation for QC                    ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing from "Generate data for evaluation"
 ds_rsd <- subset(ds, n_gr_t == "QC") # adjust to your QC label
@@ -1744,7 +1853,7 @@ for (i in (1:length(tnu))){
 
 # RSD calculation by batches
 RSD_by_batch_results <- list()
-RSD_by_batch <- function (x) { 
+RSD_by_batch <- function (x) ({ 
   for (i in (1:length(vb))){
     RSD_by_batch_results[[i]] <- apply(x[vb[[i]],], 2, function(y) abs(sd(y, na.rm = T)/mean(y, na.rm = T))*100)}
   RSD_by_batch_results[[(length(vb)+1)]] <- apply(x, 2, function(y) abs(sd(y, na.rm = T)/mean(y, na.rm = T))*100) # all batches
@@ -1755,7 +1864,7 @@ RSD_by_batch <- function (x) {
   n <- c(paste(c(1:length(vb)), "batch"), "all batches")
   names(RSD_by_batch_results) <- n
   RSD_by_batch_results
-}
+})
 
 n <- c(paste(c(1:length(vb)), "batch"), "all batches") # names
 ds_rsd1 <- ds_rsd[,-1] # sample in row only metabolites variables
@@ -1782,9 +1891,9 @@ colnames(RSD_by_batch_cutoff2)[2] <- c(paste(cutoff2, "% RSD"))
 result_RSD <- rbind(t(RSD_by_batch_cutoff1), t(RSD_by_batch_cutoff2))
 result_RSD
 
-###############################################################################
-########################################## D-Ratio calculation for QC
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  D-Ratio calculation for QC                  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing from "Generate data for evaluation"
 ds_dr <- as.data.frame(cbind(b_id, ds))
@@ -1804,7 +1913,7 @@ bg <- as.data.frame(cbind(batch = tn, group = n_gr_t))
 
 # D-Ratio calculation by batches
 DR_by_batch_results <- list()
-DR_by_batch <- function (x) { 
+DR_by_batch <- function (x) ({ 
   for (i in (1:length(tnu))){
     DR_by_batch_results[[i]] <- sapply(1:ncol(x), function(y) sd(x[which(bg$batch == tnu[i] & bg$group == "QC"),y], na.rm = T)/sd(x[which(bg$batch == tnu[i] & bg$group != "QC"),y], na.rm = T)*100)} # set QC and Sample labels to your data, use sd() or mad() function # per batch
   DR_by_batch_results[[(length(tnu)+1)]] <- sapply(1:ncol(x), function(y) sd(x[which(bg$group == "QC"),y], na.rm = T)/sd(x[which(bg$group != "QC"),y], na.rm = T)*100) # set QC and Sample labels to your data, use sd() or mad() function # all batches
@@ -1815,7 +1924,7 @@ DR_by_batch <- function (x) {
   n <- c(paste(c(1:length(tnu)), "batch"), "all batches")
   names(DR_by_batch_results) <- n
   DR_by_batch_results
-}
+})
 
 n <- c(paste(c(1:length(tnu)), "batch"), "all batches") # names
 ds_dr1 <- ds_dr[,-1] # sample in row only metabolites variables
@@ -1842,9 +1951,9 @@ colnames(DR_by_batch_cutoff2)[2] <- c(paste(cutoff2, "% DR"))
 result_DR <- rbind(t(DR_by_batch_cutoff1), t(DR_by_batch_cutoff2))
 result_DR
 
-###############################################################################
-########################################## Pearson Correlation of QCs
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  Pearson Correlation of QCs                  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing from "Generate data for evaluation"
 ds_cor <- subset(ds, n_gr_t == "QC") # adjust to your QC label
@@ -1855,9 +1964,9 @@ diag(cor_coef) <- 0
 m_c_c <- round(mean(cor_coef, na.rm = T),3) 
 m_c_c
 
-###############################################################################
-########################################## mean Bhattacharyya distance
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 mean Bhattacharyya distance                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(fpc)
 library(FactoMineR)
@@ -1889,9 +1998,9 @@ for (i in 2:length(unique(scores[,1]))) {
 m_b_d <- round(mean(batch.dist_b[col(batch.dist_b) > row(batch.dist_b)]), 2)
 m_b_d
 
-###############################################################################
-########################################## mean Dissimilarity Score
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                   mean Dissimilarity Score                   ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(cluster)
 library(FactoMineR)
@@ -1908,9 +2017,9 @@ dis <- daisy(df.pca.x, metric = "euclidean", stand = F)
 m_d_s <- round(mean(dis),2)
 m_d_s
 
-###############################################################################
-########################################## mean Silhouette Score
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                    mean Silhouette Score                    ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(cluster)
 library(FactoMineR)
@@ -1932,9 +2041,9 @@ sil <- silhouette(pca.class, daisy(df.pca.x, metric = "euclidean", stand = F))
 sil_m <- round(mean(sil),2)
 sil_m
 
-###############################################################################
-########################################## Classif. Acc. by HCA on PCA
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 Classif. Acc. by HCA on PCA                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(FactoMineR)
 
@@ -1959,7 +2068,7 @@ res.hc <- hclust(d = res.dist, method = "ward.D2")
 pred_cl <- cutree(res.hc, k=k)
 
 # perform
-misclass <- function(pred, obs) {
+misclass <- function(pred, obs) ({
   tbl <- table(pred, obs)
   sum <- colSums(tbl)
   dia <- diag(tbl)
@@ -1968,15 +2077,15 @@ misclass <- function(pred, obs) {
   cat("Classification table:", "\n")
   print(tbl)
   cat("Misclassification errors:", "\n")
-  (round(msc, 1))}
+  (round(msc, 1))})
 
 cl_ac_hca <- misclass(pred_cl, pca.class)
 m_ca_h <- round(mean(cl_ac_hca),0)
 m_ca_h
 
-###############################################################################
-########################################## PVCA
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             PVCA                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(proBatch)
 
@@ -2006,9 +2115,9 @@ pvca_df <- calculate_PVCA(f_d, s_d,
 pvca_w <- round(pvca_df$weights[2],2)
 pvca_w
 
-###############################################################################
-########################################## gPCA
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             gPCA                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(gPCA)
 
@@ -2022,9 +2131,9 @@ gPCA_out<-gPCA.batchdetect(x=ds,batch=batch,center=F,nperm=1000)
 gPCA_d <- round(gPCA_out$delta, 2)
 gPCA_d
 
-###############################################################################
-########################################## PC-PR2
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            PC-PR2                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(pcpr2)
 
@@ -2051,9 +2160,9 @@ PCPR2 <- runPCPR2(X = f_d, Z = s_d, pct.threshold = pct.threshold)
 pcpr2 <- round(PCPR2$pR2[1],2)
 pcpr2
 
-###############################################################################
-########################################## ANOVA
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            ANOVA                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetabolomicsBasics)
 
@@ -2077,8 +2186,7 @@ model <- MetaboliteANOVA(dat=dat, sam=s_d, model="batch") # "batch+class" or "ba
 anova_per <- round(sum(model[,"batch"]<0.05)/nrow(model)*100, 0) # or round(sum(model[,"batch"]<0.05)/nrow(model)*100, 0) # round(sum(model[,"batch"]<0.05 & model[,"class"]>0.05)/nrow(model)*100, 0) or round(length(which(model[,"batch"]<0.05 & model[,"class"]>0.05))/nrow(model)*100, 0)
 anova_per
 
-########################################## ANOVA manually
-
+#.........................ANOVA manually.........................
 # generate batch data
 batch <- as.character(meta$b_id)
 
@@ -2105,17 +2213,16 @@ rownames(lm_pval) <- colnames(dat)
 anova_per <- round(sum(lm_pval[,"batch"]<0.05)/ncol(dat)*100, 0) # or round(sum(lm_pval[,"batch"]<0.05)/ncol(dat)*100, 0) # round(sum(lm_pval[,"batch"]<0.05 & lm_pval[,"class"]>0.05)/ncol(dat)*100, 0) or round(length(which(lm_pval[,"batch"]<0.05 & lm_pval[,"class"]>0.05))/ncol(dat)*100, 0)
 anova_per
 
-###############################################################################
-########################################## One-Sample Test
-###############################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       One-Sample Test                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # feature data
 ds_bd <- subset(ds, n_gr_t == "QC") # adjust to your QC label        
 
 # perform
-ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
+ost <- function(x, p.val.sig = 0.05, p.adjust = "BH")({
   
-  norm_tests <- function(x) {
+  norm_tests <- function(x) ({
     xx <- x
     # normality test
     norm.test <- as.numeric(apply(xx, 2, function(t) shapiro.test(t)$p.value))
@@ -2123,11 +2230,11 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     # use shapiro.wilk.test function from cwhmisc instead shapiro.test from stats
     # library(cwhmisc)
     # norm.test <- apply(xx, 2, function(t) cwhmisc::shapiro.wilk.test(t)$p)
-  }
+  })
   
   res_tests <- norm_tests(x)
   
-  wilcox_test <- function(x,y) {
+  wilcox_test <- function(x,y) ({
     xx <- x
     wx.t <- as.vector(which(y < 0.05))
     wilcox_test <- list()
@@ -2135,11 +2242,11 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     wilcox_test <- apply(as.data.frame(xx[,wx.t]), 2, function(t) as.numeric(as.vector(wilcox.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value)))
     wilcox_test <- p.adjust(wilcox_test, p.adjust)
     names(wilcox_test) <- (colnames(x))[wx.t]
-    return(wilcox_test)}
+    return(wilcox_test)})
   
   wx.t.res <- wilcox_test(x, res_tests)
   
-  student_test <- function(x,y) {
+  student_test <- function(x,y) ({
     xx <- x
     st.t <- as.vector(which(y > 0.05))
     student_test <- list()
@@ -2147,11 +2254,11 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     student_test <- apply(as.data.frame(xx[,st.t]), 2, function(t) as.numeric(as.vector(t.test(t, mu = mean(t, na.rm = T), alternative = "two.sided")$p.value)))
     student_test <- p.adjust(student_test, p.adjust)
     names(student_test) <- (colnames(x))[st.t]
-    return(student_test)}
+    return(student_test)})
   
   st.t.res <- student_test(x, res_tests)
   
-  filt_p_val <- function(x, y, w){
+  filt_p_val <- function(x, y, w)({
     
     #x = ds
     #y = wx.t.res
@@ -2171,45 +2278,44 @@ ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
     
     ds_fil <- x[, aff]
     return(ds_fil)
-  }
+  })
   return(filt_p_val(x, wx.t.res, st.t.res))
-}
+})
 
 # 1st argument -> dataset with only numeric values, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
 ds_ost <- as.data.frame(ost(ds_bd, p.val.sig = 0.05, p.adjust = "BH"))
 os_test <- round(ncol(ds_ost)/ncol(ds)*100, 0)
 os_test
 
-########################################## One-Sample Test only wilcox.test
-
+#................One-Sample Test only wilcox.test................
 # feature data
 ds_bd <- subset(ds, n_gr_t == "QC") # adjust to your QC label           
 
 # perform
-ost <- function(x, p.val.sig = 0.05, p.adjust = "BH"){
+ost <- function(x, p.val.sig = 0.05, p.adjust = "BH")({
   
-  os_test <- function(x) {
+  os_test <- function(x) ({
     xx <- x
     os_test <- list()
     os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(wilcox.test(xx[,t], mu = mean(xx[,t], na.rm = T), alternative = "two.sided")$p.value))) # wilcox.test or t.test
     os_test <- p.adjust(os_test, p.adjust)
     names(os_test) <- (colnames(xx))
-    return(os_test)}
+    return(os_test)})
   
   os.t.res <- os_test(x)
   
   l_s <- length(which(os.t.res <= p.val.sig))
   return(l_s)
-}
+})
 
 # 1st argument -> dataset with only numeric values, 2nd -> p-value, 3rd -> the method of adjustment for multiple comparisons.
 ds_ost <- as.data.frame(ost(ds_bd, p.val.sig = 0.05, p.adjust = "BH"))
 colnames(ds_ost) <- "Percent"
 round(ds_ost/ncol(ds_bd)*100,0)
 
-###############################################################################
-########################################## One-Sample Test by batch
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  One-Sample Test by batch                   ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # feature data
 ds_bd <- subset(ds, n_gr_t == "QC") # adjust to your QC label
@@ -2224,22 +2330,22 @@ ds_bbc <- cbind(batch, ds_bd)
 b_b_c_subsets <- lapply(1:length(unique(ds_bbc[,1])), function(y) dplyr::filter(ds_bbc[,-1], ds_bbc$batch == unique(ds_bbc[,1])[y])) # list of subsets by batches for all samples
 
 # perform
-ost <- function(x, y, p.val.sig = 0.05, p.adjust = "BH"){
+ost <- function(x, y, p.val.sig = 0.05, p.adjust = "BH")({
 
-  os_test <- function(x, y) {
+  os_test <- function(x, y) ({
     xx <- x
     yy <- y
     os_test <- list()
     os_test <- sapply(1:ncol(xx), function(t) as.numeric(as.vector(wilcox.test(xx[,t], mu = mean(yy[,t], na.rm = T), alternative = "two.sided")$p.value))) # wilcox.test or t.test
     os_test <- p.adjust(os_test, p.adjust)
     names(os_test) <- (colnames(xx))
-    return(os_test)}
+    return(os_test)})
   
   os.t.res <- os_test(x, y)
   
   l_s <- length(which(os.t.res <= p.val.sig))
   return(round(l_s/ncol(x)*100, 2))
-}
+})
 
 # 1st argument -> list of datasets by batch with only numeric values, 2nd -> full dataset with only numeric values, 3rd -> p-value, 4th -> the method of adjustment for multiple comparisons.
 ost_b <- lapply(1:length(b_b_c_subsets), function(t) ost(x = b_b_c_subsets[[t]], y = ds_bd, p.val.sig = 0.05, p.adjust = "BH"))
@@ -2247,9 +2353,9 @@ names(ost_b) <- paste0("Batch ", 1:length(ost_b))
 unlist(ost_b)
 mean(unlist(ost_b))
 
-###############################################################################
-########################################## all numeric metrics
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                     all numeric metrics                     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # RSD
 result_RSD[2,ncol(result_RSD)]
@@ -2278,11 +2384,11 @@ os_test
 # One-Sample Test by batch
 mean(unlist(ost_b))
 
-###############################################################################
-########################################## Data Projection (PCA, HCA, scatter plot, box-plot, rla-plot, correlogram)
-###############################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  Data Projection (PCA, HCA, scatter plot, box-plot, rla-plot, correlogram)  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# after processing from "Generate data for evaluation"
+# after processing from "Generate data for evaluation" !!!
 
 # Settings for projection
 library(factoextra)
@@ -2294,9 +2400,9 @@ library(ggplot2)
 library(NormalizeMets)
 library(corrplot)
 
-###############################################
-############################################### PRINCIPAL COMPONENT ANALYSIS
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 PRINCIPAL COMPONENT ANALYSIS                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # dataset
 mtrx1 <- ds
@@ -2326,8 +2432,7 @@ fviz_pca_biplot(pca.ds1,
                 col.var = "black", repel = TRUE,
                 legend.title = "Class")                 
                 
-################### gradient color PCA
-
+#.......................gradient color PCA.......................
 # generate batch data
 batch <- meta$b_id
 batch <- str_remove(batch, "b")
@@ -2346,8 +2451,7 @@ pca <-fviz_pca_ind(pca.ds, col.ind=grp1, geom = "point",
 
 pca+scale_color_gradient2(low="yellow", mid="green", high="darkblue", midpoint = c(as.numeric(quantile(grp1)))[3], breaks = c(as.numeric(quantile(grp1))))
 
-################### two factors PCA
-
+#........................two factors PCA.........................
 # generate batch data
 batch <- meta$b_id
 batch <- str_remove(batch, "b")
@@ -2367,8 +2471,7 @@ ggplot(cbind(pca$data, batch, class),
        aes(x=x,y=y,col=batch,shape=class)) + geom_point(size = 2) + theme_bw() +labs(y= "PC 2", x = "PC 1") +
   scale_color_gradient2(low="yellow", mid="green", high="darkblue", midpoint = c(as.numeric(quantile(batch)))[3], breaks = c(as.numeric(quantile(batch)))) 
 
-################### two factors PCA with ellipses
-
+#..................two factors PCA with ellipses.................
 palette_pca <- "jco" 
 
 # generate batch data
@@ -2397,6 +2500,7 @@ ggplot(cbind(pca_f$data,batch,class), # add 2 factors vectors
   scale_color_manual(values = pal_jco("default")(length(unique(class)))) +
   stat_ellipse(aes(group=class,color=class),type = "norm", size=0.1,alpha=0.1,geom = "polygon")
 
+#..........................other metrics.........................
 # % variance explained
 pca_res <- prcomp(ds, scale. = T, center = T)
 summ <- summary(pca_res)
@@ -2424,17 +2528,17 @@ ggplot(data, aes(x=as.numeric(order), y=as.numeric(PC2))) +
   geom_point( size=5, color="black", aes(fill= batch), alpha=0.7, shape=21, stroke=2)+
   scale_fill_viridis_c() + theme_classic() + xlab("Run Order") + ylab("PC2") + labs(fill = "Batch")
                 
-###############################################
-############################################### HIERARCHICAL CLUSTER ANALYSIS
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                HIERARCHICAL CLUSTER ANALYSIS                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # number of groups
 k <- length(unique(grp1)) # groups in HC
 
 # color
-Cols = function(vec, ord){
+Cols = function(vec, ord)({
   cols = pal_lancet(palette = c("lanonc"), alpha = 1)(length(unique(vec)))
-  return(cols[as.fumeric(vec)[ord]])}
+  return(cols[as.fumeric(vec)[ord]])})
 
 # grey
 #Cols = function(vec, ord){
@@ -2466,9 +2570,9 @@ hca <- fviz_dend(res.hc1, k = k, # Cut in k groups
 
 hca +scale_shape_manual(values=rep(0:length(unique(grp1)))) # number of groups
 
-###############################################
-############################################### SCATTER PLOT BY BATCH NUMBER
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         SCATTER PLOT                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 meta2 <- meta # copy of metadata
 dat <- ds
@@ -2485,9 +2589,9 @@ sp <- ggplot(ds_plot, aes(x=as.numeric(meta2$ro_id), y=ds_s, color=meta2$b_id, s
 
 sp
 
-###############################################
-############################################### PLOT BOXPLOT
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         PLOT BOXPLOT                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # feature data
 ds_bd <- ds # ds_bd <- ds or ds_bd <- subset(ds, n_gr_t == "QC") # adjust to your data type            
@@ -2533,7 +2637,7 @@ for (i in (1:length(tnu))){
   vb[[i]] <- which(tn == tnu[i])}
 
 RSD_by_batch_results <- list()
-RSD_by_batch <- function (x) { 
+RSD_by_batch <- function (x) ({ 
   for (i in (1:length(vb))){
     RSD_by_batch_results[[i]] <- apply(x[vb[[i]],], 2, function(y) abs(sd(y, na.rm = T)/mean(y, na.rm = T))*100)}
   RSD_by_batch_results[[(length(vb)+1)]] <- apply(x, 2, function(y) abs(sd(y, na.rm = T)/mean(y, na.rm = T))*100) # all batches
@@ -2544,7 +2648,7 @@ RSD_by_batch <- function (x) {
   n <- c(paste(c(1:length(vb)), "batch"), "all batches")
   names(RSD_by_batch_results) <- n
   RSD_by_batch_results
-}
+})
 
 n <- c(paste(c(1:length(vb)), "batch"), "all batches") # names
 ds_rsd1 <- ds_rsd[,-1] # sample in row only metabolites variables
@@ -2564,9 +2668,9 @@ p <- ggplot(rsd_df, aes(y=Value, x = Batch)) + geom_violin(width=1.4, color="blu
   theme_bw()
 p
 
-###############################################
-############################################### RLA PLOT
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           RLA PLOT                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # try also enviGCMS package (function: plotridges)
 
@@ -2592,9 +2696,9 @@ RlaPlots(featuredata = log_data$featuredata, groupdata = class, ylim = c(2,-2), 
 rla_data<-list(version1=log_data$featuredata, version2=log_data$featuredata)
 CompareRlaPlots(rla_data ,groupdata=batch, normmeth = c("version1","version2"), saveinteractiveplot = F)
 
-###############################################
-############################################### CORRELOGRAM
-###############################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         CORRELOGRAM                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing from "Generate data for evaluation"
 ds_cor <- subset(ds, n_gr_t == "QC") # adjust to your QC label
@@ -2605,9 +2709,9 @@ diag(cor_coef) <- 0
 
 corrplot(cor_coef, diag = F, order = "FPC", tl.pos = "td", tl.cex = 0.5, method = "color", type = "upper")
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Deng, Kui, et al. "WaveICA: A novel algorithm to remove batch effects for large-scale untargeted metabolomics data based on wavelet analysis." Analytica chimica acta 1061 (2019): 60-69.
 # 2. Deng, Kui, et al. "WaveICA 2.0: a novel batch effect removal method for untargeted metabolomics data without using batch information." Metabolomics 17.10 (2021): 1-8.

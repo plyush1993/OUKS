@@ -1,6 +1,10 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # Normalization
@@ -11,12 +15,14 @@
 # Save with all info
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table)
+library(dplyr)
+library(stringr)
 setwd("D:/...")
 
 # load dataset
@@ -42,9 +48,9 @@ identical(rownames(ds), rownames(meta))
 ds_no_norm <- as.data.frame(ds_norm)
 fwrite(ds_no_norm, "xcms after IPO MVI QC-XGB filter repeats annot+filtr no norm.csv", row.names = T)
 
-##############################################################################################################################################################
-# Normalization
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Normalization                             ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Content:
 # MSTUS
@@ -52,18 +58,22 @@ fwrite(ds_no_norm, "xcms after IPO MVI QC-XGB filter repeats annot+filtr no norm
 # Quantile
 # Median Fold Change
 # Sample-specific Factor
+# Descriptive Stats
 # Adaptive Box-Cox Transformation
+# Maximal density fold change
 
-########################################## MSTUS
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            MSTUS                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # function
-MSTUS <- function(data) {
+MSTUS <- function(data) ({
   data_sum <- matrix(colSums(data, na.rm = T), nrow = 1)
   uni <- matrix(rep(1, nrow(data)), ncol = 1)
   area.uni <- uni %*% data_sum
   MSTUS <- data/area.uni
   return(MSTUS)
-}
+})
 
 # perform
 ds_norm_mstus <- as.data.frame(t(MSTUS(ds_norm_t)))
@@ -71,16 +81,18 @@ ds_norm_mstus <- as.data.frame(t(MSTUS(ds_norm_t)))
 # save
 fwrite(ds_norm_mstus, "xcms after IPO MVI QC-XGB filter repeats annot+filtr MSTUS.csv", row.names = T)
 
-########################################## PQN
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             PQN                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # function
-PQN <- function(data) {
+PQN <- function(data) ({
   reference <- apply(data, 1, function(x) median(x, na.rm = T))
   quotient <- data / reference
   quotient.median <- apply(quotient, 2, function(x) median(x, na.rm = T))
   pqn.data <- t(t(data) / quotient.median)
   return(pqn.data)
-}
+})
 
 # perform
 ds_norm_pqn <- as.data.frame(t(PQN(ds_norm_t)))
@@ -88,18 +100,20 @@ ds_norm_pqn <- as.data.frame(t(PQN(ds_norm_t)))
 # save
 fwrite(ds_norm_pqn, "xcms after IPO MVI QC-XGB filter repeats annot+filtr PQN.csv", row.names = T)
 
-########################################## Quantile
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           Quantile                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(affy)
 
 # function
-QUANTILE <- function(data) {
+QUANTILE <- function(data) ({
   normalize.quantile <- get("normalize.quantiles", en = asNamespace("affy"))
   quantile.data <- normalize.quantile(data)
   rownames(quantile.data) <- rownames(data)
   colnames(quantile.data) <- colnames(data)
   return(quantile.data)
-}
+})
 
 # perform
 ds_norm_quant <- as.data.frame(t(QUANTILE(ds_norm_t)))
@@ -107,21 +121,23 @@ ds_norm_quant <- as.data.frame(t(QUANTILE(ds_norm_t)))
 # save
 fwrite(ds_norm_quant, "xcms after IPO MVI QC-XGB filter repeats annot+filtr QUANTILE.csv", row.names = T)
 
-########################################## Median Fold Change
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Median Fold Change                      ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # function
-medFC <- function(mat) {
+medFC <- function(mat) ({
   # Perform median fold change normalisation
   #          X - data set [Variables & Samples]
   medSam <- apply(mat, 1, median)
   medSam[which(medSam==0)] <- 0.0001
-  mat <- apply(mat, 2, function(mat, medSam){
+  mat <- apply(mat, 2, function(mat, medSam)({
     medFDiSmpl <- mat/medSam
     vec<-mat/median(medFDiSmpl)
     return(vec)
-  }, medSam)
+  }), medSam)
   return (mat)
-}
+})
 
 # perform
 ds_norm_medfc <- as.data.frame(t(medFC(ds_norm_t)))
@@ -129,7 +145,9 @@ ds_norm_medfc <- as.data.frame(t(medFC(ds_norm_t)))
 # save
 fwrite(ds_norm_medfc, "xcms after IPO MVI QC-XGB filter repeats annot+filtr MedFC.csv", row.names = T)
 
-########################################## Sample-specific Factor
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                    Sample-specific Factor                    ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Sample factor
 # ssf <- c(1:nrow(ds_norm)) # just simple example of sample-specific factor
@@ -143,7 +161,40 @@ ds_norm_ssf <- as.data.frame(ds_norm/ssfm)
 # save
 fwrite(ds_norm_ssf, "xcms after IPO MVI QC-XGB filter repeats annot+filtr CREATININE.csv", row.names = T)
 
-########################################## Adaptive Box-Cox Transformation
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Descriptive Stats                      ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# function
+NORM_DS_FUN <- function(data, fun = median, mode = "/") ({
+  
+  data <- sapply(data, as.numeric)
+  norm_vector <- apply(data, 1, fun, na.rm = T)
+  global_value <- fun(norm_vector, na.rm = T)
+  
+  if(mode == "-"){
+    norm_data <- sweep(data, 1, norm_vector, "-")+global_value
+  } else {
+    norm_data <- sweep(data, 1, norm_vector, "/")*global_value
+  }
+  return(norm_data)
+})
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  IMPORTANT NOTE                 ~~
+##  '-' mode is supposed for log-transformed data  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# perform
+ds_norm_DS <- as.data.frame(NORM_DS_FUN(as.data.frame(ds_norm), fun = median, mode = "/")) # choose: median / mean / sum
+rownames(ds_norm_DS) <- rownames(ds_norm)
+
+# save
+fwrite(ds_norm_DS, "xcms after IPO MVI QC-XGB filter repeats annot+filtr DS.csv", row.names = T)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               Adaptive Box-Cox Transformation               ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(ABCstats)
 
@@ -158,21 +209,54 @@ TransformedTable = ABCtransform(ds_abcs)
 ds_abcs <- as.data.frame(t(TransformedTable[-1,-c(1, ncol(TransformedTable))]))
 fwrite(ds_abcs, "xcms after IPO MVI QC-XGB filter repeats annot+filtr ABCstats.csv", row.names = T)
 
-##############################################################################################################################################################
-# Scaling
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 Maximal density fold change                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-########################################## log transformation
+library(MAFFIN)
+library(batchCorr)
+
+# Prepare data
+cn <- gsub(pattern = " / ", replacement = "_", x = colnames(ds), fixed = T)
+cn2 <- t(data.frame(cn))
+colnames(cn2) <- cn
+peakIn <- peakInfo(PT = cn2, sep = "_", start = 1)
+fst_row <- c(NA, "RT", meta$Class)
+
+# Perform
+ds_mdfcn <- as.data.frame(cbind(RT = peakIn[,2], t(ds_norm)))
+ds_mdfcn <- as.data.frame(cbind(Alignment.ID = 0:nrow(ds_mdfcn[-1,]), ds_mdfcn))
+ds_mdfcn <- as.data.frame(rbind(fst_row, ds_mdfcn)) 
+MDFCNormedTable = MDFCNorm(ds_mdfcn)
+
+# save
+ds_MDFCN <- MDFCNormedTable$NormedTable
+ds_MDFCN <- as.data.frame(t(ds_MDFCN[-1,-c(1:2)]))
+colnames(ds_MDFCN) <- colnames(ds)
+fwrite(ds_MDFCN, "xcms after IPO MVI QC-XGB filter repeats annot+filtr MDFCN.csv", row.names = T)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                  Scaling                                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      log transformation                      ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # perform
 ds_norm[ds_norm == 0] <- NA
 ds_norm_log <- log2(ds_norm)
 ds_norm_log <- as.data.frame(ds_norm_log)
 
+#............................other way...........................
+ds_norm_log <- ds_norm %>% mutate_all( ~log2(.+1.1))
+
 # save
 fwrite(ds_norm_log, "xcms after IPO MVI QC-XGB filter repeats annot+filtr LOG.csv", row.names = T)
 
-########################################## scaling
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           scaling                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # perform
 ds_norm_sc <- data.frame(scale(ds_norm, center = F, scale = apply(ds_norm, 2, sd, na.rm = T))) # for centering: center = T
@@ -180,12 +264,11 @@ ds_norm_sc <- data.frame(scale(ds_norm, center = F, scale = apply(ds_norm, 2, sd
 # save
 fwrite(ds_norm_sc, "xcms after IPO MVI QC-XGB filter repeats annot+filtr scal.csv", row.names = T)
 
-##############################################################################################################################################################
-# Wrapper function
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              Wrapper function                            ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##########################################
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(DiffCorr)
 
 # perform
@@ -195,8 +278,7 @@ ds_norm_dc <- as.data.frame(t(ds_norm_dc))
 # save
 fwrite(ds_norm_dc, "xcms after IPO MVI QC-XGB filter repeats annot+filtr dc.csv", row.names = T)
 
-##########################################
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(clusterSim)
 
 # perform
@@ -206,19 +288,21 @@ ds_norm_cs <- as.data.frame(ds_norm_cs)
 # save
 fwrite(ds_norm_cs, "xcms after IPO MVI QC-XGB filter repeats annot+filtr cs.csv", row.names = T)
 
-##############################################################################################################################################################
-# Removing and adjustment of biological variation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##              Removing and adjustment of biological variation             ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Content:
 # LOAD DATA
 # LMM
+# LM (FACTORWISE)
 # LM
-# LM FACTORWISE
 # GAMM
 # GAM
 
-############################################### LOAD DATA
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          LOAD DATA                          ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(data.table)
 
@@ -232,7 +316,20 @@ dsr <- sapply(ds, as.numeric)
 rownames(dsr) <- rownames(ds)
 ds_norm <- dsr
 
-############################################### LMM MODELLING OF BIOLOGICAL FACTORS
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                   IMPORTANT NOTE:                   ~~
+##    For biological variation adjusting / removal     ~~
+##       consider: predicted values, residuals,        ~~
+##     values after division / subtraction / removal   ~~
+##   To obtain always a positive value in prediction   ~~
+##            consider log-transformation:             ~~
+##      ds_log <- ds %>% mutate_all(~log2(.+1.1))      ~~
+##        ds <- ds_log %>% mutate_all( ~2^(.))         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             LMM                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(lmm2met)
 library(lme4)
@@ -248,8 +345,7 @@ dat$Class <- as.factor(dat$Class)
 dat[,-c(1:n_meta)] <- sapply(dat[,-c(1:n_meta)], as.numeric)
 n_start <- 6 # adjust to your data
 
-###############################################
-# perform by package
+#.......................perform by package.......................
 fitMet <- fitLmm(fix=c("Sex","Age","Class"), random="(1|Batch)", data=dat, start=n_start) # adjust to your data
 
 # save adjusted dataset
@@ -257,8 +353,7 @@ ds_lmm_fit <- fitMet$fittedDat[,c(n_start:ncol(fitMet$fittedDat))]
 colnames(ds_lmm_fit) <- colnames(ds_norm)
 fwrite(ds_lmm_fit, "QC-XGB after dual filt LMM adj.csv", row.names = T)
 
-###############################################
-# perform manually
+#........................perform manually........................
 f <- lapply(n_start:ncol(dat), function(y) paste(colnames(dat)[y],"~", paste(do.call(c,list(c("Sex","Age","Class"),c("(1|Batch)"))), collapse = "+"))) # adjust to your data
 lmm_fit <- lapply(1:length(f), function(x) lmer(f[[x]], dat)) # package lme4
 lmm_adj <- as.data.frame(sapply(1:length(lmm_fit), function(y) predict(lmm_fit[[y]])))
@@ -268,7 +363,9 @@ colnames(lmm_adj) <- colnames(ds_norm)
 ds_lmm_fit <- as.data.frame(lmm_adj)
 fwrite(ds_lmm_fit, "QC-XGB after dual filt LMM adj man.csv", row.names = T)
 
-############################################### LM MODELLING OF BIOLOGICAL FACTORS (FACTORWISE)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       LM (FACTORWISE)                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetabolomicsBasics)
 
@@ -290,7 +387,9 @@ ds_lm_fit <- as.data.frame(rawc)
 colnames(ds_lm_fit) <- colnames(rawc)
 fwrite(ds_lm_fit, "QC-XGB after dual filt LM adj.csv", row.names = T)
 
-############################################### LM MODELLING OF BIOLOGICAL FACTORS
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              LM                              ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # data
 meta$Batch <- as.numeric(stringr::str_remove(meta$Batch, "b")) # as.factor(meta$Batch) or as.numeric(meta$Batch) or as.numeric(stringr::str_remove(meta$Batch, "b"))
@@ -311,7 +410,9 @@ colnames(lm_adj) <- colnames(dat)
 ds_lm_fit <- as.data.frame(lm_adj)
 fwrite(ds_lm_fit, "QC-XGB after dual filt LM simple adj.csv", row.names = T)
 
-############################################### GAMM MODELLING OF BIOLOGICAL FACTORS
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             GAMM                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # data
 dat <- cbind(meta, ds_norm)
@@ -329,8 +430,8 @@ library(gamm4)
 # perform
 n_start <- 6 # adjust to your data
 dss <- lapply(n_start:ncol(dat), function(y) as.data.frame(dat[, c(y, 4, 5, 1, 2)])) # adjust to your data
-dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y" 
-                             return(dss[[y]])}) # adjust to your data
+dss <- lapply(1:length(dss), function(y) ({colnames(dss[[y]])[1] <-"Y" 
+                             return(dss[[y]])})) # adjust to your data
 gamm_fit <- pblapply(1:length(dss), function(x) gamm4(Y~s(Age)+Class+Sex, random=~(1|Batch), data = dss[[x]])) # adjust to your data (if no s() or lo() etc. -> as lm)
 gamm_adj <- as.data.frame(pbsapply(1:length(gamm_fit), function(x) predict(gamm_fit[[x]]$gam)))
 colnames(gamm_adj) <- colnames(dsr)
@@ -339,7 +440,9 @@ colnames(gamm_adj) <- colnames(dsr)
 ds_gamm_fit <- as.data.frame(gamm_adj)
 fwrite(ds_gamm_fit, "QC-XGB after dual filt GAMM adj.csv", row.names = T)
 
-############################################### GAM MODELLING OF BIOLOGICAL FACTORS
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             GAM                             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # data
 dat <- cbind(meta, ds_norm)
@@ -357,8 +460,8 @@ library(mgcv)
 # perform
 n_start <- 6 # adjust to your data
 dss <- lapply(n_start:ncol(dat), function(y) as.data.frame(dat[, c(y, 4, 5, 1, 2)])) # adjust to your data
-dss <- lapply(1:length(dss), function(y) {colnames(dss[[y]])[1] <-"Y" 
-                             return(dss[[y]])}) # adjust to your data
+dss <- lapply(1:length(dss), function(y) ({colnames(dss[[y]])[1] <-"Y" 
+                             return(dss[[y]])})) # adjust to your data
 gam_fit <- pblapply(1:length(dss), function(x) mgcv::gam(Y~s(Age)+Class+Sex+Batch, data = dss[[x]])) # adjust to your data (if no s() or lo() etc. -> as lm)
 gam_adj <- as.data.frame(pbsapply(1:length(gam_fit), function(x) predict(gam_fit[[x]])))
 colnames(gam_adj) <- colnames(dsr)
@@ -367,14 +470,24 @@ colnames(gam_adj) <- colnames(dsr)
 ds_gam_fit <- as.data.frame(gam_adj)
 fwrite(ds_gam_fit, "QC-XGB after dual filt GAM adj.csv", row.names = T)
 
-##############################################################################################################################################################
-# Evaluation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 Evaluation                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-############################################### Evaluation of biological variation adjustment
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  ~ Evaluation of biological variation adjustment  ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-###############################################
-###############################################
+# Content:
+# Prepare data
+# ML accuracy
+# PCA plot
+# LM Modelling
+# LMM Modelling
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         Prepare data                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # load data
 library(data.table)
@@ -398,7 +511,9 @@ identical(rownames(ds), rownames(meta))
 # create dataset
 ds_abv <- as.data.frame(cbind(Label = meta$Class, ds))
 
-############################################### ML accuracy
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         ML accuracy                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(parallel)
 library(doParallel)
@@ -444,7 +559,9 @@ results_df <- as.data.frame(results)
 results_df_fin <- apply(results_df[,-5], 2, mean)
 results_df_fin
 
-############################################### PCA plot
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           PCA plot                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(factoextra)
 library(FactoMineR)
@@ -470,7 +587,9 @@ pca <- fviz_pca_ind(pca.ds1,
 
 pca 
 
-############################################### LM Modelling
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         LM Modelling                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetabolomicsBasics)
 
@@ -478,8 +597,7 @@ library(MetabolomicsBasics)
 dat <- ds
 s_d <- cbind(Order = order, meta)
 
-###############################################
-# perform by package
+#.......................perform by package.......................
 model <- MetaboliteANOVA(dat=dat, sam=s_d, model="Batch+Class+Age+Sex", method = "BH") # "Batch+Class+Age+Sex" or "Batch+Class+Age+Sex+Order" # adjust to your data # select method
 
 # features
@@ -492,8 +610,7 @@ class_er2
 class <- length(rownames(model[which(model[,"Class"]<0.05),])) # adjust to your data
 class
 
-###############################################
-# perform manually
+#........................perform manually........................
 model="Batch+Class+Age+Sex" # "Batch+Class+Age+Sex" or "Batch+Class+Age+Sex+Order" # adjust to your data # select method 
 mod_f <- as.formula(paste("y", model, sep = " ~ "))
 lm_fit <- lapply(1:ncol(dat), function(y) lm(mod_f, data = cbind(s_d, y = dat[,y])))
@@ -512,7 +629,9 @@ class_er2
 class <- length(rownames(lm_pval[which(lm_pval[,"Class"]<0.05),])) # adjust to your data
 class
 
-############################################### LMM Modelling
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                        LMM Modelling                        ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(lme4)
 library(lmerTest)
@@ -548,10 +667,22 @@ class_er2
 class <- length(rownames(lmm_fit_pval_all_df[which(lmm_fit_pval_all_df[,"Class"]<0.05),])) # adjust to your data
 class
 
-############################################### Evaluation of Normalization and Scaling
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  ~ Evaluation of Normalization and Scaling  ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-###############################################
-###############################################
+# Content:
+# Prepare data
+# PCA plot
+# PLOT RLA
+# PLOT BOXPLOT
+# PLOT MA PLOT (two class study)
+# RA TOTAL
+# RA GROUPWISE
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         Prepare data                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # load data
 library(data.table)
@@ -573,12 +704,43 @@ identical(rownames(ds), rownames(meta))
 # dataset for evaluation
 ds_ra <- cbind(Class = meta$Class, ds) # use Class or Batch
 
-######################################## PCA plot
-# see in subsection "Evaluation of biological variation adjustment" 
-                                              
-######################################## PLOT RLA
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           PCA plot                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-library(NormalizeMets) # try also enviGCMS package (function: plotridges)
+library(factoextra)
+library(FactoMineR)
+library(RSEIS)
+library(ggsci)
+
+# dataset
+base1 <- ds_ra # dataset
+mtrx1 <- ds_ra[,-1] # numeric data
+grp1 <- as.character(base1[,1]) # label of dataset
+
+palette_pca <- "lancet" # color: "lancet" or "category20" or pal_gsea("default", n = length(unique(grp1)), alpha = 0.6, reverse = T)(length(unique(grp1)))
+# palette_pca <- JGRAY(length(unique(grp1))) # grey
+
+pca.ds1 <- PCA(mtrx1, scale.unit = T, graph = FALSE)
+pca <- fviz_pca_ind(pca.ds1,
+                    title = "",
+                    geom.ind = "point", # show points only 
+                    col.ind = grp1, # color by groups
+                    palette = palette_pca, # color "jco" gray JGRAY(length(unique(grp1)))
+                    addEllipses = T, # Concentration ellipses
+                    legend.title = "Groups")
+
+pca 
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           PLOT RLA                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# try also enviGCMS package (function: plotridges)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+library(NormalizeMets) 
 
 # Log transform
 log_data <- LogTransform(featuredata = ds_ra[,-1])
@@ -588,7 +750,9 @@ RlaPlots(featuredata = log_data$featuredata, groupdata = ds_ra[,1], ylim = c(2,-
 rla_data<-list(version1=log_data$featuredata, version2=log_data$featuredata)
 CompareRlaPlots(rla_data ,groupdata=ds_ra[,1], normmeth = c("version1","version2"), saveinteractiveplot = F)
 
-######################################## PLOT BOXPLOT
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         PLOT BOXPLOT                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(RColorBrewer)
 library(NormalizeMets)
@@ -626,7 +790,9 @@ bp <- ggplot(dat) +
 
 bp
 
-######################################## PLOT MA PLOT (two class study)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                PLOT MA PLOT (two class study)                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(limma) # try plotMA function. Also use maplot from rafalib package or edgeR package
 library(NormalizeMets)
@@ -639,19 +805,21 @@ lg_data_l <- lapply(1:length(unique(ds_ra$Class)), function(y) subset(lg_data, C
 lg_data_l <- lapply(1:length(lg_data_l), function(y) sapply(lg_data_l[[y]], as.numeric))
 
 # MA plot 
-maplot <- function(X1, X2,pch =21,main ="MA-plot",xlab ="Average log-intensities",ylab ="intensities log-ratio",lpars =list(col ="blue",lwd =2), ...){
+maplot <- function(X1, X2,pch =21,main ="MA-plot",xlab ="Average log-intensities",ylab ="intensities log-ratio",lpars =list(col ="blue",lwd =2), ...)({
  X <-(rowMeans(X2)+rowMeans(X1))/2
  Y <-rowMeans(X2) -rowMeans(X1)
   # plot
   scatter.smooth(x =X,y =Y,main =main,pch =pch,xlab =xlab,ylab =ylab,lpars =lpars, ...)
   abline(h =c(-1,0,1),lty =c(2,1,2))
-}
+})
 
 maplot(t(lg_data_l[[1]]), t(lg_data_l[[2]]),main ="")
 
-######################################## RA TOTAL
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           RA TOTAL                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RLA <- function(data) { 
+RLA <- function(data) ({ 
   # load dataset in form row-samples, columns-feature; 1st column-group variable
   data[data == 0] <- NA
   data_l <- data[,-1]
@@ -659,16 +827,18 @@ RLA <- function(data) {
   ra <- sapply(1:ncol(data_l), function(y) data_l[,y]-fct[y])
   radf <- as.data.frame(ra)
   return(radf)
-}
+})
 
 rla <- RLA(ds_ra)
 rsd_rla <- apply(rla, 1, function(y) sd(y, na.rm = T)/mean(y, na.rm = T))
 round(median(rsd_rla, na.rm = T),0)
 round(range(rsd_rla, na.rm = T)[2]-range(rsd_rla, na.rm = T)[1],0)
 
-######################################## RA GROUPWISE
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         RA GROUPWISE                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RLA_GROUPWISE <- function(data) { 
+RLA_GROUPWISE <- function(data) ({ 
   # load dataset in form row-samples, columns-feature; 1st column-group variable
   data[data == 0] <- NA
   data_l <- data[,-1]
@@ -677,16 +847,16 @@ RLA_GROUPWISE <- function(data) {
   ra <- lapply(1:length(gr), function(x) sapply(1:ncol(gr[[x]]), function(y) gr[[x]][,y]-fct[[x]][y]))
   radf <- lapply(1:length(ra), function(x) as.data.frame(ra[[x]]))
   return(radf)
-}
+})
 
 rla_gw <- RLA_GROUPWISE(ds_ra)
 rsd_rla <- lapply(1:length(rla_gw), function(x) apply(rla_gw[[x]], 1, function(y) sd(y, na.rm = T)/mean(y, na.rm = T)))
 med_rla <- lapply(1:length(rsd_rla), function(x) round(median(rsd_rla[[x]], na.rm = T),0))
 ran_rla <- lapply(1:length(rsd_rla), function(x) round(range(rsd_rla[[x]], na.rm = T),0))
 
-##############################################################################################################################################################
-# Save with all info
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             Save with all info                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table)
@@ -712,18 +882,18 @@ identical(ds1[,5][-c(1:12)], rownames(dsf)) # check
 dsf_c <- cbind(ds1[-c(1:12),2:5], dsf)
 dsf_c <- rbind(ds1[1:12,-1], dsf_c)
 
-empty_as_na <- function(x){
+empty_as_na <- function(x)({
   if("factor" %in% class(x)) x <- as.character(x) # since ifelse wont work with factors
   ifelse(as.character(x)!="", x, NA)
-}
+})
 dsf_c <- mutate_each(dsf_c, funs(empty_as_na)) 
 
 # save
 fwrite(dsf_c, "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG.csv", row.names = T)
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Wu, Yiman, and Liang Li. "Sample normalization methods in quantitative metabolomics." Journal of Chromatography A 1430 (2016): 80-95.
 # 2. Li, Bo, et al. "Performance evaluation and online realization of data-driven normalization methods used in LC/MS based untargeted metabolomics analysis." Scientific reports 6 (2016): 38881.

@@ -1,6 +1,10 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # CAMERA
@@ -11,19 +15,18 @@
 # MetaboAnnotation
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table)
 library(stringr)
 setwd("D:/...")
 
-##############################################################################################################################################################
-# CAMERA
-##############################################################################################################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                   CAMERA                                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(xcms)
 library(CAMERA)
 
@@ -69,10 +72,9 @@ annot_camera <- data.frame(annot_camera$index, annot_camera$name, annot_camera$i
 # save
 fwrite(annot_camera, "xcms CAMERA.csv", row.names = T)
 
-##############################################################################################################################################################
-# RAMClustR
-##############################################################################################################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                  RAMClustR                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(xcms)
 library(RAMClustR)
 library(BiocParallel)
@@ -96,18 +98,18 @@ load("xcms obj pk_fil.RData") # filename and the same folder of raw data as in s
 # pk_fil <- as(pk_fil, "xcmsSet")
 
 # Function for optimization st parameter
-getRamSt <- function(XObj) {
+getRamSt <- function(XObj) ({
   featInfo <- featureDefinitions(XObj)
   hist((featInfo$rtmax-featInfo$rtmin)/2)
   st <- round(median(featInfo$rtmax-featInfo$rtmin)/2, digits = 2)
   abline(v=st)
-  return(st)}
+  return(st)})
 
 # Define optimal value of the st parameter
 st_val <- getRamSt(pk_fil)
 
 # Function for optimization sr parameter
-plotClust=function(ram,clustnr,xcmsData,samps,dtime=5,dmz=.05) { # adjust to your data
+plotClust=function(ram,clustnr,xcmsData,samps,dtime=5,dmz=.05) ({ # adjust to your data
   if(missing(samps)) {
     nSamp=nrow(ram$SpecAbund)
     samps=1:nSamp
@@ -139,7 +141,7 @@ plotClust=function(ram,clustnr,xcmsData,samps,dtime=5,dmz=.05) { # adjust to you
   axis(1)
   legend('topright',legend = paste0('F',whichFeats,'@mz',
                                     signif(pkMetaGrp[,1],5)), lty=1,col=(1:length(whichFeats))+1,bty='n')
-}
+})
 
 # Define optimal value of the sr parameter
 expDes=defineExperiment(force.skip = T)
@@ -233,10 +235,9 @@ fwrite(an_t_rcr, "xcms RAMClust.csv", row.names = T)
 # results
 # see "spectra" folder for other info
 
-##############################################################################################################################################################
-# xMSannotator
-##############################################################################################################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                xMSannotator                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(xcms)
 library(xMSannotator)
 library(stringr)
@@ -266,7 +267,7 @@ data <- unique(data)
 data[is.na(data)] <- 0
 outloc <- paste0(getwd(), "/result xma/")
 
-########################################## DATABASE SEARCH
+#........................DATABASE SEARCH.........................
 # perform
 num_nodes <- 3
 xma <- HMDB.Annotation(dataA = data, max.mz.diff = ppm_diff, num_nodes = num_nodes, # adjust for your data
@@ -286,7 +287,7 @@ setwd("D:/...")
 save(xma, file = "xma DB search.RData")
 fwrite(xma, "xcms xMSannotator.csv", row.names = T)
 
-########################################## ANNOTATION
+#...........................ANNOTATION...........................
 # perform
 num_nodes <- 3 # adjust to your PC
 xma <- multilevelannotation(dataA = data, max.mz.diff = ppm_diff, max.rt.diff = rt_diff, # adjust to your data
@@ -298,7 +299,7 @@ setwd("D:/...")
 xma_df <-as.data.frame(fread(input = "result xma/Stage5.csv", header=T)) # load data "result xma/Stage5.csv" or "Stage5.csv"
 fwrite(xma_df, "xcms xMSannotator 5stage HMDB multilevel.csv", row.names = T)
 
-########################################## combine results
+#........................combine results.........................
 # xma
 xma_data_5 <-as.data.frame(fread(input = "result xma/Stage5.csv", header=T)) # load data
 xma_data_5$mz_time <- paste(round(xma_data_5$mz, 3), round(xma_data_5$time, 1), sep = " / ") # round mz and rt
@@ -351,10 +352,9 @@ fwrite(an_t_xma, "xcms xMSannotator.csv", row.names = T)
 # results
 # see "result xma" folder for other info
 
-##############################################################################################################################################################
-# mWISE
-##############################################################################################################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                    mWISE                                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(mWISE)
 library(stringr)
 library(dplyr)
@@ -416,7 +416,7 @@ fwrite(Annotated.List$MH.Tab, "result mWise/xcms mWISE MH.Tab.csv", row.names = 
 fwrite(Annotated.List$Diff.Tab, "result mWise/xcms mWISE Diff.Tab.csv", row.names = T)
 fwrite(Annotated.List$Ranked.Tab, "result mWise/xcms mWISE Ranked.Tab.csv", row.names = T)
 
-########################################## combine results
+#........................combine results.........................
 # mWISE
 mwise_data <-as.data.frame(fread(input = "result mWise/xcms mWISE Annotated.Tab.csv", header=T)) # load data
 mwise_data$mz <- round(as.numeric(mwise_data$mz), 4) # round mz to 4 adjust to your data
@@ -469,10 +469,9 @@ fwrite(an_t_mwise, "xcms mWISE.csv", row.names = T)
 # results
 # see "result mWise" folder for other info
 
-##############################################################################################################################################################
-# metID
-##############################################################################################################################################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                    metID                                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(metid)
 library(tidyverse)
 library(doParallel)
@@ -511,11 +510,11 @@ fwrite(peakIn, "for metID/for metID MS1.csv", row.names = F)
 # get database from metID
 database <- system.file("ms2_database", package = "metid")
 
-########################################## perform
+#............................perform.............................
 # identification by different databases
 # copy databases (https://github.com/jaspershen/demoData/tree/master/inst/ms2_database) in "ms2_database" folder in metID library folder 
 
-########################################## identification by msDatabase
+#..................identification by msDatabase..................
 file.copy(from = file.path(database, "msDatabase_rplc0.0.2"), 
           to = path, overwrite = TRUE, recursive = TRUE)
 
@@ -537,7 +536,7 @@ table <- get_identification_table(annotate_result1, candidate.num = 3, type = "n
 fwrite(table, "for metID/metID MS1 msDatabase.csv", row.names = T)
 # see "for metID" folder
 
-########################################## identification by HMDB
+#.....................identification by HMDB.....................
 file.copy(from = file.path(database, "hmdbMS1Database0.0.1"), 
           to = path, overwrite = TRUE, recursive = TRUE)
 
@@ -559,7 +558,7 @@ table <- get_identification_table(annotate_result1, candidate.num = 3, type = "n
 fwrite(table, "for metID/metID MS1 HMDB.csv", row.names = T)
 # see "for metID" folder
 
-########################################## identification by MONA
+#.....................identification by MONA.....................
 file.copy(from = file.path(database, "monaDatabase0.0.1"), 
           to = path, overwrite = TRUE, recursive = TRUE)
 
@@ -581,7 +580,7 @@ table <- get_identification_table(annotate_result1, candidate.num = 3, type = "n
 fwrite(table, "for metID/metID MS1 MONA.csv", row.names = T)
 # see "for metID" folder
 
-########################################## identification by Mass Bank
+#..................identification by Mass Bank...................
 file.copy(from = file.path(database, "massbankDatabase0.0.2"), 
           to = path, overwrite = TRUE, recursive = TRUE)
 
@@ -603,7 +602,7 @@ table <- get_identification_table(annotate_result1, candidate.num = 3, type = "n
 fwrite(table, "for metID/metID MS1 Mass Bank.csv", row.names = T)
 # see "for metID" folder
 
-########################################## identification by Orbitrap
+#...................identification by Orbitrap...................
 file.copy(from = file.path(database, "orbitrapDatabase0.0.1"), 
           to = path, overwrite = TRUE, recursive = TRUE)
 
@@ -625,9 +624,9 @@ table <- get_identification_table(annotate_result1, candidate.num = 3, type = "n
 fwrite(table, "for metID/metID MS1 Orbitrap.csv", row.names = T)
 # see "for metID" folder
 
-##############################################################################################################################################################
-# MetaboAnnotation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              MetaboAnnotation                            ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetaboAnnotation)
 library(xcms)
@@ -691,9 +690,9 @@ metan <- as.data.frame(matchedData(pks_match))
 # save
 fwrite(metan, "xcms MetaboAnnotation.csv", row.names = T)
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Kuhl, Carsten, et al. "CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets." Analytical chemistry 84.1 (2012): 283-289.
 # 2. Broeckling, Corey David, et al. "RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data." Analytical chemistry 86.14 (2014): 6812-6817.

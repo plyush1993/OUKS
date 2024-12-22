@@ -1,6 +1,10 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # Autotuner for XCMS params optimization
@@ -9,7 +13,7 @@
 # IPO for XCMS params optimization
 # XCMS with the best params (from IPO)
 # Old version of XCMS
-# XCMS for improve integration and alignment
+# XCMS for improvement of integration and alignment
 # Warpgroup for increase precision
 # ncGTW for realignment
 # cpc for filtering peaks
@@ -17,9 +21,9 @@
 # EIC peaks integration
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(data.table)
 library(dplyr)
@@ -47,9 +51,9 @@ files_all_df <- as.data.frame(cbind(files_all, ro = as.numeric(ro_id)))
 files_all_df <- files_all_df[order(as.numeric(files_all_df$ro), decreasing = F),] # sort by run order
 files_all <- files_all_df[,-2]
 
-##############################################################################################################################################################
-# Autotuner for XCMS params optimization
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                   Autotuner for XCMS params optimization                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(Autotuner)
 
@@ -104,9 +108,9 @@ best_param <- returnParams(eicParamEsts, Autotuner)
 # save(best_param, file = "Autotuner_optimiz_xcms.RData")
 # load("Autotuner_optimiz_xcms.RData")
 
-##############################################################################################################################################################
-# MetaboAnalystR for XCMS params optimization
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                MetaboAnalystR for XCMS params optimization               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # devtools::install_github("xia-lab/MetaboAnalystR", build = TRUE, build_vignettes = F, build_manual =F)
 
@@ -132,9 +136,9 @@ param_optimized$best_parameters # see parameters
 # save(param_optimized, file = "MetaboAnalystR_optimiz_xcms.RData")
 # load("MetaboAnalystR_optimiz_xcms.RData")
 
-##############################################################################################################################################################
-# Paramounter for XCMS params optimization
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  Paramounter for XCMS params optimization                ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(MSnbase)
@@ -172,9 +176,9 @@ source(paste0("D:/.../","\\Paramounter_part2 (V2).R")) # adjust to folder with P
 
 # see parameters in Folders directory/"Parameters for XCMS" and/or directory/"Universal Parameters"
 
-##############################################################################################################################################################
-# IPO for XCMS params optimization
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      IPO for XCMS params optimization                    ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(IPO)
 library(xcms)
@@ -234,9 +238,9 @@ param <- c(resultPeakpicking$best_settings$parameters, resultRetcorGroup$best_se
 funs_params <- capture.output(writeRScript(resultPeakpicking$best_settings$parameters, resultRetcorGroup$best_settings), type = "message")
 #save(funs_params,file = 'funs params IPO CDF 7QC.RData')
 
-##############################################################################################################################################################
-# XCMS with the best params (from IPO)
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                    XCMS with the best params (from IPO)                  ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(data.table)
@@ -348,9 +352,9 @@ save(ret_cor, file = "xcms obj ret_cor.RData")
 save(pk_gr, file = "xcms obj pk_gr.RData")
 save(pk_fil, file = "xcms obj pk_fil.RData")
 
-##############################################################################################################################################################
-# Old version of XCMS
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            Old version of XCMS                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(BiocParallel)
@@ -407,9 +411,9 @@ time <- as.numeric(xcms::groups(fp)[, 4])
 rownames(ft) <- paste(mz, time, sep = " / ")
 fwrite(as.data.frame(t(ft)), "xcms old funs.csv", row.names = T)
 
-##############################################################################################################################################################
-# XCMS for improve integration and alignment
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##              XCMS for improvement of integration and alignment           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 
@@ -422,8 +426,7 @@ cores = detectCores()-1
 register(bpstart(SnowParam(cores)))
 BiocParallel::register(BiocParallel::SerialParam())
 
-######################################################### Improve data after peak detection
-
+#................Improve data after peak detection...............
 # Remove all peaks with a width larger "rt_max" seconds
 rt_max <- 60 # define the max width of peak, adjust to your data
 data_rt_clean <- refineChromPeaks(feat_det, param = CleanPeaksParam(maxPeakwidth = rt_max))
@@ -435,7 +438,7 @@ data_int_clean <- refineChromPeaks(feat_det, param = FilterIntensityParam(thresh
 # Merge peaks by rt, mz, proportion, see ?MergeNeighboringPeaksParam
 data_merge <- refineChromPeaks(feat_det, MergeNeighboringPeaksParam(minProp = 0.05, expandRt = 4, expandMz = 0.005, ppm = 50)) # adjust to your data
 
-######################################################### Grouping features
+#........................Grouping features.......................
 library(MsFeatures)
 
 # By rt parameter
@@ -456,7 +459,7 @@ table(featureGroups(xdata))
 plotFeatureGroups(xdata)
 grid()
 
-######################################################### Subset-based alignment
+#.....................Subset-based alignment.....................
 # Create a phenodata data.frame
 pd <- data.frame(sample_name = sub(basename(files_all), pattern = ".CDF",
                                    replacement = "", fixed = TRUE), stringsAsFactors = FALSE) # download filenames
@@ -519,9 +522,9 @@ pgp_subs <- PeakGroupsParam(minFraction = min_frac_man, # or resultRetcorGroup$b
 
 xdata <- adjustRtime(xdata, param = pgp_subs) # final file with specific sample group alignment
 
-##############################################################################################################################################################
-# Warpgroup for increase precision
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Warpgroup for increase precision                    ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(warpgroup)
@@ -573,9 +576,9 @@ colnames(data) <- colnames(ft_tbl)
 data <- as.data.frame(t(data))
 fwrite(data, "xcms after Warpgroup.csv", row.names = T)
 
-##############################################################################################################################################################
-# ncGTW for realignment
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            ncGTW for realignment                         ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(ncGTW)
@@ -700,9 +703,9 @@ fwrite(data, "xcms after ncGTW.csv", row.names = T)
 compCV(XCMSresFilled)
 compCV(ncGTWresFilled)
 
-##############################################################################################################################################################
-# cpc for filtering peaks
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          cpc for filtering peaks                         ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(xcms)
 library(cpc)
@@ -727,9 +730,9 @@ xcmsPeaktableFilt <- data.frame(xcms::chromPeaks(xdFilt))
 # get the filtered cpc peak table
 cpcPeaktableFilt <- cpcPeaktable[row.names(xcmsPeaktableFilt), ]
 
-##############################################################################################################################################################
-# Description of peaks table
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         Description of peaks table                       ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # load data set
 peak_table <- as.data.frame(fread("xcms after IPO.csv"))
@@ -748,13 +751,13 @@ pr_mv
 # Number of peaks
 ncol(ds_pt) # or nrow
 
-##############################################################################################################################################################
-# EIC peaks integration
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            EIC peaks integration                         ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#------------------------------------------                                  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                 
 # See also "RaMS" R package 
-#------------------------------------------                                   
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                  
                                   
 library(xcms)
 library(RColorBrewer)
@@ -791,9 +794,9 @@ chromPeaks(xchr) # peak table
 
 plot(xchr, col = group_colors, peakBg = group_colors[chromPeaks(xchr)[, "column"]]) # plot results
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Tautenhahn, Ralf, Christoph Boettcher, and Steffen Neumann. "Highly sensitive feature detection for high resolution LC/MS." BMC bioinformatics 9.1 (2008): 504.
 # 2. McLean, Craig, and Elizabeth B. Kujawinski. "AutoTuner: high fidelity and robust parameter selection for metabolomics data processing." Analytical chemistry 92.8 (2020): 5724-5732.

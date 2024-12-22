@@ -1,6 +1,10 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # Metadata generating 
@@ -14,9 +18,9 @@
 # Pearson Correlation filtering of repeats
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table)
@@ -31,9 +35,9 @@ setwd("D:/...")
 # 4. Annotation filtering
 # Note: see "Supplementary code" subtitle. Colnames format after corrections can differ from raw data colnames.
 
-##############################################################################################################################################################
-# Metadata generating
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            Metadata generating                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # load peak table in csv
 # load in format: 1st column: 1. qc1(s78_1) b1 QC1(KMS 53).X --- ro. nameN(nameN_NREPEAT) BatchIndex QCN(Label N)
@@ -43,8 +47,7 @@ dsr <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter.csv", header
 rownames(dsr) <- dsr[,1]
 dsr <- dsr[,-1]
 
-########################################## METADATA GENERATING
-
+#......................METADATA GENERATING.......................
 rname <- rownames(dsr) # obtain all info from rownames
 rname <- str_remove(rname, ".CDF") # remove some pattern from vendor-specific format
 # qc_id <- grep(pattern = "QC", x = rname) # find by pattern in info from rownames
@@ -76,11 +79,13 @@ ds <- data.frame(cbind(all_meta_data, dsr))
 ds$ro_id <- as.numeric(ds$ro_id)
 ds <- ds[order(ds$ro_id, decreasing = F),] 
 
-##############################################################################################################################################################
-# Repeated measurements calculation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Repeated measurements calculation                   ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # after section "Metadata generating"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 counting <- sapply(1:length(s_id_p2), function(i) subset(s_id_p2, s_id_p2==s_id_p2[i])) # counting all repeats for sample ID (every [2] element) 
 n_rep <- sapply(1:length(counting), function(y) length(counting[[y]])) # count number of repeats for sample ID (every [2] element)
@@ -97,9 +102,9 @@ colnames(dsr3)[-c(1:ncol(all_meta_data_rep))] <- colnames(dsr) # names as in loa
 fwrite(dsr3, "xcms after IPO MVI QC-XGB filter repeats.csv", row.names = T)
 # fwrite(all_meta_data, "all_meta_data.csv", row.names = T)
 
-##############################################################################################################################################################
-# QC RSD filtering
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              QC RSD filtering                            ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Settings
 # load peak table in csv
@@ -110,12 +115,14 @@ dsr <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB.csv", header=T))
 rownames(dsr) <- dsr[,1]
 dsr <- dsr[,-1]
 
-####### Supplementary code
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#..................Supplementary code for names..................
 # colnames as from xcms
 raw_data <-as.data.frame(fread(input = "xcms after IPO MVI.csv", header=T)) # load data
 rownames(raw_data) <- raw_data[,1] # load data
 raw_data <- raw_data[,-1] # load data
 colnames(dsr) <- colnames(raw_data) # rename colnames as in raw data from xcms
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # data generating
 md_qc <- subset(all_meta_data, n_gr_t == "QC")
@@ -138,7 +145,7 @@ for (i in (1:length(tnu))){
 
 # RSD calculation by batches
 RSD_by_batch_results <- list()
-RSD_by_batch <- function (x) { 
+RSD_by_batch <- function (x) ({ 
   for (i in (1:length(vb))){
     RSD_by_batch_results[[i]] <- apply(x[vb[[i]],], 2, function(y) sd(y, na.rm = T)/mean(y, na.rm = T)*100)}
   RSD_by_batch_results[[(length(vb)+1)]] <- apply(x, 2, function(y) sd(y, na.rm = T)/mean(y, na.rm = T)*100) # all batches
@@ -149,7 +156,7 @@ RSD_by_batch <- function (x) {
   n <- c(paste(c(1:length(vb)), "batch"), "all batches")
   names(RSD_by_batch_results) <- n
   RSD_by_batch_results
-}
+})
 
 n <- c(paste(c(1:length(vb)), "batch"), "all batches") # names
 ds1 <- ds[,-1] # sample in row only metabolites variables
@@ -168,9 +175,9 @@ dsr_QC_RSD <- dsr[,cutoff_f$name]
 # save
 fwrite(dsr_QC_RSD, "xcms after IPO MVI QC-XGB filter.csv", row.names = T)
 
-##############################################################################################################################################################
-# Combine and filter with annotation data
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  Combine and filter with annotation data                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing 1-2 sections "Metadata generating" & "Repeated measurements calculation"
 
@@ -182,7 +189,7 @@ dsr <- dsr[,-c(4,6,7)] # adjust to your data, as in file "all_meta_data"
 colnames(dsr)[1:4] <- c("Label", "Injection", "Batch", "PatientID") # adjust to your data
 dsr_t <- data.frame(t(dsr))
 
-########################################## ANNOTATION
+#...........................ANNOTATION...........................
 # load annotation data
 # CAMERA
 camera <-as.data.frame(fread(input = "xcms CAMERA.csv", header=T))[,-1]
@@ -209,10 +216,10 @@ dsr_t_a <- rbind(title, dsr_t_a)
 dsr_a <- data.frame(t(dsr_t_a))
 
 # transform to na
-empty_as_na <- function(x){
+empty_as_na <- function(x)({
   if("factor" %in% class(x)) x <- as.character(x) # since ifelse wont work with factors
   ifelse(as.character(x)!="", x, NA)
-}
+})
 
 dsr_a <- mutate_each(dsr_a, funs(empty_as_na)) 
 
@@ -220,17 +227,17 @@ dsr_a <- mutate_each(dsr_a, funs(empty_as_na))
 colnames(dsr_a) <- colnames(dsr)
 fwrite(dsr_a, "xcms after IPO MVI QC-XGB filter repeats annot.csv", row.names = T)
 
-########################################## FILTRATION
+#...........................FILTRATION...........................
 # load data after all steps and preprocess
 dsr_a <-as.data.frame(fread(input = "xcms after IPO MVI QC-XGB filter repeats annot.csv", header=T))
 rownames(dsr_a) <- dsr_a[,1]
 dsr_a <- dsr_a[,-1]
 
 # transform to na
-empty_as_na <- function(x){
+empty_as_na <- function(x)({
   if("factor" %in% class(x)) x <- as.character(x) # since ifelse wont work with factors
   ifelse(as.character(x)!="", x, NA)
-}
+})
 
 dsr_a <- mutate_each(dsr_a, funs(empty_as_na)) 
 
@@ -242,9 +249,9 @@ dsr_a_f <- dsr_a[,-c(ind)]
 # save
 fwrite(dsr_a_f, "xcms after IPO MVI QC-XGB filter repeats annot+filtr.csv", row.names = T)
 
-##############################################################################################################################################################
-# Descriptive Statistics filtering
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Descriptive Statistics filtering                    ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Settings
 # load peak table in csv
@@ -273,9 +280,9 @@ dsr_DS <- dsr[,cutoff_f$name]
 # save
 fwrite(dsr_DS, "xcms after IPO MVI filter DS.csv", row.names = T)
 
-##############################################################################################################################################################
-# Missing Value filtering
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          Missing Value filtering                         ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Settings
 # load peak table in csv
@@ -315,9 +322,9 @@ dsr_MV <- dsr[,mv_f_n]
 # save
 fwrite(dsr_MV, "xcms after IPO MVI filter MV.csv", row.names = T) # or use dataset with no NA (dsr_no_NA)
 
-##############################################################################################################################################################
-# QC D-Ratio filtering
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            QC D-Ratio filtering                          ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Settings
 # load peak table in csv
@@ -348,9 +355,9 @@ dsr_dr_tr <- dsr_dr[,ind_dr_tr]
 # save
 fwrite(dsr_dr_tr, "xcms after IPO MVI filter D-Ratio.csv", row.names = T)
 
-##############################################################################################################################################################
-# Blank filtering
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              Blank filtering                             ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Settings
 # load peak table in csv
@@ -380,9 +387,9 @@ dsr_bl_tr <- dsr_bl[,-ind_bl_tr]
 # save
 fwrite(dsr_bl_tr, "xcms after IPO MVI filter blanks.csv", row.names = T)
 
-##############################################################################################################################################################
-# Pearson Correlation filtering of repeats
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  Pearson Correlation filtering of repeats                ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # after processing 1-2 sections "Metadata generating" & "Repeated measurements calculation"
 
@@ -390,12 +397,12 @@ fwrite(dsr_bl_tr, "xcms after IPO MVI filter blanks.csv", row.names = T)
 dsr2 <- data.frame(cbind(s_id_p2, dsr)) # join sample ID (every [2] element) and peak table
 
 # fun for Pearson cor coef if n repeats samples
-filtered.cor <- function(x){ 
+filtered.cor <- function(x)({ 
   x <- t(x)
   num_var <- apply(x, 2,  function(x) is.numeric(x))    
   cor_mat <- cor(x[,num_var], method = 'pearson')    
   diag(cor_mat) <- 100    
-  return(cor_mat[which.min(abs(cor_mat))])}
+  return(cor_mat[which.min(abs(cor_mat))])})
 
 # if n repeats
 dsr3 <- sapply(1:nrow(rep_id), function(t) filtered.cor(dplyr::filter(dsr2[,-1], dsr2$s_id_p2 == rep_id[t,1])))
@@ -412,9 +419,9 @@ dsr_PR <- dsr_PR[,-1]
 # save
 fwrite(dsr_PR, "xcms after IPO MVI filter corr.csv", row.names = T)
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Mathé, Ewy A., et al. "Noninvasive urinary metabolomic profiling identifies diagnostic and prognostic markers in lung cancer." Cancer research 74.12 (2014): 3259-3270.
 # 2. Martín-Blázquez, Ariadna, et al. "Untargeted LC-HRMS-based metabolomics to identify novel biomarkers of metastatic colorectal cancer." Scientific reports 9.1 (2019): 1-9.

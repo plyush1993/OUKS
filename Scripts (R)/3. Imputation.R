@@ -1,19 +1,24 @@
-##############################################################################################################################################################
-# Table of contents
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                                                            ~~
+##                              TABLE OF CONTENTS                           ----
+##                                                                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Installation
 # Preprocessing
 # Artifacts Removal
+# Automatic determination type of NA and sequential imputation
 # Univariate MVI 
 # Multivariate MVI
 # Performance by different metrics
 # Perform best MVI
 # References
 
-##############################################################################################################################################################
-# Installation
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Installation                              ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # setup environment
 library(data.table)
@@ -44,31 +49,43 @@ dsr <- dsr[,-1]
 ds_mvi <- dsr # remove all column with non-numeric values, use for mvi and artifacts removal
 colnames(ds_mvi) <- paste0("V", c(1:ncol(ds_mvi))) # simplify colnames
 
-##############################################################################################################################################################
-# Preprocessing
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                Preprocessing                             ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-########################################## total amount of NA in %
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                   total amount of NA in %                   ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tn <- nrow(ds_mvi)*ncol(ds_mvi)
 mv_c <- sum(is.na(ds_mvi)) # or length(which(is.a(...)))
 pr_mv <- round(mv_c/tn*100,0)
 pr_mv
 
-########################################## amount of NA in % by feature
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                 amount of NA in % by feature                 ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 mv_f <- data.frame(apply(ds_mvi, 2, function(y) round(sum(is.na(y))/length(y)*100, 0)))
 hist(as.numeric(mv_f[,1]), breaks=25)
 
-########################################## remove all column with NA
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                  remove all column with NA                  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 colna <- apply(ds_mvi,2,function(x) any(is.na(x))) # or na.omit()
 dsr_no_NA <- ds_mvi[,colna==F]
 
-########################################## convert 0 into NA
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      convert 0 into NA                      ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ds_mvi[ds_mvi == 0] <- NA
 
-########################################## check NA status
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                       check NA status                       ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 length(which(is.na(ds_mvi)))
 
-########################################## filter by MVI % by column (feature)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##             filter by MVI % by column (feature)             ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 sel_id <- grep(pattern = "QC", x = rownames(ds_mvi)) # select only biological or QC samples by pattern in row names
 dsr_subset <- ds_mvi[sel_id,] # select only observations by pattern from peak table
 dsr_subset <- ds_mvi # or select all observations
@@ -77,10 +94,10 @@ colnames(mv_f) <- "mv"
 cutoff <- 50 # set cut-off for filtering
 mv_f_n <- rownames(dplyr::filter(mv_f, mv < cutoff))
 ds_mvi <- ds_mvi[,mv_f_n] # filter
-               
-##############################################################################################################################################################
-# Artifacts Removal
-##############################################################################################################################################################
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              Artifacts Removal                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(MetProc)
 library(stringr)
@@ -113,10 +130,16 @@ retained <- colnames(dsr)[! colnames(dsr) %in% art_name$or_vn]
 ds_mp <- dsr[,retained]
 fwrite(ds_mp, "xcms after IPO remove artifacts.csv", row.names = T)
 
-##############################################################################################################################################################
-# Automatic determination type of NA and sequential imputation 
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##        Automatic determination type of NA and sequential imputation      ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NOTE:
+# Alternatively you can use "model.Selector" & "impute.MAR.MNAR" functions from imputeLCMD package               
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#...........................By package...........................
 library(MAI)
 library(parallel)
 library(doParallel)
@@ -145,17 +168,61 @@ identical(rownames(dsr), rownames(ds_mai)) # check rownames
 
 fwrite(ds_mai, "xcms after IPO MAI.csv", row.names = T)
 
-# Alternatively you can use "model.Selector" & "impute.MAR.MNAR" functions from imputeLCMD package               
-               
-##############################################################################################################################################################
-# Univariate MVI 
-##############################################################################################################################################################
+#..........................By function...........................
+seq_mnar_mar_mvi <- function(x, threshold_MNAR = 80) ({
+  
+  library(imputeLCMD)
+  library(MsCoreUtils)
+  
+  # 1. remove all NA features
+  na_ind <- which(apply(x, 2, function(t) all(is.na(t))))
+  if (length(na_ind)==0) {
+    x <- x
+  } else {
+    x <- x[,-na_ind] }
+  
+  # 2. remove all NA samples
+  na_ind_s <- which(apply(x, 1, function(t) all(is.na(t))))
+  if (length(na_ind_s)==0) {
+    x <- x
+  } else {
+    x <- x[-na_ind_s, ] }
+  
+  # 3. calculate MVI % per feature
+  mv_f <- data.frame(apply(x, 2, function(t) round(sum(is.na(t))/length(t)*100, 0)))
+  colnames(mv_f) <- "mv"
+  mar_f <- rownames(dplyr::filter(mv_f, mv < threshold_MNAR))
+  mnar_f <- rownames(dplyr::filter(mv_f, mv > threshold_MNAR))
+  
+  # 4. MNAR MVI
+  x_all_mnar <- t(impute.MinDet(t(sapply(x, as.numeric))))
+  x_mnar <- x
+  x_mnar[,mnar_f] <- x_all_mnar[,mnar_f]
+  
+  # 5. MAR MVI
+  x_mar_mnar <- x_mnar
+  #x_mar_mnar <- as.data.frame(t(impute_bpca(t(sapply(x_mar_mnar, as.numeric))))) # Select method
+  x_mar_mnar <- as.data.frame(t(impute_knn(t(sapply(x_mar_mnar, as.numeric))))) # Select method
 
-########################################## One value MVI for all dataset
+  return(x_mar_mnar)
+})
+
+ds_mvi_seq <- seq_mnar_mar_mvi(x = ds_mvi, threshold_MNAR = 80)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                               Univariate MVI                             ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                One value MVI for all dataset                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ds_mvi[is.na(ds_mvi)] <- 0
 ds_mvi[is.na(ds_mvi)] <- min(ds_mvi, na.rm = T)
 
-########################################## Random values (from noise) MVI
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                Random values (from noise) MVI                ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 load("IPO_optimiz_xcms_CDF_7QC.RData") # load IPO parameters
 noise <- resultPeakpicking$best_settings$parameters$noise # set noise level for random value generation. This can be obtained from IPO optimization: resultPeakpicking$best_settings$parameters$noise or manually, for example: 100
 # noise <- as.numeric(quantile(1:noise)[2]) # reduce noise by quantile: quantile(1:noise)[1] = 0% ... quantile(1:noise)[4] = 100%
@@ -166,50 +233,75 @@ NAidx <- ds_mvi == 0 # NA index
 imp.rand <- abs(rnorm(sum(NAidx), mean = noise, sd = sd)) # generate random values. other option: runif(sum(NAidx), noise-sd, noise+sd)
 ds_mvi[NAidx] <- imp.rand
 
-########################################## Simple MVI by column
-########################################## mean
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          MinSample                          ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+impute.MinSample <- function (dataSet.mvs) ({
+  nSamples = dim(dataSet.mvs)[2]
+  dataSet.imputed = dataSet.mvs
+  minValue.samples = apply(dataSet.imputed, 2, min, na.rm = T)
+  for (i in 1:(nSamples)) {
+    dataSet.imputed[which(is.na(dataSet.mvs[, i])), i] = minValue.samples[i]
+  }
+  return(dataSet.imputed)
+})
+
+ds_mvi <- as.data.frame(t(impute.MinSample(t(ds_mvi))))
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                     Simple MVI by column                     ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#..............................mean..............................
 for (i in 1:ncol(ds_mvi)) {
   ds_mvi[,i][is.na(ds_mvi[,i])] <- mean(ds_mvi[,i], na.rm = T) }
 
-########################################## median
+#.............................median.............................
 for (i in 1:ncol(ds_mvi)) {
   ds_mvi[,i][is.na(ds_mvi[,i])] <- median(ds_mvi[,i], na.rm = T) }
 
-########################################## minimum
+#............................minimum.............................
 for (i in 1:ncol(ds_mvi)) {
   ds_mvi[,i][is.na(ds_mvi[,i])] <- min(ds_mvi[,i], na.rm = T) }
 
-########################################## half minimum
+#..........................half minimum..........................
 for (i in 1:ncol(ds_mvi)) {
   ds_mvi[,i][is.na(ds_mvi[,i])] <- (min(ds_mvi[,i], na.rm = T))/2 }
 
-########################################## left-censored data MVI
+#.....................left-censored data MVI.....................
 # alternatively you can use "impute.MinDet" & "impute.MinProb" functions from imputeLCMD package for for left-censored values or QRILC MVI (see below)
                          
-########################################## apply version example for half minimum
-HM_apply <- function(data) {
+#............lapply version example for half minimum.............
+HM_apply <- function(data) ({
   result <- as.data.frame(sapply(1:ncol(data), function(y) replace(data[,y],which(is.na(data[,y])), min(data[,y], na.rm = T)/2)))
   result
-}
+})
 
 ds_mvi_hm <- HM_apply(ds_mvi)
 colnames(ds_mvi_hm) <- colnames(ds_mvi)
 rownames(ds_mvi_hm) <- rownames(ds_mvi)
 
-##############################################################################################################################################################
-# Multivariate MVI
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              Multivariate MVI                            ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-########################################## KNN MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           KNN MVI                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(impute)  
 ds_mvi_knn <- as.data.frame(t(impute.knn(t(ds_mvi), k = 3, rowmax = 90, colmax = 90)[[1]]))
 
-########################################## CART MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           CART MVI                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(mice)
 mvi_cart <- mice(ds_mvi, method="cart")
 ds_mvi_cart <- complete(mvi_cart)
 
-########################################## RF MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            RF MVI                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # example mice package
 library(mice)
 mvi_rf <- mice(ds_mvi, method="rf")
@@ -233,7 +325,9 @@ registerDoParallel(cl)
 ds_mvi_rf3 <- as.data.frame(rfImpWrap(MAT = ds_mvi, nCore = nCore))
 stopCluster(cl)
 
-########################################## PLS MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           PLS MVI                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(StatTools)
 library(doParallel)
 nCore=detectCores()-1
@@ -242,26 +336,32 @@ registerDoParallel(cl)
 ds_mvi_pls <- as.data.frame(mvImpWrap(ds_mvi, method = "PLS", nCore = nCore))
 stopCluster(cl)
 
-########################################## PCA MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                           PCA MVI                           ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(pcaMethods)
 pc <- pca(ds_mvi, nPcs=3, method="ppca") # svd, ppca, bpca, nipals, etc, see listPcaMethods(), set "nPcs"
 ds_mvi_pca <- as.data.frame(completeObs(pc))
 
-########################################## QRILC MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          QRILC MVI                          ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(imputeLCMD)
 ds_mvi_qrilc <- as.data.frame(t(impute.QRILC(t(ds_mvi))[[1]])) # alternatively you can use "impute.MinDet" & "impute.MinProb" functions from imputeLCMD package for for left-censored values
 
-########################################## tWLSA MVI
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                          tWLSA MVI                          ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(tWLSA)
 ds_mvi_twlsa <- as.data.frame(wlsMisImp(ds_mvi,lamda=0.1,conRate=99,group=1, outlier=T)) # adjust "group" and other to your data
 
-##############################################################################################################################################################
-# Performance by different metrics
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Performance by different metrics                    ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##########################################
-########################################## Preparation
-##########################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         Preparation                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # amount of NA in %
 tn <- nrow(ds_mvi)*ncol(ds_mvi)
@@ -279,10 +379,9 @@ ds_true <- dsr_no_NA
 ds_miss <- SimIm(ds_true, p = pr_mv/100) # perform NA randomly in percent as amount NA in data. Also use missMethods package (delete_... functions) or imputeLCMD (insertMVs function)
 ds_mvi <- ds_miss # use it for testing mvi
 
-##########################################
-########################################## NRMSE
-##########################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                            NRMSE                            ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(imputeR)
 
 # generate ds_mvi_... data sets at previous sections Univariate MVI / Multivariate MVI
@@ -302,10 +401,9 @@ rownames(NRMSE_results) <- c("HM","KNN", "CART", "RF1", "RF2", "RF3", "PLS", "PC
 colnames(NRMSE_results) <- "NRMSE"
 NRMSE_results
 
-##########################################
-########################################## Other metrics
-##########################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                        Other metrics                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(missMethods)
 
 # generate ds_mvi_... data sets at previous sections Univariate MVI / Multivariate MVI (see argument "criterion")
@@ -325,10 +423,9 @@ rownames(VALUE_results) <- c("HM","KNN", "CART", "RF1", "RF2", "RF3", "PLS", "PC
 colnames(VALUE_results) <- "VALUE"
 VALUE_results
 
-##########################################
-########################################## Procrustes analysis on PCs scores
-##########################################
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##              Procrustes analysis on PCs scores              ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library(vegan)
 
 nPCs <- 2 # number of PCs
@@ -350,9 +447,9 @@ rownames(PA_results) <- c("HM","KNN", "CART", "RF1", "RF2", "RF3", "PLS", "PCA",
 colnames(PA_results) <- "PA_ss"
 PA_results
 
-##############################################################################################################################################################
-# Perform best MVI
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                              Perform best MVI                            ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # copy and perform best methods funs with ds_mvi from 1st section "Installation"
 library(missForest)
@@ -371,9 +468,9 @@ identical(rownames(dsr), rownames(ds_mvi_best)) # check rownames
 
 fwrite(ds_mvi_best, "xcms after IPO MVI.csv", row.names = T)
 
-##############################################################################################################################################################
-# References
-##############################################################################################################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                 References                               ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 1. Chaffin, Mark D., et al. "MetProc: separating measurement artifacts from true metabolites in an untargeted metabolomics experiment." Journal of proteome research 18.3 (2018): 1446-1450.
 # 2. Dekermanjian, Jonathan P., et al. "Mechanism-aware imputation: a two-step approach in handling missing values in metabolomics." BMC Bioinformatics (2022): 23, 179.
