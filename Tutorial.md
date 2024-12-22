@@ -26,10 +26,6 @@
    
    •	[Statistics](#statistics)
    
-   •	[Conclusion](#conclusion)
-   
-   •	[Notes](#notes)
-   
    •	[References](#references)
 <!--te-->
 
