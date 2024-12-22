@@ -898,10 +898,11 @@ fwrite(dsf_c, "xcms after IPO MVI QC-XGB filter repeats annot+filtr LMM adj KEGG
 # 1. Wu, Yiman, and Liang Li. "Sample normalization methods in quantitative metabolomics." Journal of Chromatography A 1430 (2016): 80-95.
 # 2. Li, Bo, et al. "Performance evaluation and online realization of data-driven normalization methods used in LC/MS based untargeted metabolomics analysis." Scientific reports 6 (2016): 38881.
 # 3. Yu, Huaxu, Peijun Sang, and Tao Huan. "Adaptive Box-Cox Transformation: A Highly Flexible Feature-Specific Data Transformation to Improve Metabolomic Data Normality for Better Statistical Analysis." Analytical Chemistry (2022).
-# 4. António, Carla, ed. Plant metabolomics: Methods and protocols. Humana Press, 2018.
-# 5. Wanichthanarak, Kwanjeera, et al. "Accounting for biological variation with linear mixed-effects modelling improves the quality of clinical metabolomics data." Computational and structural biotechnology journal 17 (2019): 611-618.
-# 6. Gromski, Piotr S., et al. "The influence of scaling metabolomics data on model classification accuracy." Metabolomics 11.3 (2015): 684-695.
-# 7. Cuevas-Delgado, Paula, et al. "Data-dependent normalization strategies for untargeted metabolomics-a case study." Analytical and Bioanalytical Chemistry (2020): 1-15.
-# 8. Livera, Alysha M. De, et al. "Statistical methods for handling unwanted variation in metabolomics data." Analytical chemistry 87.7 (2015): 3606-3615.
-# 9. Wood, Simon N. Generalized additive models: an introduction with R. CRC press, 2017.
-# 10. Plyushchenko, Ivan V., et al. "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study." Journal of Proteome Research (2021).
+# 4. Yu, Huaxu, and Tao Huan. "MAFFIN: metabolomics sample normalization using maximal density fold change with high-quality metabolic features and corrected signal intensities." Bioinformatics 38.13 (2022): 3429-3437.
+# 5. António, Carla, ed. Plant metabolomics: Methods and protocols. Humana Press, 2018.
+# 6. Wanichthanarak, Kwanjeera, et al. "Accounting for biological variation with linear mixed-effects modelling improves the quality of clinical metabolomics data." Computational and structural biotechnology journal 17 (2019): 611-618.
+# 7. Gromski, Piotr S., et al. "The influence of scaling metabolomics data on model classification accuracy." Metabolomics 11.3 (2015): 684-695.
+# 8. Cuevas-Delgado, Paula, et al. "Data-dependent normalization strategies for untargeted metabolomics-a case study." Analytical and Bioanalytical Chemistry (2020): 1-15.
+# 9. Livera, Alysha M. De, et al. "Statistical methods for handling unwanted variation in metabolomics data." Analytical chemistry 87.7 (2015): 3606-3615.
+# 10. Wood, Simon N. Generalized additive models: an introduction with R. CRC press, 2017.
+# 11. Plyushchenko, Ivan V., et al. "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study." Journal of Proteome Research (2021).
