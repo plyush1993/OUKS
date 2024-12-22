@@ -51,7 +51,7 @@ R based open-source collection of scripts called 🔴*OUKS*🔵 (*Omics Untarget
 
 • [__Comparison__](https://github.com/plyush1993/OUKS/blob/gh-pages/Comparison.md) with other software.
 
-• [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) is for storing packages archives with strong version dependency.
+• [Required packages](https://github.com/plyush1993/OUKS/tree/main/Required%20packages%20(archive)) section is for storing packages archives with strong version dependency.
 
 • Discussions, suggestions and error reports are [welcome](https://github.com/plyush1993/OUKS/issues).
 
