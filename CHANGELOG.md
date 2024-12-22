@@ -120,3 +120,15 @@
 :spiral_calendar: 2024.12.19
 ### Fixed
 * Bugs related to the implementation of p.adjust() function has been fixed throughout 7.Normalization/4.Correction/9.Statistics scripts.
+* ## **V. 1.15**
+:spiral_calendar: 2024.12.22
+### Fixed
+* Known bugs have been fixed.
+* All scripts have been adapted in a tidy format suitable for the RStudio headings system.
+### Changed
+* "4. Correction": Changes in QC-RF/LOESS/BT/DT/KNN/XGB/ multiplying factor in division mode. 
+### Added
+* "4. Correction": New QC-GAM method (MetCorR) with associated scripts were introduced.
+* "7. Normalization": MAFFIN and Descriptive Stats normalizations were added.
+* "3. Imputation": Automatic missingness type determination and imputation were implemented by a custom function.
+* "9. Statistics": Consensus/Nested Feature Selection methods were introduced. 
