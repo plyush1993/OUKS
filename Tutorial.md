@@ -87,11 +87,11 @@ Seventeen methods of missing value imputation (MVI) are available for previously
 
 5 new methods in single division mode were performed according to the equations (1-3):
 ![1-3](/vignette/1-3.png)
-where, *i* – is the index of metabolite, *QC* – is the index of QC samples (all samples are denoted without this index), *M* – is a machine learning model, is fitted by function *f*, *y* – is an intensity vector (dependent variable), *x* – is a run order vector (independent variable), *F* – is a vector of predicted values by the model *M* (correction factor), *I’* – is a vector of a corrected intensity values, *I* – is a vector of an original intensity values. 
+where, *i* – is the index of metabolite, *QC* – is the index of QC samples (all samples are denoted without this index), *M* – is a machine learning model, is fitted by function *f*, *I* – is an original intensity vector (dependent variable), *x* – is a run order vector (independent variable), *F* – is a vector of predicted values by the model *M* (correction factor), *I’* – is a vector of a corrected intensity values, *mean* – the function, that generates the mean value from the input vector. 
 
 Equations (1-3) are one of the basic algorithms for all QC sample based algorithms for the signal drift correction and are most similar to the statTarget package [28]. The MetNormalizer package [29] also performs clustering of features via Spearman correlation and the same correction operation (division). Correction algorithm, which is described by the eq. 1-3, was marked as single division mode (“d”).
 ![4](/vignette/4.png)
-where, *i* – is the index of metabolite, *QC* – is the index of QC samples (all samples are denoted without this index), *y* – is an intensity vector, *F* – is a vector of predicted values by the model *M* (correction factor), *I’* – is a vector of a corrected intensity values, *I* – is a vector of an original intensity values, *mean* – the function, that generates the mean value from the input vector.  
+where, *i* – is the index of metabolite, *QC* – is the index of QC samples (all samples are denoted without this index), *I* – is an original intensity vector (dependent variable), *F* – is a vector of predicted values by the model *M* (correction factor), *I’* – is a vector of a corrected intensity values, *mean* – the function, that generates the mean value from the input vector.  
 
 Equation (4) is the modification for equation (3) of previously described algorithm (eq. 1-3), which is called single subtraction mode (eq. 1-2,4; “s”). The same mode was implemented in the BatchCorrMetabolomics [30] and notame [27] packages. Other mode in notame utilizes a correction factor with some changes (including prediction for the 1st QC sample and raw data).  
 
