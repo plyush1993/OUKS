@@ -119,8 +119,10 @@ vis.gam(model2, view = c("ro_qc", "batch_qc"),
 plot(y=log2(tic_int_data_qc), x = ro_qc, xlab = "Order", ylab = "log2(TIC)", main='GAM Modeling')
 lines(predict_gam1, col='red', lwd = 2)
 lines(predict_gam2, col='blue', lwd = 2)
-legend('topright', legend=c('s(ro_qc)', 's(ro_qc, batch_qc)'),
-       col=c('red', 'blue'), pch=19)
+lines(predict_gam1r, col='darkgreen', lwd = 2)
+lines(predict_gam2r, col='orange', lwd = 2)
+legend('topright', legend=c('s(ro_qc)', 's(ro_qc, batch_qc)', 's(ro_qc, by = batch_qc)', 's(ro_qc)+s(batch_qc)'),
+       col=c('red', 'blue', "darkgreen", "orange"), pch=19)
 
 #.............................ggplot.............................
 init_data <- as.data.frame(cbind(Abundance = log2(tic_int_data_qc), Order = ro_qc, Batch = batch_qc))
