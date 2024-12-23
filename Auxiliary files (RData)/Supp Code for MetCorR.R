@@ -150,7 +150,7 @@ ggplot(init_data, aes(y = Abundance, x = Order)) +
     geom_magnify(from = c(xmin = 95, xmax = 117, ymin = 29, ymax = 29.4), 
                to = c(60, 135, 28.4, 28.9),
                proj.fill = alpha("yellow", 0.2)) +
-  geom_magnify(from = c(xmin = 197, xmax = 225, ymin = 28.5, ymax = 29), 
+  geom_magnify(from = c(xmin = 190, xmax = 225, ymin = 28.5, ymax = 29), 
                to = c(160, 250, 29.2, 29.7),
                proj.fill = alpha("yellow", 0.2))+
   guides(color = guide_legend(keyheight = unit(0.1, 'cm')))
