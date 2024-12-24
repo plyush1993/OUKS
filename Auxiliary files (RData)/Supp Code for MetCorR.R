@@ -208,7 +208,7 @@ lines(predict_gam1, col='red', lwd = 2)
 lines(predict_gam2, col='blue', lwd = 2)
 lines(predict_gam1r, col='darkgreen', lwd = 2)
 lines(predict_gam2r, col='orange', lwd = 2)
-legend('topright', legend=c('s(ro_qc)', 's(ro_qc, batch_qc)', 's(ro_qc, by = batch_qc)', 's(ro_qc)+s(batch_qc)'),
+legend('bottomleft', legend=c('s(ro_qc)', 's(ro_qc, batch_qc)', 's(ro_qc, by = batch_qc)', 's(ro_qc)+s(batch_qc)'),
        col=c('red', 'blue', "darkgreen", "orange"), pch=19)
 
 #.............................ggplot.............................
