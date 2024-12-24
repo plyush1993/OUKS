@@ -157,7 +157,7 @@ ggplot(init_data, aes(y = Abundance, x = Order)) +
 ggplot(init_data, aes(y = Abundance, x = Order)) + 
   geom_rect(aes(xmin=95, xmax=117, ymin=29, ymax= 29.4), color = "black", fill="grey89") +
   geom_rect(aes(xmin=197, xmax=225, ymin=28.5, ymax= 29), color = "black", fill="grey89") +
-  geom_point(size=3.5, color="black", aes(fill= as.factor(Batch)), alpha=0.5, shape=21, stroke=0.5) + scale_fill_viridis_d(guide = 'none')+
+  geom_point(size=3.5, color="black", aes(fill= as.factor(Batch)), alpha=0.5, shape=21, stroke=0.5) + scale_fill_igv(guide = 'none')+
   theme_bw(base_size = 15) + theme(legend.position = "none") + labs(fill = "Batch")+labs(colour = "Model:") +
   geom_line(data = data, aes(x = Order, y = value, colour = variable), alpha = 1, linewidth = 1.5)+scale_color_aaas()+
   facet_grid(~variable)
@@ -235,7 +235,7 @@ ggplot(init_data, aes(y = Abundance, x = Order)) +
   guides(color = guide_legend(keyheight = unit(0.1, 'cm')))
 
 ggplot(init_data, aes(y = Abundance, x = Order)) + 
-  geom_point(size=3.5, color="black", aes(fill= as.factor(Batch)), alpha=0.5, shape=21, stroke=0.5) + scale_fill_viridis_d(guide = 'none')+
+  geom_point(size=3.5, color="black", aes(fill= as.factor(Batch)), alpha=0.5, shape=21, stroke=0.5) + scale_fill_igv(guide = 'none')+
   theme_bw(base_size = 15) + theme(legend.position = "none") + labs(fill = "Batch")+labs(colour = "Model:") +
   geom_line(data = data, aes(x = Order, y = value, colour = variable), alpha = 1, linewidth = 1.5)+scale_color_aaas()+
   facet_grid(~variable)
