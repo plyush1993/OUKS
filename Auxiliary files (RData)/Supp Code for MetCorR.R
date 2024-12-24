@@ -6,7 +6,7 @@ if(!"pacman" %in% rownames(installed.packages())){
   install.packages("pacman")
 }
 cat("Checking required packages (auto-installing if missing)\n")
-pacman::p_load("data.table", "dplyr", "stringr", "ggplot2", "ggsci", "mgcv", "remotes")
+pacman::p_load("data.table", "dplyr", "stringr", "ggplot2", "ggsci", "mgcv", "remotes", "svDialogs")
 
 if(!require(ggmagnify)){
   install_github("hughjonesd/ggmagnify")
@@ -86,9 +86,9 @@ fwrite(ds_gam2, "xcms after IPO MVI QC-GAM2.csv", row.names = T)
 ##                             Data Visualization                           ----
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##                 log2(TIC) as a model signal                 ~~
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  ~ log2(TIC) as a model signal   ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #........................models overview.........................
 # with by s term
@@ -160,9 +160,9 @@ ggplot(init_data, aes(y = Abundance, x = Order)) +
   geom_line(data = data, aes(x = Order, y = value), color = "grey62", alpha = 1, linewidth = 1.5)+scale_color_aaas()+
   facet_grid(~variable)
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##             particular feature as a model signal            ~~
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##  ~ particular feature as a model signal  ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #................select feature by SD and mean int...............
 sd_v <- apply(ds[qc_id,], 2, sd, na.rm = T)
@@ -171,8 +171,15 @@ hist(mean_v)
 rsd_v <- sd_v/mean_v*100
 hist(rsd_v)
 #........................choose threshold........................
-sel_features_ind <- which(rsd_v > 80 & mean_v > 1e5)
+sel_features_ind1 <- which(rsd_v > 80 & mean_v > 1e6)
+sel_features_ind2 <- which(rsd_v > 80 & mean_v > 1e5)
+sel_features_ind3 <- which(rsd_v > 80 & mean_v > 1e4)
+list_features <- list(sel_features_ind1, sel_features_ind2, sel_features_ind3)
+names(list_features) <- c("1e6", "1e5", "1e4")
 #.........................choose feature.........................
+sel_gr <- dlg_list(names(list_features), multiple = F, title = c("Intensity threshold:"))$res
+if (identical(sel_gr, character(0))) {sel_gr <- "1e5"}
+sel_features_ind <- list_features[[sel_gr]]
 f_int <- ds[qc_id,which.max(rsd_v[sel_features_ind])]
 plot(log2(f_int))
 
@@ -217,12 +224,6 @@ data <- as.data.frame(cbind(Order = ro,
                             's(order, by=batch)' = predict_gam1r,
                             's(order)+s(batch)' = predict_gam2r))
 data <- melt(data, id = "Order")
-
-ggplot(init_data, aes(y = Abundance, x = Order)) + 
-  geom_point(size=3.5, color="black", fill= "white", shape=21, stroke=1) +
-  theme_classic(base_size = 15) + theme(legend.position = c(0.85, 0.85)) + labs(fill = "Batch")+labs(colour = "Model:") +
-  geom_line(data = data, aes(x = Order, y = value, colour = variable), alpha = 1, 
-            linewidth = 1.2)+scale_color_d3() 
 
 ggplot(init_data, aes(y = Abundance, x = Order)) + 
   geom_point(size=3.5, color="black", fill= "grey90", shape=21, stroke=1) + 
