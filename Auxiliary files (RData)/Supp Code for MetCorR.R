@@ -173,7 +173,7 @@ hist(mean_v)
 rsd_v <- sd_v/mean_v*100
 hist(rsd_v)
 #........................choose threshold........................
-sel_features_ind <- which(rsd_v > 80 & mean_v > 10e5)
+sel_features_ind <- which(rsd_v > 80 & mean_v > 1e5)
 #.........................choose feature.........................
 f_int <- ds[qc_id,which.max(rsd_v[sel_features_ind])]
 plot(log2(f_int))
@@ -222,7 +222,7 @@ data <- melt(data, id = "Order")
 
 ggplot(init_data, aes(y = Abundance, x = Order)) + 
   geom_point(size=3.5, color="black", fill= "white", shape=21, stroke=1) +
-  theme_classic(base_size = 15) + theme(legend.position = c(0.2, 0.25)) + labs(fill = "Batch")+labs(colour = "Model:") +
+  theme_classic(base_size = 15) + theme(legend.position = c(0.85, 0.85)) + labs(fill = "Batch")+labs(colour = "Model:") +
   geom_line(data = data, aes(x = Order, y = value, colour = variable), alpha = 1, 
             linewidth = 1.2)+scale_color_d3() 
 
@@ -239,5 +239,4 @@ ggplot(init_data, aes(y = Abundance, x = Order)) +
   theme_bw(base_size = 15) + theme(legend.position = "none") + labs(fill = "Batch")+labs(colour = "Model:") +
   geom_line(data = data, aes(x = Order, y = value, colour = variable), alpha = 1, linewidth = 1.5)+scale_color_aaas()+
   facet_grid(~variable)
-
 #................................................................
