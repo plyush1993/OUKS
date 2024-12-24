@@ -182,14 +182,14 @@ plot(log2(f_int))
 # with by s term
 model1r <- gam(log2(f_int) ~ s(ro_qc, by = batch_qc))
 vis.gam(model1r, view = c("ro_qc", "batch_qc"),
-        theta = 50, n.grid = 50, lwd = 0.4)
+        theta = 150, n.grid = 50, lwd = 0.4)
 predict_gam1r = predict(model1r, newdata=data.frame(ro_qc = ro, batch_qc = batch))
 
 # with 2 s terms
 model2r <- gam(log2(f_int) ~ s(ro_qc)+s(batch_qc))
 predict_gam1 = predict(model2r, newdata=data.frame(ro_qc = ro, batch_qc = batch))
 vis.gam(model2r, view = c("ro_qc", "batch_qc"),
-        theta = 50, n.grid = 50, lwd = 0.4)
+        theta = 150, n.grid = 50, lwd = 0.4)
 predict_gam2r = predict(model2r, newdata=data.frame(ro_qc = ro, batch_qc = batch))
 
 # with simple s term
@@ -200,7 +200,7 @@ predict_gam1 = predict(model1, newdata=data.frame(ro_qc = ro, batch_qc = batch))
 model2 <- gam(log2(f_int) ~ s(ro_qc, batch_qc))
 predict_gam2 = predict(model2, newdata=data.frame(ro_qc = ro, batch_qc = batch))
 vis.gam(model2, view = c("ro_qc", "batch_qc"),
-        theta = 50, n.grid = 50, lwd = 0.4)
+        theta = 150, n.grid = 50, lwd = 0.4)
 
 #...........................basic plot...........................
 plot(y=log2(f_int), x = ro_qc, xlab = "Order", ylab = "log2(TIC)", main='GAM Modeling')
