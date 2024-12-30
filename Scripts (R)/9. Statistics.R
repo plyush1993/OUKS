@@ -1670,6 +1670,7 @@ legend("top",  legend = c("original", "predicted"),
 # Moderated t-test
 # Fold Change Calculation
 # Comparing Means
+# Volcano Plot
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##                  LOAD DATA AND INSTALLATION                  ~~
@@ -1704,6 +1705,7 @@ identical(rownames(ds), rownames(meta))
 
 library(reshape2)
 library(ggplot2)
+library(ggsci)
 
 #....................box plots / violin plots....................
 df.m <- melt(ds, id.var = "Label") # reshape data frame
@@ -1716,6 +1718,19 @@ p <- ggplot(data = df.m, aes(x=variable, y=value)) + xlab("") + ylab("") +
 pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legend.position="bottom") 
 
 pp
+
+#........................with data points........................
+ggplot(data=df.m, aes(x = Label, y=as.numeric(value))) +
+  geom_boxplot(aes(fill = Label),alpha = 1, outlier.shape = NA, width=0.7) + 
+  #geom_point(colour = "black", fill = "turquoise3", size = 3.5, shape = 21, position = "jitter") +
+  geom_jitter(colour = "black", aes(fill = Label), size = 2.5, shape = 21, width = 0.4, alpha = 0.5)+
+  facet_wrap(~variable) +
+  theme_classic(base_size = 15)+ theme(text = element_text(family = "Verdana"),legend.position = 'none', legend.title=element_blank()) +
+  xlab("")+scale_y_continuous(n.breaks = 10)+ylab("Mean Intensity")+
+  ggtitle("")+
+  ggthemes::scale_fill_stata()+
+  theme(plot.title = element_text(hjust=0.5, size=20, face = "bold"), strip.text = element_text(size = 15),
+        legend.text=element_blank(), axis.title=element_text(size=15))  
 
 #..........................scatter plots.........................
 df.m <- melt(ds, id.var = "Label")
@@ -1799,6 +1814,7 @@ FOLD.CHANGE <- function(data) ({
 
 fc_res <- FOLD.CHANGE(ds)
 fc_res
+paste0(unique(ds$Label)[1], " / ", unique(ds$Label)[2]) # ratio
 
 #.....................Multigroup Fold Change.....................
 FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y) "-"(x,y)})({
@@ -1953,6 +1969,42 @@ uva <- function(x, p.adjust = "BH")({
 # 1 st argument -> dataset with 1st "Label" column, 2nd -> the method of adjustment for multiple comparisons.
 ds_uva <- uva(ds, p.adjust = "BH")
 ds_uva
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         VOLCANO PLOT                         ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               NOTES:                ~~
+##  Collect Fold Changes and p-values  ~~
+##  (t-test / Wlcx) on previous steps  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+res <- as.data.frame(cbind(fc_res, p_adj)) # or left_join( , , by = "...")
+colnames(res) <- c("fc", "pval")
+res <- res %>%  mutate(Abundance = case_when(as.numeric(fc) >= 1 & as.numeric(pval) <= 0.05 ~ "Enrichment", # subset by FC & p-value
+                                             as.numeric(fc) <= -1 & as.numeric(pval) <= 0.05 ~ "Depletion", # subset by FC & p-value
+                                             TRUE ~ "Unchanged"))
+
+cols <- c("Enrichment" = "firebrick3", "Depletion" = "dodgerblue3", "Unchanged" = "gray50")
+res[,c(1,2)] <- sapply(res[,c(1,2)], as.numeric)
+
+p <- ggplot(res, aes(fc, -log(pval,10))) + # -log10 conversion  
+  geom_vline(xintercept = 1, linetype="dashed", 
+             color = "grey", alpha = 0.85, size=2.5)+
+  geom_vline(xintercept = -1, linetype="dashed", 
+             color = "grey", alpha = 0.85, size=2.5)+
+  geom_hline(yintercept = 1.3, linetype="dashed", 
+             color = "grey", alpha = 0.85, size=2.5)+
+  geom_point(aes(fill = Abundance), color = "black", shape = 21, size = 5, alpha = 0.8) +
+  xlab(base::expression("log"[2]*"FC")) + 
+  ylab(base::expression("-log"[10]*"FDR")) +
+  scale_fill_manual(values = cols) + 
+  #scale_x_continuous(limits = symmetric_limits) +
+  guides(fill = guide_legend(override.aes = list(size=7))) + theme_bw()+ 
+  labs(title=paste0("Groups comparison: ", unique(ds$Label)[1], " / ", unique(ds$Label)[2]))
+p <- p + theme_classic(base_size = 20) + theme(legend.position = 'none', legend.title=element_blank()) + theme(plot.title = element_text(hjust=0.5), plot.subtitle = element_text(hjust=0.5))
+p
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##                                MWAS/ANCOVA                               ----
