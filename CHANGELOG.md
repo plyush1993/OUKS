@@ -130,5 +130,5 @@
 ### Added
 * "4. Correction": New QC-GAM method (MetCorR) with associated scripts were introduced.
 * "7. Normalization": MAFFIN and Descriptive Stats normalizations were added.
-* "3. Imputation": Automatic missingness type determination and imputation were implemented by a custom function.
+* "3. Imputation": Automatic missingness type determination and imputation were implemented by a custom function and MinSample was added.
 * "9. Statistics": Consensus/Nested Feature Selection methods were introduced. 
