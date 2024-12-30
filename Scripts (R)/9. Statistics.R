@@ -1706,6 +1706,7 @@ identical(rownames(ds), rownames(meta))
 library(reshape2)
 library(ggplot2)
 library(ggsci)
+library(tidyverse)
 
 #....................box plots / violin plots....................
 df.m <- melt(ds, id.var = "Label") # reshape data frame
@@ -1743,6 +1744,21 @@ pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legen
 
 pp
 # or pairs(ds[,-1]) or psych::pairs.panels(ds[,-1], method = "pearson", hist.col = "#00AFBB",density = T, ellipses = T)
+
+#.......................other scatter plot.......................
+df.m <- melt(ds, id.var = "Label")
+df.m <- df.m %>% pivot_wider(names_from = "Label", values_fn = mean, values_from = "value")
+
+ggplot(df.m, aes(x=TG, y=CG)) + # adjust by your label names
+  geom_abline(intercept =0, slope = 1, color = "gray67", size = 2.5, linetype = "dashed")+
+  geom_point(alpha = 0.8, size = 7.5, color = "black", fill = "#00C5CD", shape=21) +
+  theme_bw(base_size = 15)+ 
+  theme(legend.position = 'none', legend.title=element_blank()) +
+  scale_x_continuous(labels = function(x) format(x, scientific = T, digits = 2), n.breaks = 10)+
+  scale_y_continuous(labels = function(x) format(x, scientific = T, digits = 2), n.breaks = 10)+
+  #facet_wrap(~variable)+
+  theme(plot.title = element_text(hjust=0.5, size=20, face = "bold"), strip.text = element_text(size = 15),
+        legend.text=element_text(size=15), axis.title=element_text(size=15))
 
 #.........box plots / violin plots for 2 group variables.........
 Sex <- as.factor(meta$Sex) # name and select factor from metadata
