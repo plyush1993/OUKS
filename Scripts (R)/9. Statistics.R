@@ -3132,7 +3132,7 @@ fviz_pca_biplot(pca.ds1,
 fviz_eig(pca.ds1)
 
 #.........................Variables plot.........................
-fviz_pca_var(pca.ds1, col.var = "black")
+fviz_pca_var(pca.ds1, col.var = "black") # see also fviz_contrib
 
 #............................Loadings............................
 pc <- pcaMethods::pca(mtrx1, nPcs=n)
