@@ -522,6 +522,47 @@ pgp_subs <- PeakGroupsParam(minFraction = min_frac_man, # or resultRetcorGroup$b
 
 xdata <- adjustRtime(xdata, param = pgp_subs) # final file with specific sample group alignment
 
+#..............Quality-based filtering of features...............
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               NOTES:                ~~
+##  For the xcms package version >= 4  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# by missing values               
+f <- n_gr_t[,1] # one option
+f <- sampleData(fp)$sample_type # other option
+f[f != "QC"] <- NA # select QC only, adjust to your data
+missing_filter <- PercentMissingFilter(threshold = 30, f = f) # adjust to your data              
+filtered_fp <- filterFeatures(object = fp, filter = missing_filter)
+
+# by RSD
+rsd_filter <- RsdFilter(threshold = 0.3, # adjust to your data  
+                        qcIndex = sampleData(fp)$sample_type == "QC") # or n_gr_t[,1] == "QC"
+filtered_fp <- filterFeatures(object = fp, filter = rsd_filter)    
+
+# by D Ratio
+dratio_filter <- DratioFilter(
+    threshold = 0.5,
+    qcIndex = sampleData(fp)$sample_type == "QC",
+    studyIndex = sampleData(fp)$sample_type == "study") # adjust to your data  
+filtered_fp <- filterFeatures(object = fp,
+                                  filter = dratio_filter)               
+
+#...........Alignment to an external reference dataset...........
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##               NOTES:                ~~
+##  For the xcms package version >= 4  ~~
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               
+param <- LamaParama(lamas = ref_mz_rt, method = "loess", span = 0.5,
+                    outlierTolerance = 3, zeroWeight = 10, ppm = 20,
+                    tolerance = 0, toleranceRt = 20, bs = "tp") 
+tst_adjusted <- adjustRtime(tst, param = param)
+tst_adjusted <- applyAdjustedRtime(tst_adjusted)
+param <- matchLamasChromPeaks(tst, param = param)
+mtch <- matchedRtimes(param)               
+summary <- summarizeLamaMatch(param)
+               
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##                      Warpgroup for increase precision                    ----
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
