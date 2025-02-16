@@ -67,7 +67,7 @@ library(data.table)
 # perform
 ds_crop <- as.data.frame(cbind(name = colnames(ds), rt = peakIn[,2], t(ds)))
 fwrite(ds_crop, "for CROP.csv", row.names = F)
-crop <- CROP(mscsv="for CROP.csv", name="CROP", ccth=0.85, rtw=5, maxrtw = 10, mcs=100, rtunit="s", funit="m/z") # adjust to your data
+crop <- CROP(mscsv="for CROP.csv", name="CROP", ccth=0.85, rtw=5, maxrtw = 10, mcs=100, rtunit="s", funit="m/z") # adjust to your data: m/z, rt (s or min)
 res_crop <- fread("CROP_CROPped_ccth0.85_rtw+-5_data_without_multiplicities.csv", sep = ";") # load results
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
