@@ -55,6 +55,12 @@ New features include:
 
 >2 biological adjusting methods (GAMM/GAM) [[code]](https://github.com/plyush1993/OUKS/blob/b12a173f7f5cd4d7e3c98762228f149549cdbc1b/Scripts%20(R)/7.%20Normalization.R#L413-L471)
 
+Quick access to datasets:
+```
+ds <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/8%20peaks.csv"))
+meta <- as.data.frame(fread("https://raw.githubusercontent.com/plyush1993/OUKS/main/Datasets%20(csv)/metadata.csv"))
+```
+
 Please send any comment, suggestion or question you may have to the author (Dr. Ivan Plyushchenko), email: <plyushchenko.ivan@gmail.com>.  
   
 ## Randomization 
