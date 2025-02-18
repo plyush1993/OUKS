@@ -680,7 +680,7 @@ load("IPO_optimiz_xcms_CDF_7QC.RData")
 ppm_diff <- resultPeakpicking[["best_settings"]][["parameters"]][["ppm"]] # adjust to your data
 mz_diff <- 0.02  # resultPeakpicking[["best_settings"]][["parameters"]][["mzdiff"]] # adjust to your data
 param <- Mass2MzParam(adducts = c("[M+H]+", "[M+Na]+"), # adjust to your data
-                      tolerance = mz_diff, ppm = ppm_diff)
+                      tolerance = mz_diff, ppm = ppm_diff) # mz column name: defaults to "exactmass" in reference and "mz" in query
 
 # perform
 pks_match <- matchMz(query = peakIn, compounds(cdb, c("compound_id", "exactmass", "formula", "name")), param = param) # query = ft_inf or query = peakIn
