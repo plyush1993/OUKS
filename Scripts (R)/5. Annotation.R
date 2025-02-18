@@ -686,6 +686,8 @@ param <- Mass2MzParam(adducts = c("[M+H]+", "[M+Na]+"), # adjust to your data
 pks_match <- matchMz(query = peakIn, compounds(cdb, c("compound_id", "exactmass", "formula", "name")), param = param) # query = ft_inf or query = peakIn
 pks_match
 metan <- as.data.frame(matchedData(pks_match))
+md <- na.omit(metan) # delete not annotated
+annot_feat <- dplyr::distinct(md[,1:3]) # list of only annotated                         
 
 # save
 fwrite(metan, "xcms MetaboAnnotation.csv", row.names = T)
