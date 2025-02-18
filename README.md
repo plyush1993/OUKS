@@ -5,9 +5,10 @@
 ![](https://img.shields.io/github/repo-size/plyush1993/OUKS)
 ![](https://img.shields.io/github/languages/code-size/plyush1993/OUKS)
 [![](https://img.shields.io/badge/article-jpr.1c00392-blueviolet.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
-![](https://img.shields.io/github/release/plyush1993/OUKS?color=coral&logoColor=coral)
-![](https://img.shields.io/github/release-date/plyush1993/OUKS)
-![](https://img.shields.io/github/last-commit/plyush1993/OUKS?color=turquoise&logoColor=turquoise&style=flat)
+[![](https://img.shields.io/badge/site-gh.page-blueviolet.svg)](https://plyush1993.github.io/OUKS/)
+![](https://img.shields.io/github/release/plyush1993/OUKS?color=teal&logoColor=teal)
+![](https://img.shields.io/github/release-date/plyush1993/OUKS?color=indianred)
+![](https://img.shields.io/github/last-commit/plyush1993/OUKS?color=indianred&logoColor=indianred&style=flat)
 <!-- badges: end -->
 
 # Omics Untargeted Key Script *(OUKS)* <img src="GH logo.gif" align="right" height="220" width="200"> 
