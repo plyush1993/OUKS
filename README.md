@@ -3,8 +3,8 @@
 ![](https://img.shields.io/github/release/plyush1993/OUKS?color=teal&logoColor=teal)
 [![](https://img.shields.io/badge/R≥4.1.2-5fb9ed.svg?style=flat&logo=r&logoColor=white?)](https://cran.r-project.org/index.html)
 [![License](https://img.shields.io/badge/GPLv3-indianred.svg?style=flat&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
-[![](https://img.shields.io/badge/📜-C0C0C0.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
-[![](https://img.shields.io/badge/🌐-C0C0C0.svg)](https://plyush1993.github.io/OUKS/)
+[![](https://img.shields.io/badge/📜-F8F8F8.svg)](https://doi.org/10.1021/acs.jproteome.1c00392)
+[![](https://img.shields.io/badge/🌐-F8F8F8.svg)](https://plyush1993.github.io/OUKS/)
 <!-- badges: end -->
 
 <p align="center">
