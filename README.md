@@ -59,6 +59,6 @@ work when using these algorithms via *OUKS*: [*1*](https://github.com/plyush1993
 Please send any comment, suggestion or question you may have to the author (👨‍🔬 Dr. Ivan Plyushchenko): 
 <div> 
   <a href="mailto:plyushchenko.ivan-@gmail.com"><img src="https://img.shields.io/badge/-4a9edc?style=for-the-badge&logo=gmail" height="28" alt="Email" /></a>
-  <a href="https://github.com/plyush1993"><img src="https://img.shields.io/static/v1?style=for-the-badge&message= &color=181717&logo=GitHub&logoColor=FFFFFF&label=" height="28" alt="GH" /></a>
+  <a href="https://github.com/plyush1993"><img src="https://img.shields.io/static/v1?style=for-the-badge&message=%20&color=181717&logo=GitHub&logoColor=FFFFFF&label=" height="28" alt="GH" /></a>
   <a href="https://orcid.org/0000-0003-3883-4695"><img src="https://img.shields.io/badge/-A6CE39?style=for-the-badge&logo=ORCID&logoColor=white" height="28" alt="ORCID" /></a>
 </div>
