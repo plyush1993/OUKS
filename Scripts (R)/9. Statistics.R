@@ -678,6 +678,15 @@ FOLD.CHANGE <- function(data) ({
   return(fc_res)
 })
 
+# other version
+ FOLD.CHANGE <- function(data) ({
+    ds_subsets <- lapply(1:length(unique(data[,1])), function(y) dplyr::filter(data[,-1], data$Label == unique(data[,1])[y])) # list of subsets by label
+    mean_r_l <- lapply(1:length(ds_subsets), function(y) apply(ds_subsets[[y]], 2, mean, na.rm = T)) # calculate mean for feature
+    foldchange <- log2((mean_r_l[[1]]+1.1)) - log2((mean_r_l[[2]]+1.1))
+    fc_res <- as.data.frame(foldchange)
+    return(fc_res)
+  })                       
+
 fc_t <- 1.0 # set threshold
 fc_res <- FOLD.CHANGE(ds)
 fc_res$foldchange <- as.numeric(fc_res$foldchange)
@@ -3779,5 +3788,6 @@ plot(pwr) + theme_minimal()
 # 22. Rodriguez-Martinez, Andrea, et al. "MWASTools: an R/bioconductor package for metabolome-wide association studies." Bioinformatics 34.5 (2018): 890-892.
 # 23. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
 # 24. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
+
 
 
