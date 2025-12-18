@@ -711,7 +711,7 @@ FOLD.CHANGE.MG <- function(x, f, j, aggr_FUN = colMeans) ({
   out <- lapply(seq_len(ncol(j)), function(k) {
     num <- m[j[1, k], , drop = FALSE]
     den <- m[j[2, k], , drop = FALSE]
-    fc  <- log2((num + 1.1) / (den + 1.1))
+    fc  <- log2((num + 1.1) / (den + 1.1)) # or fc  <- log2((num + 1.1)) - log2((den + 1.1))
     as.numeric(fc)
   })
   out <- do.call(cbind, out)
@@ -3779,4 +3779,5 @@ plot(pwr) + theme_minimal()
 # 22. Rodriguez-Martinez, Andrea, et al. "MWASTools: an R/bioconductor package for metabolome-wide association studies." Bioinformatics 34.5 (2018): 890-892.
 # 23. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
 # 24. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
+
 
