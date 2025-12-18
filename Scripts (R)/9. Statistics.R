@@ -696,6 +696,30 @@ FOLD.CHANGE.MG <- function(x, f, aggr_FUN = colMeans, combi_FUN = {function(x,y)
   t(ret)
 })
 
+# other version
+FOLD.CHANGE.MG <- function(x, f, j, aggr_FUN = colMeans) ({
+  f <- as.factor(f)
+  idx <- split(seq_len(nrow(x)), f)
+  m <- sapply(idx, function(ii) aggr_FUN(x[ii, , drop = FALSE], na.rm = TRUE))
+  m <- t(m)
+  j <- as.matrix(j)
+  if (nrow(j) != 2) stop("j must have 2 rows: numerator group names (row 1) and denominator (row 2).")
+  if (!all(j %in% rownames(m))) {
+    missing <- setdiff(unique(as.vector(j)), rownames(m))
+    stop("Groups missing in data: ", paste(missing, collapse = ", "))
+  }
+  out <- lapply(seq_len(ncol(j)), function(k) {
+    num <- m[j[1, k], , drop = FALSE]
+    den <- m[j[2, k], , drop = FALSE]
+    fc  <- log2((num + 1.1) / (den + 1.1))
+    as.numeric(fc)
+  })
+  out <- do.call(cbind, out)
+  colnames(out) <- paste(j[1, ], j[2, ], sep = " / ")
+  rownames(out) <- colnames(x)
+  out
+})
+  
 fdr <- FOLD.CHANGE.MG(ds[,-1], ds[,1])
 fdt_tr <- 1.0 # set threshold
 f <- as.data.frame(apply(fdr, 1, function(x) x> fdt_tr | x< -fdt_tr))
@@ -3755,3 +3779,4 @@ plot(pwr) + theme_minimal()
 # 22. Rodriguez-Martinez, Andrea, et al. "MWASTools: an R/bioconductor package for metabolome-wide association studies." Bioinformatics 34.5 (2018): 890-892.
 # 23. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
 # 24. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
+
