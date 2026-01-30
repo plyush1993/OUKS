@@ -48,7 +48,7 @@ load("xcms obj pk_fil.RData") # filename and the same folder of raw data as in s
 pk_fil <- as(pk_fil, "xcmsSet") # convert XCMSnExp to xcmsSet object
 
 # perform
-xsa <- xsAnnotate(pk_fil) # Create an xsAnnotate object 
+xsa <- xsAnnotate(pk_fil, polarity = "positive") # Create an xsAnnotate object; set polarity according to your data
 xsaF <- groupFWHM(xsa, perfwhm=0.6) # Group after RT value of the xcms grouped peak, adjust to your data
 xsaC <- groupCorr(xsaF) # Verify grouping
 
@@ -703,3 +703,4 @@ fwrite(metan, "xcms MetaboAnnotation.csv", row.names = T)
 # 5. Barranco-Altirriba, Maria, et al. "mWISE: An Algorithm for Context-Based Annotation of Liquid Chromatography-Mass Spectrometry Features through Diffusion in Graphs." Analytical Chemistry (2021).
 # 6. Shen, Xiaotao, et al. "metID: an R package for automatable compound annotation for LC2MS-based data." Bioinformatics (2021).
 # 7. Rainer, Johannes, et al. "A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R." Metabolites 12.2 (2022): 173.
+
