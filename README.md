@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 <p align="center">
-  <img width="220" height="250" src="GH logo.gif">
+  <img width="220" height="250" src="GH logo.png">
 </p>
 
 ## Brief Description 🗝️
