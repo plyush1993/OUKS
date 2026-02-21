@@ -1438,25 +1438,13 @@ fwrite(qc_tf, "xcms after IPO MVI QC-CTB tf s.csv", row.names = T)
 ##                       QC-GAM (MetCorR)                       ~~
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+library(MetCorR)
+
 # prepare data
 order = meta$ro_id
 batch = as.numeric(str_remove(meta$b_id, "b"))
 class = meta$n_gr_t
 qc_label = "QC"
-
-#......................................................
-# Parameters of "MetCorR" function:  
-
-# "method" -> can be 1 (1 feature mode, only run order) or 2 (2 features mode, run order & batch index)
-# "int_data" -> numeric feature table
-# "order" -> numeric vector of the run order
-# "class" -> sample group variable 
-# "batch" -> numeric vector of the batch index
-# "qc_label" -> label for QC samples in group 
-#......................................................
-
-# Run "MetCorR.R" script from Auxiliary files (RData) folder
-source("https://github.com/plyush1993/OUKS/raw/refs/heads/main/Auxiliary%20files%20(RData)/MetCorR.R")
 
 # 1 feature mode, only run order
 ds_gam1 <- MetCorR(method = 1, int_data = ds, order = order, class = class, qc_label = qc_label)
