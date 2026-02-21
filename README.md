@@ -7,7 +7,7 @@
 [![](https://img.shields.io/badge/🌐-F8F8F8.svg)](https://plyush1993.github.io/OUKS/)
 <!-- badges: end -->
 
-# Omics Untargeted Key Script *(OUKS)* <img src="GH logo.gif" align="right" height="220" width="200"> 
+# Omics Untargeted Key Script *(OUKS)* <img src="GH logo.png" align="right" height="220" width="200"> 
 ### Brief Description :old_key:
 R based open-source collection of scripts called :red_circle:*OUKS*:large_blue_circle: (*Omics Untargeted Key Script*) providing comprehensive nine step LC-MS untargeted metabolomic profiling data processing toolbox :toolbox:  
 
