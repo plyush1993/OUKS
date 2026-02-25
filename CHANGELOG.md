@@ -132,3 +132,7 @@
 * "7. Normalization": MAFFIN and Descriptive Stats normalizations were added.
 * "3. Imputation": Automatic missingness type determination and imputation were implemented by a custom function and MinSample was added.
 * "9. Statistics": Consensus/Nested Feature Selection methods were introduced. 
+* ## **V. 1.16**
+:spiral_calendar: 2026.02.21
+### Changed
+* "4. Correction": [MetCorR](https://github.com/plyush1993/MetCorR) QC-GAM method now is implemented via package.
