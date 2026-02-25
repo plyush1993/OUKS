@@ -51,7 +51,7 @@ New features include:
 
 >5 QC-based correction methods (KNN, DT, BT, CTB, XGB) [[code]](https://github.com/plyush1993/OUKS/blob/b12a173f7f5cd4d7e3c98762228f149549cdbc1b/Scripts%20(R)/4.%20Correction.R#L861-L1435)
 
->2 additional QC-based correction methods (GAM) [[code]](https://github.com/plyush1993/OUKS/blob/b12a173f7f5cd4d7e3c98762228f149549cdbc1b/Scripts%20(R)/4.%20Correction.R#L1437-L1467) + [[script]](https://github.com/plyush1993/OUKS/blob/main/Auxiliary%20files%20(RData)/MetCorR.R) + [[package]](https://github.com/plyush1993/MetCorR)
+>2 additional QC-based correction methods (GAM) [[code]](https://github.com/plyush1993/OUKS/blob/5201051cc9bf999eb51d77eb0971bd28f03c97a8/Scripts%20(R)/4.%20Correction.R#L1437-1455) + [[script]](https://github.com/plyush1993/OUKS/blob/main/Auxiliary%20files%20(RData)/MetCorR.R) + [[package]](https://github.com/plyush1993/MetCorR)
 
 >2 biological adjusting methods (GAMM/GAM) [[code]](https://github.com/plyush1993/OUKS/blob/b12a173f7f5cd4d7e3c98762228f149549cdbc1b/Scripts%20(R)/7.%20Normalization.R#L413-L471)
 
