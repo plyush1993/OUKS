@@ -116,11 +116,11 @@
 :spiral_calendar: 2024.05.09
 ### Changed
 * "4. Correction": Extensions in QC-NORM.
-* ## **V. 1.14.2**
+## **V. 1.14.2**
 :spiral_calendar: 2024.12.19
 ### Fixed
 * Bugs related to the implementation of p.adjust() function has been fixed throughout 7.Normalization/4.Correction/9.Statistics scripts.
-* ## **V. 1.15**
+## **V. 1.15**
 :spiral_calendar: 2024.12.22
 ### Fixed
 * Known bugs have been fixed.
@@ -132,7 +132,7 @@
 * "7. Normalization": MAFFIN and Descriptive Stats normalizations were added.
 * "3. Imputation": Automatic missingness type determination and imputation were implemented by a custom function and MinSample was added.
 * "9. Statistics": Consensus/Nested Feature Selection methods were introduced. 
-* ## **V. 1.16**
+## **V. 1.16**
 :spiral_calendar: 2026.02.21
 ### Changed
 * "4. Correction": [MetCorR](https://github.com/plyush1993/MetCorR) QC-GAM method now is implemented via package.
