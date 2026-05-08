@@ -3106,6 +3106,7 @@ identical(rownames(ds), rownames(meta))
 library(factoextra)
 library(FactoMineR)
 library(pcaMethods)
+library(ggplot2)
 library(dendextend)
 library(rafalib)
 library(RSEIS)
@@ -3170,6 +3171,18 @@ fviz_pca_var(pca.ds1, col.var = "black")
 #..................Visualize the contributions...................
 fviz_contrib(pca.ds1, choice = "var", axes = 1, top = 10) # choose axes, see also "ind"
 
+# another
+pca_cb <- princomp(mtrx1)
+loadings <- pca_cb$loadings[,1:n] %>% as.data.frame()
+loadings$Symbol <- row.names(loadings)
+loadings <- melt(as.data.frame(loadings), 
+                 id.vars = "Symbol", 
+                 variable.name = "Component", 
+                 value.name = "Weight")
+ggplot(loadings, aes(x=Symbol, y=Weight)) +
+geom_bar(stat='identity') +
+facet_grid(Component ~ ., scales='free_y')
+               
 #............................Loadings............................
 pc <- pcaMethods::pca(mtrx1, nPcs=n)
 pc@loadings
@@ -3266,6 +3279,23 @@ fviz_cluster(list(data = mtrx1, cluster = km.res1$cluster), repel = T,
              ellipse.type = "euclid", geom = "point", stand = FALSE,
              palette = "jco", ggtheme = theme_classic()) # or other palette from ggsci
 
+#..................Visualize the contributions...................
+centers <- as.data.frame(km.res1$centers)
+centers$Cluster <- factor(1:nrow(centers))
+centers_long <- melt(as.data.table(centers), 
+                     id.vars = "Cluster", 
+                     variable.name = "Symbol", 
+                     value.name = "Mean")
+
+ggplot(centers_long, aes(x = Symbol, y = Mean)) +
+  geom_bar(stat = 'identity', width = .75) +
+  facet_grid(Cluster ~ ., scales = 'free_y') +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Variable Contribution by Cluster", 
+       x = "Variable (Symbol)", 
+       y = "Mean Score (Centroid)")
+               
 #................Hierarchical K-Means Clustering.................
 res.hk <- hkmeans(mtrx1, k)
 fviz_dend(res.hk, cex = 0.6, palette = "jco", # or other palette from ggsci
@@ -3791,6 +3821,3 @@ plot(pwr) + theme_minimal()
 # 22. Rodriguez-Martinez, Andrea, et al. "MWASTools: an R/bioconductor package for metabolome-wide association studies." Bioinformatics 34.5 (2018): 890-892.
 # 23. Liquet, Benoit, et al. "A novel approach for biomarker selection and the integration of repeated measures experiments from two assays." BMC bioinformatics 13.1 (2012): 1-14.
 # 24. Tai, Yu Chuan, and Terence P. Speed. "A multivariate empirical Bayes statistic for replicated microarray time course data." The Annals of Statistics (2006): 2387-2412.
-
-
-
