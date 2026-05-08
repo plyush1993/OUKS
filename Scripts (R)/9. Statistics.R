@@ -3165,7 +3165,10 @@ fviz_pca_biplot(pca.ds1,
 fviz_eig(pca.ds1)
 
 #.........................Variables plot.........................
-fviz_pca_var(pca.ds1, col.var = "black") # see also fviz_contrib
+fviz_pca_var(pca.ds1, col.var = "black") 
+
+#..................Visualize the contributions...................
+fviz_contrib(pca.ds1, choice = "var", axes = 1, top = 10) # choose axes, see also "ind"
 
 #............................Loadings............................
 pc <- pcaMethods::pca(mtrx1, nPcs=n)
