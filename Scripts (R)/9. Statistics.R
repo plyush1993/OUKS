@@ -687,6 +687,27 @@ FOLD.CHANGE <- function(data) ({
     return(fc_res)
   })                       
 
+# other version 2                         
+FOLD.CHANGE <- function(data) {
+  group_col <- data[, 1]
+  features <- data[, -1]
+  groups <- unique(group_col)
+  
+  if(length(groups) != 2) stop("Data must contain exactly 2 groups.")
+  
+  # Calculate column means for each group safely
+  mean_1 <- colMeans(features[group_col == groups[1], ], na.rm = TRUE)
+  mean_2 <- colMeans(features[group_col == groups[2], ], na.rm = TRUE)
+  
+  # Calculate log2 ratio with the 1.1 pseudo-count
+  log2fc <- log2((mean_1 + 1.1) / (mean_2 + 1.1))
+  
+  fc_res <- data.frame(log2FC = log2fc)
+  rownames(fc_res) <- colnames(features)
+  
+  return(fc_res)
+}
+                         
 fc_t <- 1.0 # set threshold
 fc_res <- FOLD.CHANGE(ds)
 fc_res$foldchange <- as.numeric(fc_res$foldchange)
