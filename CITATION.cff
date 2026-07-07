@@ -27,8 +27,8 @@ preferred-citation:
   doi: "10.1021/acs.jproteome.1c00392"
   journal: "J. Proteome Res."
   month: 3
-  start: 833 # First page number
-  end: 847 # Last page number
+  start: 833 
+  end: 847 
   title: "Omics Untargeted Key Script: R-Based Software Toolbox for Untargeted Metabolomics with Bladder Cancer Biomarkers Discovery Case Study"
   issue: 3
   volume: 21
