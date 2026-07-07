@@ -3307,8 +3307,9 @@ centers_long <- melt(as.data.table(centers),
                      id.vars = "Cluster", 
                      variable.name = "Symbol", 
                      value.name = "Mean")
+centers_long$Color = centers_long$Mean > 0
 
-ggplot(centers_long, aes(x = Symbol, y = Mean)) +
+ggplot(centers_long, aes(x = Symbol, y = Mean, fill = Color)) +
   geom_bar(stat = 'identity', width = .75) +
   facet_grid(Cluster ~ ., scales = 'free_y') +
   theme_minimal() +
