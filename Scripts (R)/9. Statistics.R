@@ -1828,6 +1828,11 @@ pp <- p + facet_wrap( ~ variable, scales="free") + theme_classic() + theme(legen
 
 pp
 
+#.........automatic plotting........................................                   
+pairs(ds)
+#psych::pairs.panels(ds)
+#GGally::ggpairs(ds)
+                     
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##                            MANOVA                            ~~
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
