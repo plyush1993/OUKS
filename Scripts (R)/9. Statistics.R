@@ -3200,9 +3200,11 @@ loadings <- melt(as.data.frame(loadings),
                  id.vars = "Symbol", 
                  variable.name = "Component", 
                  value.name = "Weight")
-ggplot(loadings, aes(x=Symbol, y=Weight)) +
+loadings$Color = loadings$Weight > 0
+
+ggplot(loadings, aes(x=Symbol, y=Weight, fill = Color)) +
 geom_bar(stat='identity') +
-facet_grid(Component ~ ., scales='free_y')
+facet_grid(Component ~ ., scales='free_y') + theme(legend.position = "none") 
                
 #............................Loadings............................
 pc <- pcaMethods::pca(mtrx1, nPcs=n)
@@ -3316,7 +3318,7 @@ ggplot(centers_long, aes(x = Symbol, y = Mean, fill = Color)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Variable Contribution by Cluster", 
        x = "Variable (Symbol)", 
-       y = "Mean Score (Centroid)")
+       y = "Mean Score (Centroid)") + theme(legend.position = "none") 
                
 #................Hierarchical K-Means Clustering.................
 res.hk <- hkmeans(mtrx1, k)
