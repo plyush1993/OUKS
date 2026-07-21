@@ -333,7 +333,7 @@ pgp <- xcms::PeakDensityParam(sampleGroups = as.numeric(as.factor(n_gr_t$n_gr_t)
 pk_gr <- xcms::groupChromPeaks(ret_cor, param = pgp)
 
 # peak filling
-pk_fil <- xcms::fillChromPeaks(pk_gr) # see also params: "expandMz", "expandRt", "ppm"
+pk_fil <- xcms::fillChromPeaks(pk_gr) # see also params: "expandMz", "expandRt", "ppm"; also: params = FillChromPeaksParam() or ChromPeakAreaParam() (recommended in vignette)
 
 # final feature table
 ft_tbl <- featureValues(pk_fil, value = "into")  # "index" for height "into" for area
